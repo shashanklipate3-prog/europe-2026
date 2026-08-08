@@ -53,7 +53,21 @@ function validOp(op) {
   return false;
 }
 
-async function ensureSchema(db) {
+// Created once per isolate rather than on every request — the DDL is a no-op
+// after the first run, but it was still three round trips to D1 each time.
+let schemaReady = null;
+
+function ensureSchema(db) {
+  if (!schemaReady) {
+    schemaReady = createSchema(db).catch((err) => {
+      schemaReady = null; // let the next request retry rather than wedging
+      throw err;
+    });
+  }
+  return schemaReady;
+}
+
+async function createSchema(db) {
   await db.batch([
     db.prepare('CREATE TABLE IF NOT EXISTS cells (k TEXT PRIMARY KEY, v INTEGER NOT NULL, ts INTEGER NOT NULL)'),
     db.prepare('CREATE TABLE IF NOT EXISTS meta (id INTEGER PRIMARY KEY, rev INTEGER NOT NULL)'),
