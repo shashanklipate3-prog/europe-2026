@@ -8,3 +8,9 @@ compatibility_date = "2026-01-01"
 binding = "DB"
 database_name = "europe-2026"
 database_id = "5db323b0-2254-42ff-a890-6d90e5d53c9f"
+
+# One trigger doing two jobs in order: refresh FX, then rebuild the digest, so the
+# digest is never computed against yesterday's rates. 03:10 UTC = 08:40 IST.
+# The free plan allows 5 triggers; this uses 1.
+[triggers]
+crons = ["10 3 * * *"]

@@ -1,7 +1,7 @@
 /**
  * Shared state for the Europe 2026 page.
  *
- * Two things live here:
+ * Four things live here:
  *
  * 1. The tracker. One row per checkbox rather than one blob for the whole
  *    thing, so two people ticking different boxes at the same moment can
@@ -13,13 +13,38 @@
  * Everything shares one `rev` counter, so the page can poll a single endpoint
  * and know whether anything at all has changed.
  *
- * GET  /state?rev=N   -> {rev, doc, feed}, or {rev, unchanged:true}
+ * 3. Exchange rates, refreshed once a day by a Cron Trigger from the ECB via
+ *    Frankfurter. The settle-up maths used to run on constants compiled into
+ *    the page, which drift; forint and koruna move enough over eight weeks to
+ *    matter when you are dividing a bar tab seven ways.
+ *
+ * 4. Check-ins. One row per traveller, last write wins, so "where is everyone"
+ *    has an answer when the group has been split across three club doors.
+ *
+ * WRITES ARE GATED. Set the GROUP_KEY secret and every mutating route needs the
+ * X-Group-Key header. Until it is set the Worker behaves exactly as before, so
+ * deploying this is not a breaking change — but /expenses/del and /bookings/del
+ * take an id with no auth at all until you do, and this URL is in public HTML.
+ *
+ *   wrangler secret put GROUP_KEY
+ *
+ * GET  /state?rev=N   -> {rev, doc, feed, spend, vault, members, rates, here}
+ * GET  /health        -> {ok, rev, moderation, writeAuth, rates}
+ * GET  /digest        -> the most recent daily digest, as text
  * POST /ops           -> {ops:[{k,v}]} applied to the tracker
  * POST /posts         -> {author, target, title, body}
  * POST /comments      -> {post, author, body}
  * POST /votes         -> {post, author}   (toggles)
+ * POST /expenses      -> {payer, cents, cur, orig, city, what, split:[ids]}
+ * POST /bookings      -> {kind, title, ref, holder, notes}
+ * POST /checkin       -> {member, city, place, note}
+ * POST /manifest      -> {personal:[ids], visa:[ids], deadline}
+ * POST /members       -> {name}
  * POST /moderate      -> {post, status}   admin only, Bearer token
+ * POST /members/del   -> {id}             admin only
  * POST /admin/check   -> validates an admin key
+ *
+ * Cron (see wrangler.toml): refreshes rates, then rebuilds the digest.
  */
 
 const ALLOWED_ORIGINS = [
@@ -34,6 +59,15 @@ const SEED_MEMBERS = ['Shashank', 'Chetan', 'Ajay', 'Pramod', 'Ashish', 'Anand']
 const MAX_MEMBERS = 16;
 const TARGETS = ['Amsterdam', 'Berlin', 'Budapest', 'Prague', 'Trains', 'Nightlife', 'Money', 'Visa', 'General'];
 const STATUSES = ['open', 'approved', 'rejected'];
+
+// Seeded so the rates table is never empty on a cold database: these are the
+// constants the page shipped with, and they are replaced on the first cron run.
+const SEED_RATES = { EUR: 1, HUF: 400, CZK: 24.5, INR: 108 };
+const RATE_CURS = ['HUF', 'CZK', 'INR'];
+const FX_URL = 'https://api.frankfurter.app/latest?from=EUR&to=' + RATE_CURS.join(',');
+
+const CITIES = ['Amsterdam', 'Berlin', 'Budapest', 'Prague', 'In transit', 'Home'];
+const MAX_PLACE = 80;
 
 const MAX_OPS = 200;
 const MAX_BODY = 32 * 1024;
@@ -53,7 +87,7 @@ function corsHeaders(origin) {
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Group-Key',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   };
@@ -84,6 +118,17 @@ function isAdmin(request, env) {
   const header = request.headers.get('Authorization') || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : '';
   return safeEqual(token, env.ADMIN_KEY);
+}
+
+/**
+ * Shared write key. Absent secret means "not configured yet" and we stay open,
+ * so this deploy cannot lock the group out of their own tracker. An admin token
+ * also counts, so whoever holds ADMIN_KEY does not need both.
+ */
+function canWrite(request, env) {
+  if (!env.GROUP_KEY) return true;
+  const given = request.headers.get('X-Group-Key') || '';
+  return safeEqual(given, env.GROUP_KEY) || isAdmin(request, env);
 }
 
 function text(v, max) {
@@ -140,7 +185,23 @@ async function createSchema(db) {
       'CREATE TABLE IF NOT EXISTS bookings (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, ' +
         'title TEXT NOT NULL, ref TEXT NOT NULL, holder TEXT NOT NULL, notes TEXT NOT NULL, created INTEGER NOT NULL)'
     ),
+    // one row per currency, per euro
+    db.prepare('CREATE TABLE IF NOT EXISTS rates (cur TEXT PRIMARY KEY, per_eur REAL NOT NULL, asof TEXT NOT NULL, ts INTEGER NOT NULL)'),
+    // one row per traveller: last known position, last write wins
+    db.prepare(
+      'CREATE TABLE IF NOT EXISTS checkins (member TEXT PRIMARY KEY, city TEXT NOT NULL, ' +
+        'place TEXT NOT NULL, note TEXT NOT NULL, ts INTEGER NOT NULL)'
+    ),
+    // the page posts its own checklist ids here, so the digest can never drift
+    // out of step with whatever the frontend currently lists
+    db.prepare('CREATE TABLE IF NOT EXISTS manifest (id INTEGER PRIMARY KEY, json TEXT NOT NULL, ts INTEGER NOT NULL)'),
+    db.prepare('CREATE TABLE IF NOT EXISTS digests (id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL, sent INTEGER NOT NULL, created INTEGER NOT NULL)'),
   ]);
+  await db.batch(
+    Object.keys(SEED_RATES).map((c) =>
+      db.prepare('INSERT OR IGNORE INTO rates (cur, per_eur, asof, ts) VALUES (?1, ?2, ?3, ?4)')
+        .bind(c, SEED_RATES[c], 'seed', 0))
+  );
   // ids 0..5 for the original six, matching the checkbox keys already stored
   await db.batch(
     SEED_MEMBERS.map((n, i) =>
@@ -201,11 +262,120 @@ async function readBookings(db) {
   return results;
 }
 
+async function readRates(db) {
+  const { results } = await db.prepare('SELECT cur, per_eur, asof FROM rates').all();
+  const out = { asof: 'seed' };
+  for (const r of results) {
+    out[r.cur] = r.per_eur;
+    // report the freshest non-seed stamp we hold
+    if (r.asof !== 'seed' && (out.asof === 'seed' || r.asof > out.asof)) out.asof = r.asof;
+  }
+  return out;
+}
+
+async function readHere(db) {
+  const { results } = await db
+    .prepare('SELECT member, city, place, note, ts FROM checkins ORDER BY ts DESC')
+    .all();
+  return results;
+}
+
 async function fullState(db) {
-  const [rev, doc, feed, spend, vault, members] = await Promise.all([
+  const [rev, doc, feed, spend, vault, members, rates, here] = await Promise.all([
     readRev(db), readDoc(db), readFeed(db), readExpenses(db), readBookings(db), readMembers(db),
+    readRates(db), readHere(db),
   ]);
-  return { rev, doc, feed, spend, vault, members };
+  return { rev, doc, feed, spend, vault, members, rates, here };
+}
+
+/* ---------- rates + digest, both driven by the cron ---------- */
+
+async function refreshRates(db) {
+  let payload;
+  try {
+    const res = await fetch(FX_URL, { headers: { Accept: 'application/json' } });
+    if (!res.ok) return { ok: false, why: 'HTTP ' + res.status };
+    payload = await res.json();
+  } catch (err) {
+    return { ok: false, why: String((err && err.message) || err) };
+  }
+  const got = (payload && payload.rates) || {};
+  const asof = typeof payload.date === 'string' ? payload.date : new Date().toISOString().slice(0, 10);
+  const rows = RATE_CURS
+    .filter((c) => Number.isFinite(Number(got[c])) && Number(got[c]) > 0)
+    .map((c) => ({ cur: c, v: Number(got[c]) }));
+  // a partial response is not worth writing — it would mix dates in one settle-up
+  if (rows.length !== RATE_CURS.length) return { ok: false, why: 'incomplete response' };
+
+  const stmt = db.prepare(
+    'INSERT INTO rates (cur, per_eur, asof, ts) VALUES (?1, ?2, ?3, ?4) ' +
+      'ON CONFLICT(cur) DO UPDATE SET per_eur = ?2, asof = ?3, ts = ?4'
+  );
+  await db.batch([
+    ...rows.map((r) => stmt.bind(r.cur, r.v, asof, Date.now())),
+    db.prepare('INSERT INTO rates (cur, per_eur, asof, ts) VALUES (?1, 1, ?2, ?3) ' +
+      'ON CONFLICT(cur) DO UPDATE SET asof = ?2, ts = ?3').bind('EUR', asof, Date.now()),
+    bumpRev(db),
+  ]);
+  return { ok: true, asof, rows };
+}
+
+function plural(n, word) {
+  return n + ' ' + word + (n === 1 ? '' : 's');
+}
+
+async function buildDigest(db) {
+  const [members, doc, row] = await Promise.all([
+    readMembers(db),
+    readDoc(db),
+    db.prepare('SELECT json FROM manifest WHERE id = 1').first(),
+  ]);
+  let man = null;
+  try { man = row ? JSON.parse(row.json) : null; } catch { man = null; }
+  if (!man || !Array.isArray(man.personal) || !man.personal.length) {
+    return 'No checklist manifest yet — open the itinerary page once and it will post one.';
+  }
+  const visa = new Set(Array.isArray(man.visa) ? man.visa : []);
+  const done = (id, mid) => doc['p:' + id + ':' + mid] === 1;
+
+  const lines = [];
+  if (man.deadline) {
+    const days = Math.round((new Date(man.deadline + 'T00:00:00Z') - Date.now()) / 86400000);
+    lines.push(days >= 0
+      ? 'Visa target ' + man.deadline + ' — ' + plural(days, 'day') + ' left.'
+      : 'Visa target ' + man.deadline + ' has passed by ' + plural(-days, 'day') + '.');
+    lines.push('');
+  }
+  let allClear = true;
+  for (const m of members) {
+    const openAll = man.personal.filter((id) => !done(id, m.id));
+    const openVisa = openAll.filter((id) => visa.has(id));
+    if (!openAll.length) { lines.push('OK  ' + m.name + ' — all clear'); continue; }
+    allClear = false;
+    lines.push('--  ' + m.name + ' — ' + plural(openAll.length, 'item') + ' open'
+      + (openVisa.length ? ', ' + openVisa.length + ' of them visa' : ''));
+  }
+  if (allClear) lines.push('', 'Everyone is clear. Nothing to chase.');
+  return lines.join('\n');
+}
+
+async function sendDigest(env, body) {
+  if (!env.RESEND_KEY || !env.DIGEST_TO) return false;
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + env.RESEND_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: env.DIGEST_FROM || 'Europe 2026 <onboarding@resend.dev>',
+        to: env.DIGEST_TO.split(',').map((x) => x.trim()).filter(Boolean),
+        subject: 'Europe 2026 — where we are',
+        text: body,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
 async function countRows(db, table) {
@@ -243,7 +413,21 @@ export default {
       }
 
       if (request.method === 'GET' && path === '/health') {
-        return reply({ ok: true, rev: await readRev(env.DB), moderation: !!env.ADMIN_KEY }, 200);
+        return reply({
+          ok: true,
+          rev: await readRev(env.DB),
+          moderation: !!env.ADMIN_KEY,
+          writeAuth: !!env.GROUP_KEY,
+          email: !!(env.RESEND_KEY && env.DIGEST_TO),
+          rates: await readRates(env.DB),
+        }, 200);
+      }
+
+      if (request.method === 'GET' && path === '/digest') {
+        const row = await env.DB
+          .prepare('SELECT body, sent, created FROM digests ORDER BY id DESC LIMIT 1')
+          .first();
+        return reply(row ? { ok: true, ...row } : { ok: true, body: null }, 200);
       }
 
       /* ---------- write ---------- */
@@ -265,6 +449,12 @@ export default {
       const names = roster.map((m) => m.name);
       const ids = roster.map((m) => m.id);
       const isName = (v) => names.includes(v);
+
+      // Admin key check must stay reachable without the group key, or a locked-out
+      // admin has no way back in.
+      if (path !== '/admin/check' && !canWrite(request, env)) {
+        return reply({ error: 'group key required', needKey: true }, 403);
+      }
 
       if (path === '/admin/check') {
         if (!env.ADMIN_KEY) return reply({ error: 'moderation not configured' }, 503);
@@ -450,6 +640,44 @@ export default {
         return reply(await fullState(env.DB), 200);
       }
 
+      if (path === '/checkin') {
+        const member = isName(body.member) ? body.member : null;
+        const city = CITIES.includes(body.city) ? body.city : null;
+        const place = typeof body.place === 'string' ? body.place.trim().slice(0, MAX_PLACE) : '';
+        const note = typeof body.note === 'string' ? body.note.trim().slice(0, 200) : '';
+        if (!member) return reply({ error: 'unknown traveller' }, 400);
+        if (!city) return reply({ error: 'unknown city' }, 400);
+
+        await env.DB.batch([
+          env.DB.prepare(
+            'INSERT INTO checkins (member, city, place, note, ts) VALUES (?1, ?2, ?3, ?4, ?5) ' +
+              'ON CONFLICT(member) DO UPDATE SET city = ?2, place = ?3, note = ?4, ts = ?5'
+          ).bind(member, city, place, note, Date.now()),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/manifest') {
+        const clean = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string' && /^[a-z0-9]{2,4}$/.test(x)) : []);
+        const personal = clean(body.personal);
+        const visa = clean(body.visa);
+        const deadline = typeof body.deadline === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.deadline)
+          ? body.deadline : null;
+        if (!personal.length) return reply({ error: 'empty manifest' }, 400);
+
+        const json = JSON.stringify({ personal, visa, deadline });
+        const prev = await env.DB.prepare('SELECT json FROM manifest WHERE id = 1').first();
+        // identical manifest is the common case on every page load — do not bump
+        // rev for it or every client would redraw once per visitor
+        if (prev && prev.json === json) return reply({ ok: true, unchanged: true }, 200);
+        await env.DB.prepare(
+          'INSERT INTO manifest (id, json, ts) VALUES (1, ?1, ?2) ' +
+            'ON CONFLICT(id) DO UPDATE SET json = ?1, ts = ?2'
+        ).bind(json, Date.now()).run();
+        return reply({ ok: true }, 200);
+      }
+
       if (path === '/moderate') {
         if (!env.ADMIN_KEY) return reply({ error: 'moderation not configured' }, 503);
         if (!isAdmin(request, env)) return reply({ error: 'not allowed' }, 403);
@@ -478,5 +706,25 @@ export default {
     } catch (err) {
       return reply({ error: 'server', detail: String((err && err.message) || err) }, 500);
     }
+  },
+
+  /**
+   * Cron. Rates first, then the digest, so the digest is never built against
+   * yesterday's numbers. Both are best-effort: a failed FX fetch leaves the last
+   * good rates in place rather than writing a half-set, and a failed email still
+   * leaves the digest readable at GET /digest.
+   */
+  async scheduled(event, env, ctx) {
+    await ensureSchema(env.DB);
+    const fx = await refreshRates(env.DB);
+    const body = await buildDigest(env.DB);
+    const sent = await sendDigest(env, body);
+    await env.DB.prepare('INSERT INTO digests (body, sent, created) VALUES (?1, ?2, ?3)')
+      .bind(body, sent ? 1 : 0, Date.now()).run();
+    // keep the last 30 only; this table is append-only otherwise
+    await env.DB.prepare(
+      'DELETE FROM digests WHERE id NOT IN (SELECT id FROM digests ORDER BY id DESC LIMIT 30)'
+    ).run();
+    console.log('cron: fx=' + (fx.ok ? fx.asof : 'failed:' + fx.why) + ' emailed=' + sent);
   },
 };
