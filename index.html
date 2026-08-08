@@ -176,6 +176,44 @@
   .syncpill.live{border-color:rgba(77,212,172,.35)} .syncpill.off{border-color:rgba(255,92,108,.4)}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   @media(prefers-reduced-motion:reduce){.syncpill.busy i{animation:none}}
+  /* ---------- MAP ---------- */
+  .mapwrap{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;overflow-x:auto}
+  .mapwrap svg{display:block;width:100%;min-width:520px;height:auto}
+  .grat{stroke:var(--line);stroke-width:1;opacity:.5}
+  .gratlab{fill:var(--tx3);font-size:9px;letter-spacing:.06em}
+  .leg{fill:none;stroke-width:2.5;stroke-linecap:round}
+  .leg.a{stroke:var(--ber)} .leg.b{stroke:var(--bud)} .leg.c{stroke:var(--prg)}
+  .leg.ghost{stroke:var(--tx3);stroke-width:1.5;stroke-dasharray:3 5;opacity:.5}
+  .sleeper{stroke-dasharray:9 7}
+  @media(prefers-reduced-motion:no-preference){
+    .sleeper{animation:crawl 2.4s linear infinite}
+    @keyframes crawl{to{stroke-dashoffset:-32}}
+  }
+  .cdot{stroke:var(--bg2);stroke-width:3}
+  .cname{fill:var(--tx);font-size:13px;font-weight:750;letter-spacing:-.01em}
+  .cmeta{fill:var(--tx3);font-size:10px;font-weight:600;letter-spacing:.05em}
+  .leglab{fill:var(--tx2);font-size:10.5px;font-weight:700;letter-spacing:.03em}
+  .ghostlab{fill:var(--tx3);font-size:10px;font-style:italic}
+  .maplegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--tx3);margin-bottom:22px;padding:0 4px}
+  .maplegend span{display:inline-flex;align-items:center;gap:6px}
+  .maplegend i{width:16px;height:2.5px;border-radius:2px;display:inline-block}
+
+  .placecard{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:12px;padding:16px 18px}
+  .placecard.ams{border-left-color:var(--ams)} .placecard.ber{border-left-color:var(--ber)}
+  .placecard.bud{border-left-color:var(--bud)} .placecard.prg{border-left-color:var(--prg)}
+  .placecard h3{margin:0 0 3px}
+  .placecard .base{font-size:13px;color:var(--tx3);margin-bottom:12px}
+  .plgroup{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);margin:12px 0 6px}
+  .plgroup:first-of-type{margin-top:0}
+  .pl{display:flex;flex-wrap:wrap;gap:6px}
+  .pl a{
+    display:inline-block;font-size:13px;font-weight:600;text-decoration:none;color:var(--tx2);
+    background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;transition:.14s;
+  }
+  .pl a:hover{border-color:var(--line2);color:var(--tx);background:var(--line)}
+  .pl a:focus-visible{outline:2px solid var(--ber);outline-offset:2px}
+  .pl a::after{content:" ↗";color:var(--tx3);font-size:11px}
+
   /* ---------- SUGGESTIONS ---------- */
   .compose{display:grid;gap:10px;grid-template-columns:1fr 190px}
   .compose .full{grid-column:1/-1}
@@ -256,6 +294,7 @@
     <button class="tab" role="tab" aria-selected="false" data-p="p4">Visa &amp; logistics</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p6">Don't get done</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p9">Map</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p7">Tracker</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p8">Suggestions</button>
   </div>
@@ -790,6 +829,87 @@
   </ul>
 </section>
 
+<!-- ============ MAP ============ -->
+<section role="tabpanel" id="p9">
+  <h2>Map</h2>
+  <p class="lede">The shape of the trip: one line west to east, no backtracking, no return leg wasted. Cities sit at their true coordinates — there are no coastlines because this is a route diagram, not an atlas. Every place below opens in your phone's map app for real directions.</p>
+
+  <div class="mapwrap">
+    <svg viewBox="0 0 640 420" role="img" aria-label="Route map: Amsterdam to Berlin via Hamburg, Berlin to Budapest overnight, Budapest to Prague via Bratislava.">
+      <!-- graticule -->
+      <g class="grat">
+        <line x1="133.3" y1="20" x2="133.3" y2="400"/><line x1="288.9" y1="20" x2="288.9" y2="400"/>
+        <line x1="444.4" y1="20" x2="444.4" y2="400"/><line x1="600" y1="20" x2="600" y2="400"/>
+        <line x1="30" y1="180" x2="620" y2="180"/><line x1="30" y1="330" x2="620" y2="330"/>
+      </g>
+      <g class="gratlab">
+        <text x="133.3" y="414" text-anchor="middle">5°E</text>
+        <text x="288.9" y="414" text-anchor="middle">10°E</text>
+        <text x="444.4" y="414" text-anchor="middle">15°E</text>
+        <text x="600" y="414" text-anchor="middle">20°E</text>
+        <text x="24" y="183" text-anchor="end">50°N</text>
+        <text x="24" y="333" text-anchor="end">45°N</text>
+      </g>
+
+      <!-- what we didn't do -->
+      <path class="leg ghost" d="M556 296 L489.3 374.8"/>
+      <circle class="cdot" cx="489.3" cy="374.8" r="4" fill="#6f7a94"/>
+      <text class="ghostlab" x="481" y="392" text-anchor="end">Croatia — 900 km off the line, two travel days. Dropped.</text>
+      <circle class="cdot" cx="338.1" cy="235.9" r="4" fill="#6f7a94"/>
+      <text class="ghostlab" x="330" y="252" text-anchor="end">Munich — Oktoberfest ends 4 Oct</text>
+
+      <!-- leg A: Amsterdam to Berlin, diverted via Hamburg from 2 Oct -->
+      <path class="leg a" d="M130.3 109 Q205 76 288.7 73.5 Q345 80 394.8 104.4"/>
+      <circle cx="288.7" cy="73.5" r="3" fill="#5b8dff" opacity=".75"/>
+      <text class="gratlab" x="288.7" y="62" text-anchor="middle">via Hamburg</text>
+      <text class="leglab" x="205" y="107" text-anchor="middle">4 Oct · ICE · ~7 h · €40</text>
+
+      <!-- leg B: the sleeper -->
+      <path class="leg b sleeper" d="M394.8 104.4 Q450 165 570.1 255.1"/>
+      <text class="leglab" x="500" y="155" text-anchor="middle" transform="rotate(31 500 155)">7 Oct · sleeper · 12–13 h · €59</text>
+
+      <!-- leg C: Budapest to Prague via Bratislava -->
+      <path class="leg c" d="M570.1 255.1 L510 235.5 Q455 215 427 177.7"/>
+      <circle cx="510" cy="235.5" r="3" fill="#c77dff" opacity=".75"/>
+      <text class="gratlab" x="512" y="252" text-anchor="middle">via Bratislava</text>
+      <text class="leglab" x="470" y="268" text-anchor="end">11 Oct · ~6 h 50 · €21</text>
+
+      <!-- cities -->
+      <circle class="cdot" cx="130.3" cy="109" r="7" fill="#ff8c42"/>
+      <text class="cname" x="130.3" y="90" text-anchor="middle">Amsterdam</text>
+      <text class="cmeta" x="130.3" y="77" text-anchor="middle">1–4 OCT · 3 NIGHTS · IN</text>
+
+      <circle class="cdot" cx="394.8" cy="104.4" r="7" fill="#5b8dff"/>
+      <text class="cname" x="394.8" y="86" text-anchor="middle">Berlin</text>
+      <text class="cmeta" x="394.8" y="73" text-anchor="middle">4–7 OCT · 3 NIGHTS</text>
+
+      <circle class="cdot" cx="427" cy="177.7" r="7" fill="#c77dff"/>
+      <text class="cname" x="415" y="182" text-anchor="end">Prague</text>
+      <text class="cmeta" x="415" y="195" text-anchor="end">11–13 OCT · 2 NIGHTS · OUT</text>
+
+      <circle class="cdot" cx="570.1" cy="255.1" r="7" fill="#4dd4ac"/>
+      <text class="cname" x="570.1" y="277" text-anchor="middle">Budapest</text>
+      <text class="cmeta" x="570.1" y="290" text-anchor="middle">8–11 OCT · 3 NIGHTS</text>
+    </svg>
+  </div>
+  <div class="maplegend">
+    <span><i style="background:var(--ber)"></i> Day train</span>
+    <span><i style="background:var(--bud)"></i> Overnight sleeper</span>
+    <span><i style="background:var(--prg)"></i> Day train</span>
+    <span><i style="background:var(--tx3);opacity:.6"></i> Considered, not taken</span>
+    <span>Total rail: €120 pp · ~26 hours</span>
+  </div>
+
+  <h2>Every place, city by city</h2>
+  <p class="lede">Tap any of these to open it in Google Maps. Worth doing the night before each city rather than on the street at 01:00 with 4% battery.</p>
+  <div class="grid g2" id="places"></div>
+
+  <div class="callout c-warn">
+    <b>Save these offline before you fly</b>
+    In Google Maps, search each city and use <b>Download offline map</b>. Roaming data fails exactly when you need it — coming out of a club at 04:00 in a city you don't know. Do all four cities on hotel wifi the night before you leave.
+  </div>
+</section>
+
 <!-- ============ TRACKER ============ -->
 <section role="tabpanel" id="p7">
   <h2>Tracker</h2>
@@ -904,6 +1024,66 @@
     window.scrollTo({top:0, behavior:'smooth'});
   }
   tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.p); }); });
+})();
+</script>
+
+<script>
+/* ================= MAP: PLACES ================= */
+(function(){
+  var PLACES = [
+    { k:'ams', city:'Amsterdam',
+      base:'Base yourself in De Pijp — market on the doorstep, ten minutes to the centre, and materially cheaper than a canal address.',
+      groups:[
+        ['Daytime', ['Anne Frank House','Van Gogh Museum','Rijksmuseum','Albert Cuyp Market','Heineken Experience',"A'DAM Lookout",'NDSM Wharf','Eco Boats Amsterdam','Vondelpark']],
+        ['Nights',  ['Melkweg','Paradiso','Shelter Amsterdam','De Marktkantine','RADION Amsterdam','Jordaan']],
+        ['Eating',  ['Foodhallen','Vleminckx Sausmeesters']],
+        ['Arriving',['Amsterdam Centraal','Schiphol Airport']]
+      ]},
+    { k:'ber', city:'Berlin',
+      base:'Friedrichshain — walking distance to most of the clubs, and the U-Bahn runs all night Friday and Saturday.',
+      groups:[
+        ['Daytime', ['Berlin Wall Memorial Bernauer Strasse','East Side Gallery','Topography of Terror','Reichstag Building','Brandenburg Gate','Museum Island','Tempelhofer Feld','Mauerpark']],
+        ['Nights',  ['Berghain','Sisyphos','Tresor Berlin','Club der Visionaere','About Blank Berlin','Salon zur Wilden Renate']],
+        ['Eating',  ["Mustafa's Gemuese Kebap",'Curry 36','Markthalle Neun']],
+        ['Arriving',['Berlin Hauptbahnhof','Berlin Brandenburg Airport']]
+      ]},
+    { k:'bud', city:'Budapest',
+      base:'District VII, the Jewish Quarter — you will be sleeping directly above the ruin bars, which is either the point or the problem.',
+      groups:[
+        ['Daytime', ['Szechenyi Thermal Bath','Buda Castle',"Fisherman's Bastion",'Great Market Hall Budapest','Hungarian Parliament Building','Margaret Island','Memento Park','Chain Bridge Budapest']],
+        ['Nights',  ['Szimpla Kert','Instant-Fogas','Doboz Budapest','Akvarium Klub','360 Bar Budapest','High Note SkyBar']],
+        ['Eating',  ['Getto Gulyas','Bors GasztroBar','Karavan Street Food Budapest']],
+        ['Arriving',['Budapest Nyugati Railway Station','Budapest Ferenc Liszt Airport']]
+      ]},
+    { k:'prg', city:'Prague',
+      base:'Holesovice or Vinohrady, not Old Town — cheaper, calmer, and you avoid waking up inside the pickpocket zone.',
+      groups:[
+        ['Daytime', ['Prague Castle','Charles Bridge','Old Town Square Prague','Letna Beer Garden','Naplavka Prague','Beerland Beer Spa Prague']],
+        ['Nights',  ['Roxy Prague','Cross Club Prague','Chapeau Rouge','Karlovy Lazne']],
+        ['Eating',  ['Lokal Dlouhaaa','Lokal U Bile kuzelky']],
+        ['Arriving',['Praha hlavni nadrazi','Vaclav Havel Airport Prague']]
+      ]}
+  ];
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function mapLink(name, city){
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(name + ', ' + city);
+  }
+
+  var host = document.getElementById('places');
+  if(!host) return;
+  host.innerHTML = PLACES.map(function(p){
+    return '<div class="placecard ' + p.k + '">' +
+      '<h3>' + esc(p.city) + '</h3>' +
+      '<p class="base">' + esc(p.base) + '</p>' +
+      p.groups.map(function(g){
+        return '<div class="plgroup">' + esc(g[0]) + '</div><div class="pl">' +
+          g[1].map(function(n){
+            return '<a href="' + esc(mapLink(n, p.city)) + '" target="_blank" rel="noopener noreferrer">' + esc(n) + '</a>';
+          }).join('') + '</div>';
+      }).join('') +
+    '</div>';
+  }).join('');
 })();
 </script>
 
@@ -1176,7 +1356,13 @@
   var SYNC_URL = 'https://europe-2026-sync.shashanklipate3.workers.dev';
   var sync = { rev:-1, pending:{}, timer:null, fails:0, flushing:false };
 
-  function syncOn(){ return !!SYNC_URL; }
+  function syncOn(){ return !!SYNC_URL && typeof fetch === 'function'; }
+  /* fetch can throw synchronously (bad URL, blocked scheme). Nothing in the UI
+     should ever unwind because of the network, so funnel it through here. */
+  function ask(url, opts){
+    try{ return fetch(url, opts); }
+    catch(e){ return Promise.reject(e); }
+  }
   function pill(cls, text){
     var el = document.getElementById('syncPill');
     el.className = 'syncpill' + (cls ? ' ' + cls : '');
@@ -1229,7 +1415,7 @@
     var ops = keys.map(function(k){ return {k:k, v:sync.pending[k]}; });
     sync.flushing = true;
     pill('busy', 'Saving');
-    fetch(SYNC_URL + '/ops', {
+    ask(SYNC_URL + '/ops', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ops:ops})
     })
@@ -1251,7 +1437,7 @@
 
   function poll(){
     if(!syncOn() || sync.flushing || document.visibilityState === 'hidden') return;
-    fetch(SYNC_URL + '/state' + (sync.rev >= 0 ? '?rev=' + sync.rev : ''), {cache:'no-store'})
+    ask(SYNC_URL + '/state' + (sync.rev >= 0 ? '?rev=' + sync.rev : ''), {cache:'no-store'})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(function(d){
       sync.fails = 0;
@@ -1287,7 +1473,7 @@
   function api(path, body, key){
     var h = {'Content-Type':'application/json'};
     if(key) h.Authorization = 'Bearer ' + key;
-    return fetch(SYNC_URL + path, {method:'POST', headers:h, body: JSON.stringify(body || {})})
+    return ask(SYNC_URL + path, {method:'POST', headers:h, body: JSON.stringify(body || {})})
       .then(function(r){
         return r.json().then(function(d){
           if(!r.ok) throw new Error((d && d.error) || ('HTTP ' + r.status));
