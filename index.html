@@ -45,12 +45,13 @@
 
   /* ---------- TABS ---------- */
   nav{position:sticky;top:0;z-index:50;background:rgba(11,13,18,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .tabs{max-width:1120px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .tabs{max-width:1120px;margin:0 auto;padding:0 20px;display:flex;flex-wrap:wrap;gap:0 2px}
   .tabs::-webkit-scrollbar{display:none}
   .tab{
-    background:none;border:none;color:var(--tx3);font:inherit;font-weight:600;font-size:14px;
-    padding:15px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;
+    background:none;border:none;color:var(--tx3);font:inherit;font-weight:600;font-size:13px;
+    padding:13px 8px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;
   }
+  .tab:focus-visible{outline:2px solid var(--ber);outline-offset:-3px;border-radius:4px}
   .tab:hover{color:var(--tx2)}
   .tab[aria-selected="true"]{color:var(--tx);border-bottom-color:var(--ber)}
   section[role="tabpanel"]{display:none;padding-top:34px;animation:fade .25s ease}
@@ -333,6 +334,15 @@
   .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
 
   footer{border-top:1px solid var(--line);margin-top:56px;padding-top:22px;color:var(--tx3);font-size:13px}
+  @media(max-width:820px){
+    .tab{font-size:12.5px;padding:10px 7px}
+    .tabs{padding:3px 12px}
+    nav{position:static}          /* rows of tabs pinned to the top would eat the screen */
+  }
+  @media(max-width:640px){
+    .tab{font-size:12px;padding:8px 6px}
+    .tabs{padding:2px 10px;gap:0 1px}
+  }
   @media(max-width:640px){
     .slot{flex-direction:column;gap:2px}
     .slot .t{flex:none}
@@ -344,7 +354,7 @@
 
 <header>
   <div class="wrap">
-    <div class="eyebrow">1 – 13 October 2026 · 6 travellers</div>
+    <div class="eyebrow">1 – 13 October 2026 · <span id="travCount">6</span> travellers</div>
     <h1><span class="g">Amsterdam · Berlin<br>Budapest · Prague</span></h1>
     <p class="sub">Twelve nights, four cities, one overnight train. Built around shoulder-season prices, an easier Sunday door at Berghain, and a Saturday night in a thermal bath. Croatia dropped — it sat 900&nbsp;km off the line and would have cost two full travel days.</p>
     <div class="hero-stats">
@@ -364,8 +374,8 @@
     <button class="tab" role="tab" aria-selected="false" data-p="p1">Day by day</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p2">Bars &amp; clubs</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p10">Adults only</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="p3">Getting between cities</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="p4">Visa &amp; logistics</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p3">Trains</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p4">Visa</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p6">Don't get done</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p9">Map</button>
@@ -1685,7 +1695,7 @@
 </section>
 
 <footer>
-  <p>Built 8 August 2026 for a group of six · Prices in EUR at ~₹108/€, ~€1 = 400 HUF = 24.5 CZK. Fares, opening hours and tourist-tax rates move — reconfirm anything you're booking. Two things worth rechecking closer to the date: whether Prague's tourist fee has doubled to 100 CZK, and the exact EuroNight Metropol departure time, since the Berlin engineering works may shift it.</p>
+  <p>Built 8 August 2026 for the group · Prices in EUR at ~₹108/€, ~€1 = 400 HUF = 24.5 CZK. Fares, opening hours and tourist-tax rates move — reconfirm anything you're booking. Two things worth rechecking closer to the date: whether Prague's tourist fee has doubled to 100 CZK, and the exact EuroNight Metropol departure time, since the Berlin engineering works may shift it.</p>
 </footer>
 
 </div>
@@ -2488,6 +2498,10 @@
     var keep = bh.value;
     bh.innerHTML = MEM.map(function(m){ return '<option value="' + esc(m.name) + '">' + esc(m.name) + '</option>'; }).join('');
     if(keep) bh.value = keep;
+
+    var count = document.getElementById('travCount');
+    if(count) count.textContent = MEM.length;
+    document.title = 'Europe 2026 · ' + MEM.length + ' Guys, 4 Cities, 13 Days';
   }
   elWho.addEventListener('change', function(){ ST.me = +elWho.value; save(); renderCards(); });
   function shortName(n){ return n.length > 7 ? n.slice(0,6) : n; }
