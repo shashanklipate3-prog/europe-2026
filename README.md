@@ -9,14 +9,35 @@ dependencies. Edit it and push, and GitHub Pages redeploys within a minute.
 ## The tracker
 
 The Tracker tab holds a per-person checklist for all six travellers, plus the
-group bookings and who owns each one. There is no server, so ticks are saved in
-each person's own browser. To share progress, use **Copy sync link** and post the
-link in the group chat — it carries every tick in the URL, and opening it merges
-them in. Merging only ever adds ticks, so a stale link can never wipe someone's
-work.
+group bookings and who owns each one. It syncs automatically: tick a box and it
+reaches everyone else within about ten seconds.
 
 Phone numbers saved for the WhatsApp nudge buttons stay in the browser that
-entered them. They are never written into this file or into a sync link.
+entered them. They are never sent to the server, written into this file, or put
+in a sync link.
+
+### How the sync works
+
+`worker/` is a Cloudflare Worker backed by a D1 database, deployed separately
+from this site:
+
+    cd worker && npx wrangler deploy
+
+- `GET  /state?rev=N` — returns `{rev, doc}`, or `{rev, unchanged:true}`
+- `POST /ops` — `{ops:[{k,v}]}`, applies them and returns the new state
+
+Each checkbox is **one row**, not part of one shared blob. Two people ticking
+different boxes at the same moment therefore touch different rows and cannot
+overwrite each other; the same box twice is last-tap-wins. Only the origins
+listed in `worker/src/index.js` may call it.
+
+The page keeps working with no signal — ticks apply immediately, queue in
+localStorage, and flush when the connection returns. The pill by the "I am"
+dropdown always says which state you are in. If the backend is ever unreachable,
+**Copy sync link** still works as a manual fallback.
+
+Note that **Reset wipes the tracker for everyone**, not just the device that
+presses it.
 
 ## Deadline
 

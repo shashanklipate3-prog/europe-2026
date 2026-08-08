@@ -167,6 +167,15 @@
   .due.late{background:rgba(255,92,108,.16);color:var(--bad)}
   .due.done{background:rgba(77,212,172,.14);color:var(--good)}
   .ownsel{font-size:13px;padding:5px 8px}
+
+  .syncpill{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:var(--tx2);padding:6px 11px;border:1px solid var(--line);border-radius:20px;background:var(--bg2)}
+  .syncpill i{width:8px;height:8px;border-radius:50%;background:var(--tx3);flex:0 0 8px}
+  .syncpill.live i{background:var(--good);box-shadow:0 0 0 3px rgba(77,212,172,.16)}
+  .syncpill.busy i{background:var(--warn);animation:pulse 1s ease-in-out infinite}
+  .syncpill.off i{background:var(--bad)}
+  .syncpill.live{border-color:rgba(77,212,172,.35)} .syncpill.off{border-color:rgba(255,92,108,.4)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @media(prefers-reduced-motion:reduce){.syncpill.busy i{animation:none}}
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
     background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:11px 18px;
@@ -751,6 +760,7 @@
   <div class="trk-bar">
     <label for="who">I am</label>
     <select id="who"></select>
+    <span class="syncpill" id="syncPill"><i></i><b>Starting up</b></span>
     <span class="spacer"></span>
     <button class="btn wa" id="btnNudgeAll">Nudge the group</button>
     <button class="btn pri" id="btnCopyLink">Copy sync link</button>
@@ -1077,8 +1087,121 @@
       else if(v && !ST.g[t.id]){ ST.g[t.id] = 1; added++; }
       ST.o[t.id] = +dec.o.charAt(gi);
     });
-    save(); renderAll();
+    save(); renderAll(); pushAll();
     toast(mode === 'replace' ? 'Replaced with the pasted code.' : (added ? added + ' new tick' + (added===1?'':'s') + ' merged in.' : 'Nothing new in that code.'));
+  }
+
+  /* ---- shared sync ----
+     Every tick is sent as a single-cell op, so two people ticking different
+     boxes at once never clobber each other. The server's copy wins on read;
+     localStorage stays as the offline cache so the page still works on a
+     train with no signal, and pushes what it missed when the signal returns. */
+  var SYNC_URL = 'https://europe-2026-sync.shashanklipate3.workers.dev';
+  var sync = { rev:-1, pending:{}, timer:null, fails:0, flushing:false };
+
+  function syncOn(){ return !!SYNC_URL; }
+  function pill(cls, text){
+    var el = document.getElementById('syncPill');
+    el.className = 'syncpill' + (cls ? ' ' + cls : '');
+    el.querySelector('b').textContent = text;
+  }
+
+  function docFromState(){
+    var doc = {};
+    PT.forEach(function(t){ MEM.forEach(function(_,i){ doc['p:'+t.id+':'+i] = tick(t.id,i) ? 1 : 0; }); });
+    GROUP.forEach(function(t){ doc['g:'+t.id] = ST.g[t.id] ? 1 : 0; doc['o:'+t.id] = owner(t); });
+    return doc;
+  }
+  function anyLocalTicks(){
+    return PT.some(function(t){ return MEM.some(function(_,i){ return tick(t.id,i); }); })
+        || GROUP.some(function(t){ return !!ST.g[t.id]; });
+  }
+  function applyDoc(doc){
+    var changed = false;
+    PT.forEach(function(t){ MEM.forEach(function(_,i){
+      var k = 'p:'+t.id+':'+i;
+      if(!(k in doc)) return;
+      var v = doc[k] === 1;
+      if(tick(t.id,i) !== v){ setTick(t.id,i,v); changed = true; }
+    }); });
+    GROUP.forEach(function(t){
+      var kg = 'g:'+t.id, ko = 'o:'+t.id;
+      if(kg in doc && (ST.g[t.id]?1:0) !== (doc[kg]?1:0)){ ST.g[t.id] = doc[kg] ? 1 : 0; changed = true; }
+      if(ko in doc && owner(t) !== doc[ko]){ ST.o[t.id] = doc[ko]; changed = true; }
+    });
+    if(changed){ save(); renderAll(); }
+    return changed;
+  }
+
+  function queueOp(k, v){
+    if(!syncOn()) return;
+    sync.pending[k] = v;
+    clearTimeout(sync.timer);
+    sync.timer = setTimeout(flushOps, 350);
+  }
+  function pushAll(){
+    if(!syncOn()) return;
+    var doc = docFromState();
+    Object.keys(doc).forEach(function(k){ sync.pending[k] = doc[k]; });
+    flushOps();
+  }
+  function flushOps(){
+    if(!syncOn() || sync.flushing) return;
+    var keys = Object.keys(sync.pending);
+    if(!keys.length) return;
+    var ops = keys.map(function(k){ return {k:k, v:sync.pending[k]}; });
+    sync.flushing = true;
+    pill('busy', 'Saving');
+    fetch(SYNC_URL + '/ops', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ops:ops})
+    })
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){
+      /* only clear what we actually sent — a tick made mid-flight survives */
+      ops.forEach(function(o){ if(sync.pending[o.k] === o.v) delete sync.pending[o.k]; });
+      sync.flushing = false; sync.fails = 0; sync.rev = d.rev;
+      applyDoc(d.doc || {});
+      pill('live', 'Synced');
+      if(Object.keys(sync.pending).length) flushOps();
+    })
+    .catch(function(){
+      sync.flushing = false; sync.fails++;
+      pill('off', 'Offline — saved here');
+      setTimeout(flushOps, Math.min(30000, 2000 * sync.fails));
+    });
+  }
+
+  function poll(){
+    if(!syncOn() || sync.flushing || document.visibilityState === 'hidden') return;
+    fetch(SYNC_URL + '/state' + (sync.rev >= 0 ? '?rev=' + sync.rev : ''), {cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){
+      sync.fails = 0;
+      var first = sync.rev < 0;
+      sync.rev = d.rev;
+      if(d.unchanged){ pill('live', 'Synced'); return; }
+      var doc = d.doc || {};
+      /* nothing shared yet and this device has work — it becomes the seed */
+      if(first && !Object.keys(doc).length && anyLocalTicks()){ pushAll(); return; }
+      applyDoc(doc);
+      pill('live', 'Synced');
+    })
+    .catch(function(){
+      sync.fails++;
+      if(sync.fails >= 2) pill('off', 'Offline — saved here');
+    });
+  }
+
+  function startSync(){
+    if(!syncOn()){ pill('', 'This device only'); return; }
+    pill('busy', 'Connecting');
+    poll();
+    setInterval(poll, 10000);
+    document.addEventListener('visibilitychange', function(){
+      if(document.visibilityState === 'visible') poll();
+    });
+    window.addEventListener('online', function(){ poll(); flushOps(); });
   }
 
   /* ---- wiring ---- */
@@ -1093,20 +1216,26 @@
   elMx.addEventListener('click', function(e){
     var td = e.target.closest ? e.target.closest('td.cell') : null;
     if(!td) return;
-    setTick(td.dataset.t, +td.dataset.i, !tick(td.dataset.t, +td.dataset.i));
+    var id = td.dataset.t, i = +td.dataset.i, v = !tick(id, i);
+    setTick(id, i, v);
     save(); renderAll();
+    queueOp('p:' + id + ':' + i, v ? 1 : 0);
   });
 
   elGx.addEventListener('click', function(e){
     var td = e.target.closest ? e.target.closest('td.cell') : null;
     if(!td) return;
-    ST.g[td.dataset.g] = ST.g[td.dataset.g] ? 0 : 1;
+    var id = td.dataset.g, v = ST.g[id] ? 0 : 1;
+    ST.g[id] = v;
     save(); renderAll();
+    queueOp('g:' + id, v);
   });
   elGx.addEventListener('change', function(e){
     if(!e.target.dataset || !e.target.dataset.own) return;
-    ST.o[e.target.dataset.own] = +e.target.value;
+    var id = e.target.dataset.own, v = +e.target.value;
+    ST.o[id] = v;
     save(); renderAll();
+    queueOp('o:' + id, v);
   });
 
   elCards.addEventListener('click', function(e){
@@ -1137,9 +1266,12 @@
     }
   });
   document.getElementById('btnReset').addEventListener('click', function(){
-    if(!window.confirm('Clear every tick for all six people? Saved phone numbers stay.')) return;
+    var msg = syncOn()
+      ? 'Clear every tick for all six people, on every device? This is shared — it wipes the tracker for the whole group, not just this phone. Saved phone numbers stay.'
+      : 'Clear every tick for all six people? Saved phone numbers stay.';
+    if(!window.confirm(msg)) return;
     ST.p = {}; ST.g = {}; ST.o = {};
-    save(); renderAll(); toast('Tracker cleared.');
+    save(); renderAll(); pushAll(); toast('Tracker cleared.');
   });
 
   function doImport(mode){
@@ -1166,6 +1298,8 @@
   }
   fromLink();
   window.addEventListener('hashchange', fromLink);
+
+  startSync();
 })();
 </script>
 </body>

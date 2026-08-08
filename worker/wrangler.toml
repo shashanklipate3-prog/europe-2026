@@ -1,0 +1,10 @@
+name = "europe-2026-sync"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# D1 rather than KV: strongly consistent, so a tick shows up on the next poll
+# instead of maybe-in-60-seconds. Filled in by `wrangler d1 create`.
+[[d1_databases]]
+binding = "DB"
+database_name = "europe-2026"
+database_id = "5db323b0-2254-42ff-a890-6d90e5d53c9f"
