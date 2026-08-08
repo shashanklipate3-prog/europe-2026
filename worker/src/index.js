@@ -43,6 +43,7 @@ const FEED_LIMIT = 200;
 const KEY_PERSONAL = /^p:[a-z]{2,3}:[0-5]$/;
 const KEY_GROUP = /^g:[a-z0-9]{3}$/;
 const KEY_OWNER = /^o:[a-z0-9]{3}$/;
+const KEY_PACK = /^k:[a-z0-9]{2,4}:[0-5]$/;   // packing list
 
 function corsHeaders(origin) {
   const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -91,7 +92,7 @@ function text(v, max) {
 
 function validOp(op) {
   if (!op || typeof op.k !== 'string' || !Number.isInteger(op.v)) return false;
-  if (KEY_PERSONAL.test(op.k) || KEY_GROUP.test(op.k)) return op.v === 0 || op.v === 1;
+  if (KEY_PERSONAL.test(op.k) || KEY_GROUP.test(op.k) || KEY_PACK.test(op.k)) return op.v === 0 || op.v === 1;
   if (KEY_OWNER.test(op.k)) return op.v >= 0 && op.v <= 5;
   return false;
 }
@@ -126,6 +127,15 @@ async function createSchema(db) {
     ),
     db.prepare('CREATE TABLE IF NOT EXISTS votes (post INTEGER NOT NULL, member TEXT NOT NULL, PRIMARY KEY (post, member))'),
     db.prepare('CREATE INDEX IF NOT EXISTS idx_comments_post ON comments (post)'),
+    db.prepare(
+      'CREATE TABLE IF NOT EXISTS expenses (id INTEGER PRIMARY KEY AUTOINCREMENT, payer TEXT NOT NULL, ' +
+        'cents INTEGER NOT NULL, cur TEXT NOT NULL, orig INTEGER NOT NULL, city TEXT NOT NULL, ' +
+        'what TEXT NOT NULL, split TEXT NOT NULL, created INTEGER NOT NULL)'
+    ),
+    db.prepare(
+      'CREATE TABLE IF NOT EXISTS bookings (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, ' +
+        'title TEXT NOT NULL, ref TEXT NOT NULL, holder TEXT NOT NULL, notes TEXT NOT NULL, created INTEGER NOT NULL)'
+    ),
   ]);
 }
 
@@ -163,9 +173,25 @@ async function readFeed(db) {
   return [...byPost.values()];
 }
 
+async function readExpenses(db) {
+  const { results } = await db
+    .prepare('SELECT id, payer, cents, cur, orig, city, what, split, created FROM expenses ORDER BY id DESC LIMIT 500')
+    .all();
+  return results.map((r) => ({ ...r, split: r.split.split(',').filter((x) => x !== '').map(Number) }));
+}
+
+async function readBookings(db) {
+  const { results } = await db
+    .prepare('SELECT id, kind, title, ref, holder, notes, created FROM bookings ORDER BY id ASC LIMIT 200')
+    .all();
+  return results;
+}
+
 async function fullState(db) {
-  const [rev, doc, feed] = await Promise.all([readRev(db), readDoc(db), readFeed(db)]);
-  return { rev, doc, feed };
+  const [rev, doc, feed, spend, vault] = await Promise.all([
+    readRev(db), readDoc(db), readFeed(db), readExpenses(db), readBookings(db),
+  ]);
+  return { rev, doc, feed, spend, vault };
 }
 
 async function countRows(db, table) {
@@ -294,6 +320,76 @@ export default {
           had
             ? env.DB.prepare('DELETE FROM votes WHERE post = ?1 AND member = ?2').bind(post, author)
             : env.DB.prepare('INSERT OR IGNORE INTO votes (post, member) VALUES (?1, ?2)').bind(post, author),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/expenses') {
+        const payer = MEMBERS.includes(body.payer) ? body.payer : null;
+        const what = text(body.what, MAX_TITLE);
+        const city = TARGETS.includes(body.city) ? body.city : null;
+        const cur = ['EUR', 'HUF', 'CZK', 'INR'].includes(body.cur) ? body.cur : null;
+        const orig = Math.round(Number(body.orig));
+        const cents = Math.round(Number(body.cents));
+        const split = Array.isArray(body.split)
+          ? body.split.filter((i) => Number.isInteger(i) && i >= 0 && i < MEMBERS.length)
+          : [];
+        if (!payer) return reply({ error: 'unknown payer' }, 400);
+        if (!what) return reply({ error: 'say what it was for' }, 400);
+        if (!city) return reply({ error: 'unknown city' }, 400);
+        if (!cur) return reply({ error: 'unknown currency' }, 400);
+        if (!Number.isInteger(cents) || cents <= 0 || cents > 100000000) return reply({ error: 'bad amount' }, 400);
+        if (!Number.isInteger(orig) || orig <= 0) return reply({ error: 'bad amount' }, 400);
+        if (!split.length) return reply({ error: 'nobody to split it between' }, 400);
+        if (await countRows(env.DB, 'expenses') >= 500) return reply({ error: 'expense log is full' }, 409);
+
+        await env.DB.batch([
+          env.DB.prepare(
+            'INSERT INTO expenses (payer, cents, cur, orig, city, what, split, created) ' +
+              'VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)'
+          ).bind(payer, cents, cur, orig, city, what, [...new Set(split)].sort().join(','), Date.now()),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/expenses/del') {
+        const id = Number(body.id);
+        if (!Number.isInteger(id)) return reply({ error: 'bad id' }, 400);
+        await env.DB.batch([
+          env.DB.prepare('DELETE FROM expenses WHERE id = ?1').bind(id),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/bookings') {
+        const kind = ['Train', 'Stay', 'Activity', 'Flight', 'Insurance', 'Visa', 'Other'].includes(body.kind)
+          ? body.kind : null;
+        const title = text(body.title, MAX_TITLE);
+        const holder = MEMBERS.includes(body.holder) ? body.holder : null;
+        const ref = typeof body.ref === 'string' ? body.ref.trim().slice(0, 200) : '';
+        const notes = typeof body.notes === 'string' ? body.notes.trim().slice(0, MAX_TEXT) : '';
+        if (!kind) return reply({ error: 'unknown kind' }, 400);
+        if (!title) return reply({ error: 'a title is required' }, 400);
+        if (!holder) return reply({ error: 'unknown holder' }, 400);
+        if (await countRows(env.DB, 'bookings') >= 200) return reply({ error: 'vault is full' }, 409);
+
+        await env.DB.batch([
+          env.DB.prepare(
+            'INSERT INTO bookings (kind, title, ref, holder, notes, created) VALUES (?1, ?2, ?3, ?4, ?5, ?6)'
+          ).bind(kind, title, ref, holder, notes, Date.now()),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/bookings/del') {
+        const id = Number(body.id);
+        if (!Number.isInteger(id)) return reply({ error: 'bad id' }, 400);
+        await env.DB.batch([
+          env.DB.prepare('DELETE FROM bookings WHERE id = ?1').bind(id),
           bumpRev(env.DB),
         ]);
         return reply(await fullState(env.DB), 200);

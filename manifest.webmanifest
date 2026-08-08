@@ -1,0 +1,16 @@
+{
+  "name": "Europe 2026 — 6 guys, 4 cities",
+  "short_name": "Europe 2026",
+  "description": "Itinerary, budget, tracker and map for six travellers across Amsterdam, Berlin, Budapest and Prague.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

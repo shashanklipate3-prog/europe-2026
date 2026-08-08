@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b0d12">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Europe 2026">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Europe 2026 · 6 Guys, 4 Cities, 13 Days</title>
 <style>
@@ -197,6 +203,51 @@
   .srcs a:hover{color:#7fa9ff}
   @media(max-width:640px){ .vpr{margin-left:0;width:100%} }
 
+  /* ---------- SPEND / VAULT / EMERGENCY ---------- */
+  .kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .kpi b{display:block;font-size:23px;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .kpi span{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .kpi.good b{color:var(--good)} .kpi.bad b{color:var(--bad)}
+
+  .form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .form .full{grid-column:1/-1}
+  .form input,.form select,.form textarea{width:100%}
+  .form textarea{min-height:58px;font-family:inherit;font-size:14px}
+  .who6{display:flex;gap:6px;flex-wrap:wrap}
+  .who6 label{
+    display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:650;cursor:pointer;
+    background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;user-select:none;
+  }
+  .who6 label.on{background:rgba(91,141,255,.16);border-color:rgba(91,141,255,.5);color:#9dbaff}
+  .who6 input{accent-color:var(--ber)}
+
+  .settle{display:grid;gap:8px}
+  .owe{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:14.5px}
+  .owe .amt{margin-left:auto;font-weight:750;font-variant-numeric:tabular-nums}
+  .owe.up{border-color:rgba(77,212,172,.3)} .owe.up .amt{color:var(--good)}
+  .owe.down{border-color:rgba(255,92,108,.28)} .owe.down .amt{color:var(--bad)}
+
+  .vitem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:9px}
+  .vitem .vt{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .vitem .vref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;color:var(--good);letter-spacing:.02em}
+  .vitem .vmeta{font-size:12.5px;color:var(--tx3);margin-top:4px}
+  .vitem .vnotes{font-size:13.5px;color:var(--tx2);margin-top:6px;white-space:pre-wrap}
+
+  .sos{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--bad);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+  .sos h3{margin:0 0 8px}
+  .sos .num{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--tx);text-decoration:none;margin:4px 0}
+  .sos .num:hover{color:var(--bad)}
+  .sos .lbl{font-size:12px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+
+  .cdstrip{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .cd{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:11px 15px;min-width:118px}
+  .cd b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+  .cd span{font-size:10.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.09em;font-weight:700}
+  .cd.urgent{border-color:rgba(255,92,108,.5);background:rgba(255,92,108,.08)}
+  .cd.urgent b{color:var(--bad)}
+  .cd.past b{color:var(--tx3)}
+
   /* ---------- MAP ---------- */
   .mapwrap{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;overflow-x:auto}
   .mapwrap svg{display:block;width:100%;min-width:520px;height:auto}
@@ -303,6 +354,7 @@
       <div class="hs"><b>€120</b><span>Transport pp</span></div>
       <div class="hs"><b>8</b><span>Big nights out</span></div>
     </div>
+    <div class="cdstrip" id="countdowns"></div>
   </div>
 </header>
 
@@ -317,6 +369,9 @@
     <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p6">Don't get done</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p9">Map</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p11">Spend</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p12">Bookings</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p13">Emergency</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p7">Tracker</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p8">Suggestions</button>
   </div>
@@ -1413,6 +1468,114 @@
   </div>
 </section>
 
+
+<!-- ============ SPEND ============ -->
+<section role="tabpanel" id="p11">
+  <h2>Spend</h2>
+  <p class="lede">Log it the same night. Nobody remembers on day nine, and the person who paid for the party boat is the one who loses out. Everything here is shared and settles itself.</p>
+
+  <div class="kpis" id="spendKpis"></div>
+
+  <div class="card">
+    <p style="margin-bottom:12px"><b>Add an expense</b> <span style="color:var(--tx3);font-size:13.5px">— paid by <b id="spWho">—</b></span></p>
+    <div class="form">
+      <input type="text" id="spWhat" class="full" maxlength="120" placeholder="What was it? e.g. Danube party boat, six tickets">
+      <input type="text" id="spAmt" inputmode="decimal" placeholder="Amount">
+      <select id="spCur"><option>EUR</option><option>HUF</option><option>CZK</option><option>INR</option></select>
+      <select id="spCity">
+        <option>Amsterdam</option><option>Berlin</option><option>Budapest</option><option>Prague</option>
+        <option>Trains</option><option selected>General</option>
+      </select>
+      <div class="full">
+        <div class="plgroup" style="margin-top:2px">Split between</div>
+        <div class="who6" id="spSplit"></div>
+      </div>
+      <button class="btn pri full" id="spAdd">Add expense</button>
+    </div>
+  </div>
+
+  <h3>Settling up</h3>
+  <p class="lede">Positive means the group owes them. It always sums to zero.</p>
+  <div class="settle" id="settle"></div>
+
+  <h3>Everything logged</h3>
+  <div class="tw"><table style="min-width:640px">
+    <thead><tr><th>What</th><th style="width:110px">Where</th><th style="width:120px">Paid by</th><th class="num" style="width:110px">Amount</th><th style="width:80px">Split</th><th style="width:50px"></th></tr></thead>
+    <tbody id="spList"></tbody>
+  </table></div>
+</section>
+
+<!-- ============ BOOKINGS ============ -->
+<section role="tabpanel" id="p12">
+  <h2>Bookings</h2>
+  <p class="lede">Every reference number in one place. When someone's phone dies at Budapest Nyugati, anyone else can pull up the train booking. Add things as you book them.</p>
+
+  <div class="callout c-warn">
+    <b>Don't put card numbers or passport numbers in here</b>
+    This page is reachable by anyone with the link. Booking references, confirmation codes and who holds what are fine — those are useless without the account behind them. Card details, passport numbers and full policy documents are not.
+  </div>
+
+  <div class="card">
+    <p style="margin-bottom:12px"><b>Add a booking</b></p>
+    <div class="form">
+      <input type="text" id="bkTitle" class="full" maxlength="120" placeholder="What is it? e.g. Berlin to Budapest EuroNight, 6-berth couchette">
+      <input type="text" id="bkRef" maxlength="200" placeholder="Reference / confirmation code">
+      <select id="bkKind">
+        <option>Train</option><option>Stay</option><option>Activity</option>
+        <option>Flight</option><option>Insurance</option><option>Visa</option><option>Other</option>
+      </select>
+      <select id="bkHolder"></select>
+      <textarea id="bkNotes" class="full" maxlength="1200" placeholder="Anything else worth knowing — coach number, check-in time, cancellation deadline. Optional."></textarea>
+      <button class="btn pri full" id="bkAdd">Save booking</button>
+    </div>
+  </div>
+
+  <div id="vault"></div>
+</section>
+
+<!-- ============ EMERGENCY ============ -->
+<section role="tabpanel" id="p13">
+  <h2>Emergency</h2>
+  <p class="lede">One screen, no scrolling for the thing that matters. This tab works with no signal — everything on it is stored in the page itself.</p>
+
+  <div class="sos">
+    <span class="lbl">Police · ambulance · fire · all four countries</span>
+    <a class="num" href="tel:112">112</a>
+    <p style="font-size:13.5px;color:var(--tx2)">Works from any phone, any network, locked or not, with no credit and no SIM. Operators speak English in all four countries.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="sos">
+      <h3>Budapest — tourist police</h3>
+      <span class="lbl">English-speaking · for the bar bill scam</span>
+      <a class="num" href="tel:+3614388080">+36 1 438 8080</a>
+      <p style="font-size:13.5px;color:var(--tx2)">If a bar produces a four-figure bill and security walks you to an ATM: refuse to pay, call 112, then this number. Real police arriving usually ends it. Do not pay and argue later — you will not get it back.</p>
+    </div>
+    <div class="sos">
+      <h3>If a card is lost or stolen</h3>
+      <span class="lbl">Freeze first, report second</span>
+      <p style="font-size:13.5px;color:var(--tx2);margin-top:6px">Freeze the card in the app immediately — Revolut and Wise both do it in two taps, and it is reversible. Then report the theft to local police and get a written report: your insurer will require it, and so will the embassy if the passport went too.</p>
+      <p style="font-size:13.5px;color:var(--tx2)">Put your bank's international number in the <b>Bookings</b> tab now, under Insurance. The number on the back of the card is no use once the card is gone.</p>
+    </div>
+  </div>
+
+  <h3>If a passport goes missing</h3>
+  <p class="lede">You cannot fly home without one. Report to local police the same day, get the written report, then contact the Indian mission for an emergency certificate. Photograph every passport into the group chat before you fly — it makes this dramatically faster.</p>
+  <div class="grid g2" id="embassies"></div>
+
+  <h3>Meeting points</h3>
+  <p class="lede">Phones die and roaming fails at exactly 04:00. Agree one landmark per city before the first night out and put it here — it syncs to everyone.</p>
+  <div class="tw"><table style="min-width:520px">
+    <thead><tr><th style="width:130px">City</th><th>Agreed meeting point</th></tr></thead>
+    <tbody id="meetPoints"></tbody>
+  </table></div>
+
+  <div class="callout c-bad">
+    <b>Before you fly</b>
+    Photograph every passport and visa page into the group chat · save all four cities as offline maps · agree the meeting points above · put your insurer's 24-hour number in the Bookings tab. Ten minutes now, and none of the above is a crisis.
+  </div>
+</section>
+
 <!-- ============ TRACKER ============ -->
 <section role="tabpanel" id="p7">
   <h2>Tracker</h2>
@@ -1442,6 +1605,15 @@
     <table class="mx">
       <thead><tr><th>What</th><th style="width:110px">Due</th><th class="pc" id="h0"></th><th class="pc" id="h1"></th><th class="pc" id="h2"></th><th class="pc" id="h3"></th><th class="pc" id="h4"></th><th class="pc" id="h5"></th></tr></thead>
       <tbody id="mx"></tbody>
+    </table>
+  </div>
+
+  <h3>Packing — the things people actually forget</h3>
+  <p class="lede">Early October: highs 13–17 °C, dark by 18:30, and Amsterdam is wet and windy. The swim kit is not optional — without it you are watching the Sparty from the side.</p>
+  <div class="tw">
+    <table class="mx">
+      <thead><tr><th>Item</th><th style="width:110px">Why</th><th class="pc" id="k0"></th><th class="pc" id="k1"></th><th class="pc" id="k2"></th><th class="pc" id="k3"></th><th class="pc" id="k4"></th><th class="pc" id="k5"></th></tr></thead>
+      <tbody id="pk"></tbody>
     </table>
   </div>
 
@@ -1742,7 +1914,7 @@
     }).join('');
   }
 
-  function renderAll(){ renderCards(); renderMatrix(); renderGroup(); }
+  function renderAll(){ renderCards(); renderMatrix(); renderPack(); renderGroup(); }
 
   /* ---- messages ---- */
   function nudgeText(i){
@@ -1876,6 +2048,7 @@
     var doc = {};
     PT.forEach(function(t){ MEM.forEach(function(_,i){ doc['p:'+t.id+':'+i] = tick(t.id,i) ? 1 : 0; }); });
     GROUP.forEach(function(t){ doc['g:'+t.id] = ST.g[t.id] ? 1 : 0; doc['o:'+t.id] = owner(t); });
+    PACK.forEach(function(t){ MEM.forEach(function(_,i){ doc['k:'+t.id+':'+i] = packTick(t.id,i) ? 1 : 0; }); });
     return doc;
   }
   function anyLocalTicks(){
@@ -1895,6 +2068,12 @@
       if(kg in doc && (ST.g[t.id]?1:0) !== (doc[kg]?1:0)){ ST.g[t.id] = doc[kg] ? 1 : 0; changed = true; }
       if(ko in doc && owner(t) !== doc[ko]){ ST.o[t.id] = doc[ko]; changed = true; }
     });
+    PACK.forEach(function(t){ MEM.forEach(function(_,i){
+      var k = 'k:'+t.id+':'+i;
+      if(!(k in doc)) return;
+      var v = doc[k] === 1;
+      if(packTick(t.id,i) !== v){ setPack(t.id,i,v); changed = true; }
+    }); });
     if(changed){ save(); renderAll(); }
     return changed;
   }
@@ -1990,6 +2169,8 @@
     if(d.rev != null) sync.rev = d.rev;
     if(d.doc) applyDoc(d.doc);
     if(d.feed){ FEED = d.feed; renderFeed(); renderAgreed(); }
+    if(d.spend){ SPEND = d.spend; renderSpend(); }
+    if(d.vault){ VAULT = d.vault; renderVault(); renderEmergency(); }
   }
 
   function adminButtons(p){
@@ -2080,6 +2261,165 @@
       else localStorage.removeItem(ADMIN_STORE);
     }catch(e){}
     renderFeed();
+  }
+
+
+  /* ---- packing list (shares the cell store, own key prefix) ---- */
+  var PACK = [
+    {id:'swim', t:'Swim shorts, flip-flops, towel', n:'Sparty + beer spa'},
+    {id:'rain', t:'Waterproof jacket',              n:'Amsterdam'},
+    {id:'warm', t:'One warm layer',                 n:'6–9 °C nights'},
+    {id:'boot', t:'Shoes you can stand in for six hours', n:'Berlin floors'},
+    {id:'dark', t:'Dark plain clothes, no logos',   n:'Berlin doors'},
+    {id:'coll', t:'One collared shirt',             n:'Prague doors'},
+    {id:'adap', t:'Type C/E/F adapter',             n:'All four'},
+    {id:'bank', t:'Power bank',                     n:'Night out'},
+    {id:'pass', t:'Passport + printed visa',        n:'Carry always'},
+    {id:'card', t:'Revolut/Wise + one backup card', n:'Separate pockets'},
+    {id:'cash', t:'€150 cash',                      n:'Berlin clubs'},
+    {id:'meds', t:'Painkillers, plasters, rehydration', n:'Day 4'},
+    {id:'lock', t:'Padlock',                        n:'Hostel + station lockers'},
+    {id:'bag',  t:'Zipped day bag worn at the front', n:'Pickpockets'}
+  ];
+
+  function packTick(id,i){ return !!(ST.p['k:'+id] && ST.p['k:'+id][i]); }
+  function setPack(id,i,v){ var k='k:'+id; if(!ST.p[k]) ST.p[k]=[0,0,0,0,0,0]; ST.p[k][i]=v?1:0; }
+
+  function renderPack(){
+    var body = document.getElementById('pk');
+    if(!body) return;
+    MEM.forEach(function(m,i){
+      var h=document.getElementById('k'+i);
+      if(h) h.textContent = m.length > 7 ? m.slice(0,6) : m;
+    });
+    body.innerHTML = PACK.map(function(t){
+      return '<tr><td><span class="tname">' + esc(t.t) + '</span></td>' +
+        '<td><span class="due">' + esc(t.n) + '</span></td>' +
+        MEM.map(function(_,i){
+          return '<td class="cell" data-pk="' + t.id + '" data-i="' + i + '"><span class="tick' +
+                 (packTick(t.id,i) ? ' on' : '') + '">✓</span></td>';
+        }).join('') + '</tr>';
+    }).join('');
+  }
+
+  /* ---- spend ---- */
+  var SPEND = [], VAULT = [];
+  var RATE = { EUR:1, HUF:400, CZK:24.5, INR:108 };   // per €1, same as the Money tab
+
+  function eur(cents){ return '€' + (cents/100).toFixed(2); }
+  function renderSpend(){
+    var kpis = document.getElementById('spendKpis');
+    if(!kpis) return;
+    var total = SPEND.reduce(function(a,e){ return a + e.cents; }, 0);
+    var mine = SPEND.filter(function(e){ return e.payer === me(); }).reduce(function(a,e){ return a + e.cents; }, 0);
+    var owed = balances()[ST.me] || 0;
+    kpis.innerHTML =
+      '<div class="kpi"><b>' + eur(total) + '</b><span>Logged so far</span></div>' +
+      '<div class="kpi"><b>' + eur(Math.round(total/MEM.length)) + '</b><span>Average each</span></div>' +
+      '<div class="kpi"><b>' + eur(mine) + '</b><span>' + esc(me()) + ' has paid</span></div>' +
+      '<div class="kpi ' + (owed >= 0 ? 'good' : 'bad') + '"><b>' + (owed >= 0 ? '+' : '\u2212') + eur(Math.abs(owed)) +
+        '</b><span>' + (owed >= 0 ? 'Owed to ' + esc(me()) : esc(me()) + ' owes') + '</span></div>';
+
+    var tb = document.getElementById('spList');
+    tb.innerHTML = SPEND.length ? SPEND.map(function(e){
+      var orig = e.cur === 'EUR' ? '' : ' <span style="color:var(--tx3)">(' + e.orig + ' ' + esc(e.cur) + ')</span>';
+      return '<tr><td><span class="tname">' + esc(e.what) + '</span><span class="tnote">' + ago(e.created) + '</span></td>' +
+        '<td>' + esc(e.city) + '</td><td>' + esc(e.payer) + '</td>' +
+        '<td class="num">' + eur(e.cents) + orig + '</td>' +
+        '<td title="' + esc(e.split.map(function(i){ return MEM[i]; }).join(', ')) + '">' + e.split.length + '</td>' +
+        '<td><button class="btn sm" data-delsp="' + e.id + '">×</button></td></tr>';
+    }).join('') : '<tr><td colspan="6" style="color:var(--tx3)">Nothing logged yet.</td></tr>';
+
+    var bal = balances();
+    document.getElementById('settle').innerHTML = SPEND.length
+      ? MEM.map(function(m,i){
+          var v = bal[i] || 0;
+          var cls = v > 0 ? 'up' : (v < 0 ? 'down' : '');
+          var word = v > 0 ? 'is owed' : (v < 0 ? 'owes the pot' : 'is square');
+          return '<div class="owe ' + cls + '"><b>' + esc(m) + '</b> <span style="color:var(--tx3)">' + word +
+                 '</span><span class="amt">' + (v === 0 ? '—' : eur(Math.abs(v))) + '</span></div>';
+        }).join('')
+      : '<div class="empty">Log an expense and this fills in.</div>';
+  }
+
+  /* Whole cents only: give the remainder to the earliest people in the split so
+     the column always sums to zero instead of drifting a cent per expense. */
+  function balances(){
+    var bal = [0,0,0,0,0,0];
+    SPEND.forEach(function(e){
+      var n = e.split.length; if(!n) return;
+      var each = Math.floor(e.cents / n), extra = e.cents - each * n;
+      e.split.forEach(function(m, idx){ bal[m] -= each + (idx < extra ? 1 : 0); });
+      var payer = MEM.indexOf(e.payer);
+      if(payer >= 0) bal[payer] += e.cents;
+    });
+    return bal;
+  }
+
+  /* ---- bookings vault ---- */
+  function renderVault(){
+    var el = document.getElementById('vault');
+    if(!el) return;
+    el.innerHTML = VAULT.length ? VAULT.map(function(b){
+      return '<div class="vitem">' +
+        '<div class="vt"><span class="chip">' + esc(b.kind) + '</span>' +
+          '<span class="tname" style="flex:1 1 200px">' + esc(b.title) + '</span>' +
+          (b.ref ? '<span class="vref">' + esc(b.ref) + '</span>' : '') +
+          '<button class="btn sm" data-delbk="' + b.id + '">×</button></div>' +
+        '<div class="vmeta">Held by ' + esc(b.holder) + ' · added ' + ago(b.created) + '</div>' +
+        (b.notes ? '<div class="vnotes">' + esc(b.notes) + '</div>' : '') +
+      '</div>';
+    }).join('') : '<div class="empty">Nothing saved yet. Add each booking as you make it — the train references first.</div>';
+  }
+
+  /* ---- emergency ---- */
+  var EMBASSIES = [
+    ['Netherlands','Embassy of India, The Hague','Buitenrustweg 2, 2517 KD Den Haag'],
+    ['Germany','Embassy of India, Berlin','Tiergartenstrasse 17, 10785 Berlin'],
+    ['Hungary','Embassy of India, Budapest','Buzogany utca 10-12, 1026 Budapest'],
+    ['Czechia','Embassy of India, Prague','Milady Horakove 60/93, 170 00 Praha 7']
+  ];
+  var MEET = [['Amsterdam','mp:ams'],['Berlin','mp:ber'],['Budapest','mp:bud'],['Prague','mp:prg']];
+
+  function renderEmergency(){
+    var el = document.getElementById('embassies');
+    if(!el) return;
+    el.innerHTML = EMBASSIES.map(function(e){
+      var q = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(e[1]);
+      return '<div class="card"><b>' + esc(e[0]) + '</b>' +
+        '<p style="font-size:14px;color:var(--tx2);margin:4px 0 6px">' + esc(e[1]) + '</p>' +
+        '<p style="font-size:13px;color:var(--tx3);margin-bottom:8px">' + esc(e[2]) + '</p>' +
+        '<a class="btn sm" href="' + q + '" target="_blank" rel="noopener noreferrer">Open in Maps</a></div>';
+    }).join('') +
+    '<div class="callout c-warn" style="grid-column:1/-1"><b>Phone numbers change — put them in the vault</b>' +
+    'Consular numbers and out-of-hours lines change often enough that printing them here would be worse than useless. ' +
+    'Look up the mission for the country you are in, and save the current number in the <b>Bookings</b> tab under Other, ' +
+    'where it syncs to all six of you.</div>';
+
+    var tb = document.getElementById('meetPoints');
+    tb.innerHTML = MEET.map(function(m){
+      var b = VAULT.filter(function(v){ return v.kind === 'Other' && v.title.toLowerCase().indexOf('meet: ' + m[0].toLowerCase()) === 0; })[0];
+      return '<tr><td><b>' + esc(m[0]) + '</b></td><td>' +
+        (b ? esc(b.notes || b.ref || 'set') : '<span style="color:var(--tx3)">Not agreed yet — add a booking titled ' +
+             '"Meet: ' + esc(m[0]) + '" with the place in the notes</span>') + '</td></tr>';
+    }).join('');
+  }
+
+  /* ---- countdowns ---- */
+  function renderCountdowns(){
+    var el = document.getElementById('countdowns');
+    if(!el) return;
+    var marks = [
+      ['2026-08-17', 'To VFS deadline'],
+      ['2026-10-01', 'To Schiphol'],
+      ['2026-10-10', 'To the Sparty']
+    ];
+    el.innerHTML = marks.map(function(m){
+      var n = daysLeft(m[0]);
+      var cls = n < 0 ? 'past' : (n <= 14 ? 'urgent' : '');
+      var val = n < 0 ? 'passed' : (n === 0 ? 'today' : n + (n === 1 ? ' day' : ' days'));
+      return '<div class="cd ' + cls + '"><b>' + val + '</b><span>' + m[1] + '</span></div>';
+    }).join('');
   }
 
   function startSync(){
@@ -2193,7 +2533,8 @@
 
   function whoLabel(){ document.getElementById('asWho').textContent = me(); }
   whoLabel();
-  elWho.addEventListener('change', function(){ whoLabel(); renderFeed(); });
+  spendWho();
+  elWho.addEventListener('change', function(){ whoLabel(); spendWho(); renderFeed(); renderSpend(); });
 
   function needsConnection(){
     if(syncOn()) return false;
@@ -2282,6 +2623,77 @@
     if(e.key === 'Enter' && e.target.dataset && e.target.dataset.reply) sendReply(e.target.dataset.reply);
   });
 
+  /* ---- packing clicks ---- */
+  var elPk = document.getElementById('pk');
+  elPk.addEventListener('click', function(e){
+    var td = e.target.closest ? e.target.closest('td.cell') : null;
+    if(!td) return;
+    var id = td.dataset.pk, i = +td.dataset.i, v = !packTick(id, i);
+    setPack(id, i, v);
+    save(); renderAll();
+    queueOp('k:' + id + ':' + i, v ? 1 : 0);
+  });
+
+  /* ---- spend ---- */
+  var elSplit = document.getElementById('spSplit');
+  elSplit.innerHTML = MEM.map(function(m,i){
+    return '<label class="on" data-i="' + i + '"><input type="checkbox" checked value="' + i + '">' + esc(m) + '</label>';
+  }).join('');
+  elSplit.addEventListener('change', function(e){
+    var l = e.target.closest('label');
+    if(l) l.classList.toggle('on', e.target.checked);
+  });
+
+  function spendWho(){ document.getElementById('spWho').textContent = me(); }
+
+  document.getElementById('spAdd').addEventListener('click', function(){
+    if(needsConnection()) return;
+    var what = document.getElementById('spWhat');
+    var amtEl = document.getElementById('spAmt');
+    var cur = document.getElementById('spCur').value;
+    var amt = parseFloat(String(amtEl.value).replace(/,/g, ''));
+    var split = [...elSplit.querySelectorAll('input:checked')].map(function(c){ return +c.value; });
+    if(!what.value.trim()){ toast('Say what it was for.'); what.focus(); return; }
+    if(!(amt > 0)){ toast('That amount does not look right.'); amtEl.focus(); return; }
+    if(!split.length){ toast('Pick at least one person to split it between.'); return; }
+    var cents = Math.round((amt / (RATE[cur] || 1)) * 100);
+    if(cents <= 0){ toast('That converts to nothing — check the currency.'); return; }
+    api('/expenses', {payer: me(), cents: cents, cur: cur, orig: Math.round(amt), city: document.getElementById('spCity').value, what: what.value, split: split})
+      .then(function(d){ what.value=''; amtEl.value=''; applyServer(d); toast('Logged ' + eur(cents) + '.'); })
+      .catch(apiFail);
+  });
+
+  document.getElementById('spList').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-delsp]') : null;
+    if(!b || needsConnection()) return;
+    if(!window.confirm('Delete this expense for everyone?')) return;
+    api('/expenses/del', {id: +b.dataset.delsp}).then(applyServer).catch(apiFail);
+  });
+
+  /* ---- bookings ---- */
+  var bkHolder = document.getElementById('bkHolder');
+  bkHolder.innerHTML = MEM.map(function(m,i){ return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join('');
+
+  document.getElementById('bkAdd').addEventListener('click', function(){
+    if(needsConnection()) return;
+    var t = document.getElementById('bkTitle'), r = document.getElementById('bkRef'), n = document.getElementById('bkNotes');
+    if(!t.value.trim()){ toast('Give the booking a name.'); t.focus(); return; }
+    api('/bookings', {kind: document.getElementById('bkKind').value, title: t.value, ref: r.value,
+                      holder: bkHolder.value, notes: n.value})
+      .then(function(d){ t.value=''; r.value=''; n.value=''; applyServer(d); toast('Saved to the vault.'); })
+      .catch(apiFail);
+  });
+
+  document.getElementById('vault').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-delbk]') : null;
+    if(!b || needsConnection()) return;
+    if(!window.confirm('Delete this booking for everyone?')) return;
+    api('/bookings/del', {id: +b.dataset.delbk}).then(applyServer).catch(apiFail);
+  });
+
+  renderSpend(); renderVault(); renderEmergency(); renderCountdowns();
+  setInterval(renderCountdowns, 60 * 60 * 1000);
+
   try{
     var savedKey = localStorage.getItem(ADMIN_STORE);
     if(savedKey) setAdmin(savedKey);
@@ -2289,6 +2701,18 @@
   renderFeed();
 
   startSync();
+})();
+</script>
+
+<script>
+/* Offline shell. Only meaningful over http(s) — opened as a local file there is
+   no origin to scope a worker to, and the page already works offline there. */
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  if(location.protocol !== 'http:' && location.protocol !== 'https:') return;
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(){ /* offline shell is a bonus, never a blocker */ });
+  });
 })();
 </script>
 </body>
