@@ -72,19 +72,28 @@ dropdown always says which state you are in. If the backend is ever unreachable,
 Note that **Reset wipes the tracker for everyone**, not just the device that
 presses it.
 
-## Writes need the group passphrase
+## Write auth is optional, and off unless you turn it on
 
-This site is public, so the Worker URL is in the page source. Until `GROUP_KEY` is
+This site is public, so the Worker URL is in the page source. With no `GROUP_KEY`
 set the Worker accepts writes from anyone who finds it — including
-`/expenses/del` and `/bookings/del`, which take an id and no credentials. Set it:
+`/expenses/del` and `/bookings/del`, which take an id and no credentials. That is
+the default, chosen because a passphrase prompt on every device is real friction
+for a seven-person trip and the realistic threat is close to nil.
 
-    cd worker && npx wrangler secret put GROUP_KEY
+To turn it on:
 
-Then each person enters the passphrase once, on the Tracker tab, and it is kept in
-that browser. **Reading never needs it — only saving does.** The admin key also
-satisfies the gate, so whoever holds `ADMIN_KEY` does not need both.
+    npx wrangler secret put GROUP_KEY
 
-Confirm it took effect: `curl .../health` should report `"writeAuth": true`.
+To turn it back off:
+
+    npx wrangler secret delete GROUP_KEY
+
+The page adapts on its own: the passphrase box on the Tracker tab stays hidden
+until the Worker actually refuses a write, so with the gate off nobody ever sees
+it. **Reading never needs a key — only saving does.** The admin key also satisfies
+the gate, so whoever holds `ADMIN_KEY` does not need both.
+
+Confirm which mode you are in: `curl .../health` reports `"writeAuth"`.
 
 ## Exchange rates
 

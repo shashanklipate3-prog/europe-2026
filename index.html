@@ -1680,7 +1680,7 @@
     <p style="margin-top:12px;font-size:13.5px;color:var(--tx3)">Whoever is chasing the visas should be the one who posts a fresh code after each update. Owners of group bookings are always taken from the newest code pasted.</p>
   </div>
 
-  <div class="card" style="margin-top:14px">
+  <div class="card" id="gkBox" style="margin-top:14px;display:none">
     <p style="margin-bottom:8px"><b>Group passphrase</b></p>
     <p style="font-size:13.5px;color:var(--tx2);margin-bottom:10px">This page is public, so the sync API is protected by one shared passphrase. Enter it once per device. Reading the tracker never needs it — only saving does. <span style="color:var(--tx3)">Status: <span id="gkState">Not set</span>.</span></p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -2172,7 +2172,23 @@
       method:'POST', headers: writeHeaders(),
       body: JSON.stringify({ops:ops})
     })
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(r){
+      /* A refused key is not a dead network. Saying "offline" here meant ticks
+         retried forever against a 403 while the pill blamed the connection. */
+      if(r.status === 403){
+        return r.json().catch(function(){ return null; }).then(function(d){
+          if(isKeyError(d)){
+            sync.flushing = false;
+            revealKeyBox();
+            if(askForGroupKey('Your ticks are not saving — the group passphrase is needed.')) flushOps();
+            throw new Error('key');
+          }
+          throw new Error(403);
+        });
+      }
+      if(!r.ok) throw new Error(r.status);
+      return r.json();
+    })
     .then(function(d){
       /* only clear what we actually sent — a tick made mid-flight survives */
       ops.forEach(function(o){ if(sync.pending[o.k] === o.v) delete sync.pending[o.k]; });
@@ -2241,6 +2257,13 @@
     if(groupKey) postManifest();
   }
 
+  /* Only surfaced once the Worker has actually refused a write. With GROUP_KEY
+     unset nobody ever sees this, which is the normal case. */
+  function revealKeyBox(){
+    var b = document.getElementById('gkBox');
+    if(b) b.style.display = '';
+  }
+
   function askForGroupKey(why){
     var v = window.prompt((why || 'The group passphrase is needed to save changes.') +
       '\n\nAsk whoever set up the sync. It is stored on this device only.', groupKey || '');
@@ -2267,7 +2290,8 @@
         return r.json().then(function(d){
           if(!r.ok){
             if(r.status === 403 && isKeyError(d)){
-              if(askForGroupKey('That passphrase was rejected.')) toast('Passphrase saved — try that again.');
+              revealKeyBox();
+            if(askForGroupKey('That passphrase was rejected.')) toast('Passphrase saved — try that again.');
               throw new Error('group passphrase needed');
             }
             throw new Error((d && d.error) || ('HTTP ' + r.status));
@@ -2674,6 +2698,7 @@
     if(!b) return;
     var st = document.getElementById('gkState');
     if(st) st.textContent = groupKey ? 'Saved on this device' : 'Not set';
+    if(groupKey) revealKeyBox();
     b.addEventListener('click', function(){ if(askForGroupKey('Enter the group passphrase.')) toast('Saved.'); });
     var c = document.getElementById('gkClear');
     if(c) c.addEventListener('click', function(){ setGroupKey(''); toast('Cleared.'); });
