@@ -28,7 +28,10 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:8080',
 ];
 
-const MEMBERS = ['Shashank', 'Chetan', 'Ajay', 'Pramod', 'Ashish', 'Anand'];
+// Seed only. The live roster lives in the members table so people can be added
+// without a deploy; ids are stable and are what every checkbox key refers to.
+const SEED_MEMBERS = ['Shashank', 'Chetan', 'Ajay', 'Pramod', 'Ashish', 'Anand'];
+const MAX_MEMBERS = 16;
 const TARGETS = ['Amsterdam', 'Berlin', 'Budapest', 'Prague', 'Trains', 'Nightlife', 'Money', 'Visa', 'General'];
 const STATUSES = ['open', 'approved', 'rejected'];
 
@@ -40,10 +43,10 @@ const MAX_POSTS = 300;
 const MAX_COMMENTS = 3000;
 const FEED_LIMIT = 200;
 
-const KEY_PERSONAL = /^p:[a-z]{2,3}:[0-5]$/;
+const KEY_PERSONAL = /^p:[a-z]{2,3}:\d{1,2}$/;
 const KEY_GROUP = /^g:[a-z0-9]{3}$/;
 const KEY_OWNER = /^o:[a-z0-9]{3}$/;
-const KEY_PACK = /^k:[a-z0-9]{2,4}:[0-5]$/;   // packing list
+const KEY_PACK = /^k:[a-z0-9]{2,4}:\d{1,2}$/;   // packing list
 
 function corsHeaders(origin) {
   const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -93,7 +96,7 @@ function text(v, max) {
 function validOp(op) {
   if (!op || typeof op.k !== 'string' || !Number.isInteger(op.v)) return false;
   if (KEY_PERSONAL.test(op.k) || KEY_GROUP.test(op.k) || KEY_PACK.test(op.k)) return op.v === 0 || op.v === 1;
-  if (KEY_OWNER.test(op.k)) return op.v >= 0 && op.v <= 5;
+  if (KEY_OWNER.test(op.k)) return op.v >= 0 && op.v < MAX_MEMBERS;
   return false;
 }
 
@@ -127,6 +130,7 @@ async function createSchema(db) {
     ),
     db.prepare('CREATE TABLE IF NOT EXISTS votes (post INTEGER NOT NULL, member TEXT NOT NULL, PRIMARY KEY (post, member))'),
     db.prepare('CREATE INDEX IF NOT EXISTS idx_comments_post ON comments (post)'),
+    db.prepare('CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, sort INTEGER NOT NULL)'),
     db.prepare(
       'CREATE TABLE IF NOT EXISTS expenses (id INTEGER PRIMARY KEY AUTOINCREMENT, payer TEXT NOT NULL, ' +
         'cents INTEGER NOT NULL, cur TEXT NOT NULL, orig INTEGER NOT NULL, city TEXT NOT NULL, ' +
@@ -137,6 +141,11 @@ async function createSchema(db) {
         'title TEXT NOT NULL, ref TEXT NOT NULL, holder TEXT NOT NULL, notes TEXT NOT NULL, created INTEGER NOT NULL)'
     ),
   ]);
+  // ids 0..5 for the original six, matching the checkbox keys already stored
+  await db.batch(
+    SEED_MEMBERS.map((n, i) =>
+      db.prepare('INSERT OR IGNORE INTO members (id, name, sort) VALUES (?1, ?2, ?3)').bind(i, n, i))
+  );
 }
 
 const bumpRev = (db) => db.prepare('UPDATE meta SET rev = rev + 1 WHERE id = 1');
@@ -173,6 +182,11 @@ async function readFeed(db) {
   return [...byPost.values()];
 }
 
+async function readMembers(db) {
+  const { results } = await db.prepare('SELECT id, name FROM members ORDER BY sort, id').all();
+  return results;
+}
+
 async function readExpenses(db) {
   const { results } = await db
     .prepare('SELECT id, payer, cents, cur, orig, city, what, split, created FROM expenses ORDER BY id DESC LIMIT 500')
@@ -188,10 +202,10 @@ async function readBookings(db) {
 }
 
 async function fullState(db) {
-  const [rev, doc, feed, spend, vault] = await Promise.all([
-    readRev(db), readDoc(db), readFeed(db), readExpenses(db), readBookings(db),
+  const [rev, doc, feed, spend, vault, members] = await Promise.all([
+    readRev(db), readDoc(db), readFeed(db), readExpenses(db), readBookings(db), readMembers(db),
   ]);
-  return { rev, doc, feed, spend, vault };
+  return { rev, doc, feed, spend, vault, members };
 }
 
 async function countRows(db, table) {
@@ -247,6 +261,11 @@ export default {
         return reply({ error: 'bad json' }, 400);
       }
 
+      const roster = await readMembers(env.DB);
+      const names = roster.map((m) => m.name);
+      const ids = roster.map((m) => m.id);
+      const isName = (v) => names.includes(v);
+
       if (path === '/admin/check') {
         if (!env.ADMIN_KEY) return reply({ error: 'moderation not configured' }, 503);
         // the key arrives in the header like every other admin call
@@ -270,7 +289,7 @@ export default {
       }
 
       if (path === '/posts') {
-        const author = MEMBERS.includes(body.author) ? body.author : null;
+        const author = isName(body.author) ? body.author : null;
         const target = TARGETS.includes(body.target) ? body.target : null;
         const title = text(body.title, MAX_TITLE);
         const detail = typeof body.body === 'string' ? body.body.trim().slice(0, MAX_TEXT) : '';
@@ -289,7 +308,7 @@ export default {
       }
 
       if (path === '/comments') {
-        const author = MEMBERS.includes(body.author) ? body.author : null;
+        const author = isName(body.author) ? body.author : null;
         const post = Number(body.post);
         const msg = text(body.body, MAX_TEXT);
         if (!author) return reply({ error: 'unknown author' }, 400);
@@ -309,7 +328,7 @@ export default {
       }
 
       if (path === '/votes') {
-        const author = MEMBERS.includes(body.author) ? body.author : null;
+        const author = isName(body.author) ? body.author : null;
         const post = Number(body.post);
         if (!author) return reply({ error: 'unknown author' }, 400);
         if (!Number.isInteger(post)) return reply({ error: 'bad post' }, 400);
@@ -326,14 +345,14 @@ export default {
       }
 
       if (path === '/expenses') {
-        const payer = MEMBERS.includes(body.payer) ? body.payer : null;
+        const payer = isName(body.payer) ? body.payer : null;
         const what = text(body.what, MAX_TITLE);
         const city = TARGETS.includes(body.city) ? body.city : null;
         const cur = ['EUR', 'HUF', 'CZK', 'INR'].includes(body.cur) ? body.cur : null;
         const orig = Math.round(Number(body.orig));
         const cents = Math.round(Number(body.cents));
         const split = Array.isArray(body.split)
-          ? body.split.filter((i) => Number.isInteger(i) && i >= 0 && i < MEMBERS.length)
+          ? body.split.filter((i) => Number.isInteger(i) && ids.includes(i))
           : [];
         if (!payer) return reply({ error: 'unknown payer' }, 400);
         if (!what) return reply({ error: 'say what it was for' }, 400);
@@ -368,7 +387,7 @@ export default {
         const kind = ['Train', 'Stay', 'Activity', 'Flight', 'Insurance', 'Visa', 'Other'].includes(body.kind)
           ? body.kind : null;
         const title = text(body.title, MAX_TITLE);
-        const holder = MEMBERS.includes(body.holder) ? body.holder : null;
+        const holder = isName(body.holder) ? body.holder : null;
         const ref = typeof body.ref === 'string' ? body.ref.trim().slice(0, 200) : '';
         const notes = typeof body.notes === 'string' ? body.notes.trim().slice(0, MAX_TEXT) : '';
         if (!kind) return reply({ error: 'unknown kind' }, 400);
@@ -390,6 +409,42 @@ export default {
         if (!Number.isInteger(id)) return reply({ error: 'bad id' }, 400);
         await env.DB.batch([
           env.DB.prepare('DELETE FROM bookings WHERE id = ?1').bind(id),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/members') {
+        const name = text(body.name, 24);
+        if (!name) return reply({ error: 'give them a name' }, 400);
+        if (!/^[\p{L}][\p{L}\p{M} .'-]*$/u.test(name)) return reply({ error: 'letters only' }, 400);
+        if (names.some((n) => n.toLowerCase() === name.toLowerCase())) {
+          return reply({ error: name + ' is already in the group' }, 409);
+        }
+        if (roster.length >= MAX_MEMBERS) return reply({ error: 'group is full' }, 409);
+
+        // never reuse an id: old checkbox keys would resurrect against a new person
+        const nextId = roster.length ? Math.max(...ids) + 1 : 0;
+        await env.DB.batch([
+          env.DB.prepare('INSERT INTO members (id, name, sort) VALUES (?1, ?2, ?3)').bind(nextId, name, nextId),
+          bumpRev(env.DB),
+        ]);
+        return reply(await fullState(env.DB), 200);
+      }
+
+      if (path === '/members/del') {
+        if (!env.ADMIN_KEY) return reply({ error: 'moderation not configured' }, 503);
+        if (!isAdmin(request, env)) return reply({ error: 'not allowed' }, 403);
+        const id = Number(body.id);
+        if (!Number.isInteger(id) || !ids.includes(id)) return reply({ error: 'no such traveller' }, 400);
+        if (roster.length <= 1) return reply({ error: 'somebody has to be going' }, 409);
+
+        const gone = roster.find((m) => m.id === id);
+        await env.DB.batch([
+          env.DB.prepare('DELETE FROM members WHERE id = ?1').bind(id),
+          // their ticks go too, so a future traveller can't inherit them
+          env.DB.prepare("DELETE FROM cells WHERE k LIKE 'p:%:' || ?1 OR k LIKE 'k:%:' || ?1").bind(String(id)),
+          env.DB.prepare('DELETE FROM votes WHERE member = ?1').bind(gone ? gone.name : ''),
           bumpRev(env.DB),
         ]);
         return reply(await fullState(env.DB), 200);

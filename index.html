@@ -1591,6 +1591,7 @@
     <select id="who"></select>
     <span class="syncpill" id="syncPill"><i></i><b>Starting up</b></span>
     <span class="spacer"></span>
+    <button class="btn" id="btnAddMember">Add traveller</button>
     <button class="btn wa" id="btnNudgeAll">Nudge the group</button>
     <button class="btn pri" id="btnCopyLink">Copy sync link</button>
     <button class="btn" id="btnCopyCode">Copy code</button>
@@ -1603,7 +1604,7 @@
   <p class="lede">Twenty-one items each. The visa block is the one with a hard deadline; the rest can slide a little.</p>
   <div class="tw">
     <table class="mx">
-      <thead><tr><th>What</th><th style="width:110px">Due</th><th class="pc" id="h0"></th><th class="pc" id="h1"></th><th class="pc" id="h2"></th><th class="pc" id="h3"></th><th class="pc" id="h4"></th><th class="pc" id="h5"></th></tr></thead>
+      <thead id="mxHead"></thead>
       <tbody id="mx"></tbody>
     </table>
   </div>
@@ -1612,7 +1613,7 @@
   <p class="lede">Early October: highs 13–17 °C, dark by 18:30, and Amsterdam is wet and windy. The swim kit is not optional — without it you are watching the Sparty from the side.</p>
   <div class="tw">
     <table class="mx">
-      <thead><tr><th>Item</th><th style="width:110px">Why</th><th class="pc" id="k0"></th><th class="pc" id="k1"></th><th class="pc" id="k2"></th><th class="pc" id="k3"></th><th class="pc" id="k4"></th><th class="pc" id="k5"></th></tr></thead>
+      <thead id="pkHead"></thead>
       <tbody id="pk"></tbody>
     </table>
   </div>
@@ -1765,7 +1766,21 @@
 <script>
 /* ================= TRACKER ================= */
 (function(){
-  var MEM = ['Shashank','Chetan','Ajay','Pramod','Ashish','Anand'];
+  /* The roster is server data. Ids are stable and are what every checkbox key,
+     expense split and booking owner refers to — position in this array is only
+     ever a display order, never an identity. */
+  var MEM = [{id:0,name:'Shashank'},{id:1,name:'Chetan'},{id:2,name:'Ajay'},
+             {id:3,name:'Pramod'},{id:4,name:'Ashish'},{id:5,name:'Anand'}];
+  var MEM_STORE = 'europe2026.members';
+  try{
+    var cached = JSON.parse(localStorage.getItem(MEM_STORE) || 'null');
+    if(cached && cached.length) MEM = cached;
+  }catch(e){}
+
+  function mname(i){ return MEM[i] ? MEM[i].name : '?'; }
+  function mid(i){ return MEM[i] ? MEM[i].id : -1; }
+  function midx(id){ for(var i=0;i<MEM.length;i++){ if(MEM[i].id === id) return i; } return -1; }
+  function nameById(id){ var i = midx(id); return i < 0 ? '?' : MEM[i].name; }
   var KEY = 'europe2026.tracker.v1';
 
   /* Deadlines. Visa block is hard-dated; the rest are the checklist's own targets. */
@@ -1852,13 +1867,14 @@
   /* ---- open items for one person ---- */
   function openFor(i){
     var out = [];
-    PT.forEach(function(t){ if(!tick(t.id,i)) out.push({t:t.t, d:t.d}); });
-    GROUP.forEach(function(t){ if(owner(t)===i && !ST.g[t.id]) out.push({t:t.t + ' — books for the group', d:t.d}); });
+    var id = mid(i);
+    PT.forEach(function(t){ if(!tick(t.id,id)) out.push({t:t.t, d:t.d}); });
+    GROUP.forEach(function(t){ if(owner(t)===id && !ST.g[t.id]) out.push({t:t.t + ' — books for the group', d:t.d}); });
     out.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
     return out;
   }
   function lateCount(list){ return list.filter(function(o){ return daysLeft(o.d) < 0; }).length; }
-  function totalFor(i){ return PT.length + GROUP.filter(function(t){ return owner(t)===i; }).length; }
+  function totalFor(i){ return PT.length + GROUP.filter(function(t){ return owner(t)===mid(i); }).length; }
 
   /* ---- render ---- */
   var elCards = document.getElementById('mcards'),
@@ -1873,9 +1889,9 @@
       var open = openFor(i), tot = totalFor(i), done = tot - open.length,
           pct = tot ? Math.round(done/tot*100) : 0, late = lateCount(open);
       var cls = pct === 100 ? '' : (pct >= 50 ? 'part' : 'low');
-      var ph = ST.ph[i];
-      return '<div class="mcard' + (i===ST.me ? ' me' : '') + '">' +
-        '<div class="mh"><span class="mn">' + esc(m) + '</span><span class="mp">' + done + '/' + tot + '</span></div>' +
+      var ph = ST.ph[m.id];
+      return '<div class="mcard' + (m.id===ST.me ? ' me' : '') + '">' +
+        '<div class="mh"><span class="mn">' + esc(m.name) + '</span><span class="mp">' + done + '/' + tot + '</span></div>' +
         '<div class="ms">' + (open.length === 0
             ? 'All clear.'
             : open.length + ' open' + (late ? ' · <span class="late">' + late + ' overdue</span>' : '')) + '</div>' +
@@ -1889,14 +1905,15 @@
   }
 
   function renderMatrix(){
-    MEM.forEach(function(m,i){ document.getElementById('h'+i).textContent = m.length > 7 ? m.slice(0,6) : m; });
+    document.getElementById('mxHead').innerHTML = '<tr><th>What</th><th style="width:110px">Due</th>' +
+      MEM.map(function(m){ return '<th class="pc">' + esc(shortName(m.name)) + '</th>'; }).join('') + '</tr>';
     elMx.innerHTML = PERSONAL.map(function(t){
-      if(t.sec) return '<tr class="sec"><td colspan="8">' + esc(t.sec) + '</td></tr>';
-      var allDone = MEM.every(function(_,i){ return tick(t.id,i); });
+      if(t.sec) return '<tr class="sec"><td colspan="' + (MEM.length + 2) + '">' + esc(t.sec) + '</td></tr>';
+      var allDone = MEM.every(function(m){ return tick(t.id, m.id); });
       return '<tr><td><span class="tname">' + esc(t.t) + '</span><span class="tnote">' + esc(t.n) + '</span></td>' +
         '<td>' + badge(t.d, allDone) + '</td>' +
-        MEM.map(function(_,i){
-          return '<td class="cell" data-t="' + t.id + '" data-i="' + i + '"><span class="tick' + (tick(t.id,i)?' on':'') + '">✓</span></td>';
+        MEM.map(function(m){
+          return '<td class="cell" data-t="' + t.id + '" data-i="' + m.id + '"><span class="tick' + (tick(t.id,m.id)?' on':'') + '">✓</span></td>';
         }).join('') + '</tr>';
     }).join('');
   }
@@ -1908,7 +1925,7 @@
         '<td>' + badge(t.d, done) + '</td>' +
         '<td class="num">' + esc(t.c) + '</td>' +
         '<td><select class="ownsel" data-own="' + t.id + '">' +
-          MEM.map(function(m,i){ return '<option value="' + i + '"' + (i===own?' selected':'') + '>' + esc(m) + '</option>'; }).join('') +
+          MEM.map(function(m){ return '<option value="' + m.id + '"' + (m.id===own?' selected':'') + '>' + esc(m.name) + '</option>'; }).join('') +
         '</select></td>' +
         '<td class="cell" data-g="' + t.id + '"><span class="tick' + (done?' on':'') + '">✓</span></td></tr>';
     }).join('');
@@ -1920,7 +1937,7 @@
   function nudgeText(i){
     var open = openFor(i), late = open.filter(function(o){ return daysLeft(o.d) < 0; }),
         soon = open.filter(function(o){ return daysLeft(o.d) >= 0; });
-    var L = ['*Europe 2026 — ' + MEM[i] + '*'];
+    var L = ['*Europe 2026 — ' + mname(i) + '*'];
     L.push('_' + open.length + ' still open' + (late.length ? ', ' + late.length + ' overdue' : '') + '_');
     function block(title, arr, cap){
       if(!arr.length) return;
@@ -1945,13 +1962,13 @@
     L.push('');
     MEM.forEach(function(m,i){
       var open = openFor(i), late = lateCount(open);
-      L.push(open.length === 0 ? '✅ ' + m + ' — all clear'
-        : (late ? '🔴 ' : '• ') + m + ' — ' + open.length + ' open' + (late ? ' (' + late + ' overdue)' : ''));
+      L.push(open.length === 0 ? '✅ ' + m.name + ' — all clear'
+        : (late ? '🔴 ' : '• ') + m.name + ' — ' + open.length + ' open' + (late ? ' (' + late + ' overdue)' : ''));
     });
     var unbooked = GROUP.filter(function(t){ return !ST.g[t.id] && daysLeft(t.d) <= 21; });
     if(unbooked.length){
       L.push(''); L.push('*Bookings still not made*');
-      unbooked.slice(0,8).forEach(function(t){ L.push('• ' + t.t + ' — ' + MEM[owner(t)] + ', by ' + fmt(t.d)); });
+      unbooked.slice(0,8).forEach(function(t){ L.push('• ' + t.t + ' — ' + nameById(owner(t)) + ', by ' + fmt(t.d)); });
       if(unbooked.length > 8) L.push('• …and ' + (unbooked.length - 8) + ' more');
     }
     return L.join('\n');
@@ -1989,7 +2006,7 @@
 
   /* ---- sync code ---- */
   function encode(){
-    var p = PT.map(function(t){ return MEM.map(function(_,i){ return tick(t.id,i) ? 1 : 0; }).join(''); }).join('.');
+    var p = PT.map(function(t){ return MEM.map(function(m){ return tick(t.id,m.id) ? 1 : 0; }).join(''); }).join('.');
     var g = GROUP.map(function(t){ return ST.g[t.id] ? 1 : 0; }).join('');
     var o = GROUP.map(function(t){ return owner(t); }).join('');
     return 'E26-' + p + '-' + g + '-' + o;
@@ -2001,16 +2018,19 @@
     var p = parts[1].split('.');
     if(p.length !== PT.length || parts[2].length !== GROUP.length || parts[3].length !== GROUP.length) return null;
     if(!/^[01.]+$/.test(parts[1]) || !/^[01]+$/.test(parts[2]) || !/^[0-5]+$/.test(parts[3])) return null;
-    if(!p.every(function(r){ return r.length === MEM.length; })) return null;
+    /* Links predate anyone being added, so accept a row that is shorter or
+       longer than today's roster and line it up by position as far as it goes. */
+    if(!p.every(function(r){ return r.length >= 1 && r.length <= 16; })) return null;
     return {p:p, g:parts[2], o:parts[3]};
   }
   function apply(dec, mode){
     var added = 0;
     PT.forEach(function(t, ti){
-      MEM.forEach(function(_, i){
+      MEM.forEach(function(m, i){
+        if(i >= dec.p[ti].length) return;
         var v = dec.p[ti].charAt(i) === '1';
-        if(mode === 'replace'){ setTick(t.id, i, v); }
-        else if(v && !tick(t.id,i)){ setTick(t.id, i, true); added++; }
+        if(mode === 'replace'){ setTick(t.id, m.id, v); }
+        else if(v && !tick(t.id,m.id)){ setTick(t.id, m.id, true); added++; }
       });
     });
     GROUP.forEach(function(t, gi){
@@ -2046,33 +2066,33 @@
 
   function docFromState(){
     var doc = {};
-    PT.forEach(function(t){ MEM.forEach(function(_,i){ doc['p:'+t.id+':'+i] = tick(t.id,i) ? 1 : 0; }); });
+    PT.forEach(function(t){ MEM.forEach(function(m){ doc['p:'+t.id+':'+m.id] = tick(t.id,m.id) ? 1 : 0; }); });
     GROUP.forEach(function(t){ doc['g:'+t.id] = ST.g[t.id] ? 1 : 0; doc['o:'+t.id] = owner(t); });
-    PACK.forEach(function(t){ MEM.forEach(function(_,i){ doc['k:'+t.id+':'+i] = packTick(t.id,i) ? 1 : 0; }); });
+    PACK.forEach(function(t){ MEM.forEach(function(m){ doc['k:'+t.id+':'+m.id] = packTick(t.id,m.id) ? 1 : 0; }); });
     return doc;
   }
   function anyLocalTicks(){
-    return PT.some(function(t){ return MEM.some(function(_,i){ return tick(t.id,i); }); })
+    return PT.some(function(t){ return MEM.some(function(m){ return tick(t.id,m.id); }); })
         || GROUP.some(function(t){ return !!ST.g[t.id]; });
   }
   function applyDoc(doc){
     var changed = false;
-    PT.forEach(function(t){ MEM.forEach(function(_,i){
-      var k = 'p:'+t.id+':'+i;
+    PT.forEach(function(t){ MEM.forEach(function(m){
+      var k = 'p:'+t.id+':'+m.id;
       if(!(k in doc)) return;
       var v = doc[k] === 1;
-      if(tick(t.id,i) !== v){ setTick(t.id,i,v); changed = true; }
+      if(tick(t.id,m.id) !== v){ setTick(t.id,m.id,v); changed = true; }
     }); });
     GROUP.forEach(function(t){
       var kg = 'g:'+t.id, ko = 'o:'+t.id;
       if(kg in doc && (ST.g[t.id]?1:0) !== (doc[kg]?1:0)){ ST.g[t.id] = doc[kg] ? 1 : 0; changed = true; }
       if(ko in doc && owner(t) !== doc[ko]){ ST.o[t.id] = doc[ko]; changed = true; }
     });
-    PACK.forEach(function(t){ MEM.forEach(function(_,i){
-      var k = 'k:'+t.id+':'+i;
+    PACK.forEach(function(t){ MEM.forEach(function(m){
+      var k = 'k:'+t.id+':'+m.id;
       if(!(k in doc)) return;
       var v = doc[k] === 1;
-      if(packTick(t.id,i) !== v){ setPack(t.id,i,v); changed = true; }
+      if(packTick(t.id,m.id) !== v){ setPack(t.id,m.id,v); changed = true; }
     }); });
     if(changed){ save(); renderAll(); }
     return changed;
@@ -2143,7 +2163,8 @@
   var CITY_CLASS = { Amsterdam:'ams', Berlin:'ber', Budapest:'bud', Prague:'prg' };
   var ADMIN_STORE = 'europe2026.adminkey';
 
-  function me(){ return MEM[ST.me]; }
+  function me(){ var i = midx(ST.me); return i < 0 ? mname(0) : mname(i); }
+  function meIdx(){ var i = midx(ST.me); return i < 0 ? 0 : i; }
   function ago(ts){
     var s = (Date.now() - ts) / 1000;
     if(s < 90) return 'just now';
@@ -2167,6 +2188,16 @@
   /* every endpoint answers with the whole picture, so one path applies it */
   function applyServer(d){
     if(d.rev != null) sync.rev = d.rev;
+    /* Roster first: applyDoc only walks the members it knows about, so a new
+       traveller's ticks would be silently dropped if this ran after it. */
+    if(d.members && d.members.length){
+      var before = JSON.stringify(MEM);
+      MEM = d.members;
+      if(JSON.stringify(MEM) !== before){
+        try{ localStorage.setItem(MEM_STORE, JSON.stringify(MEM)); }catch(e){}
+        fillSelectors(); whoLabel(); spendWho(); renderAll();
+      }
+    }
     if(d.doc) applyDoc(d.doc);
     if(d.feed){ FEED = d.feed; renderFeed(); renderAgreed(); }
     if(d.spend){ SPEND = d.spend; renderSpend(); }
@@ -2288,16 +2319,14 @@
   function renderPack(){
     var body = document.getElementById('pk');
     if(!body) return;
-    MEM.forEach(function(m,i){
-      var h=document.getElementById('k'+i);
-      if(h) h.textContent = m.length > 7 ? m.slice(0,6) : m;
-    });
+    document.getElementById('pkHead').innerHTML = '<tr><th>Item</th><th style="width:110px">Why</th>' +
+      MEM.map(function(m){ return '<th class="pc">' + esc(shortName(m.name)) + '</th>'; }).join('') + '</tr>';
     body.innerHTML = PACK.map(function(t){
       return '<tr><td><span class="tname">' + esc(t.t) + '</span></td>' +
         '<td><span class="due">' + esc(t.n) + '</span></td>' +
-        MEM.map(function(_,i){
-          return '<td class="cell" data-pk="' + t.id + '" data-i="' + i + '"><span class="tick' +
-                 (packTick(t.id,i) ? ' on' : '') + '">✓</span></td>';
+        MEM.map(function(m){
+          return '<td class="cell" data-pk="' + t.id + '" data-i="' + m.id + '"><span class="tick' +
+                 (packTick(t.id,m.id) ? ' on' : '') + '">✓</span></td>';
         }).join('') + '</tr>';
     }).join('');
   }
@@ -2315,7 +2344,7 @@
     var owed = balances()[ST.me] || 0;
     kpis.innerHTML =
       '<div class="kpi"><b>' + eur(total) + '</b><span>Logged so far</span></div>' +
-      '<div class="kpi"><b>' + eur(Math.round(total/MEM.length)) + '</b><span>Average each</span></div>' +
+      '<div class="kpi"><b>' + eur(MEM.length ? Math.round(total/MEM.length) : 0) + '</b><span>Average each</span></div>' +
       '<div class="kpi"><b>' + eur(mine) + '</b><span>' + esc(me()) + ' has paid</span></div>' +
       '<div class="kpi ' + (owed >= 0 ? 'good' : 'bad') + '"><b>' + (owed >= 0 ? '+' : '\u2212') + eur(Math.abs(owed)) +
         '</b><span>' + (owed >= 0 ? 'Owed to ' + esc(me()) : esc(me()) + ' owes') + '</span></div>';
@@ -2326,17 +2355,17 @@
       return '<tr><td><span class="tname">' + esc(e.what) + '</span><span class="tnote">' + ago(e.created) + '</span></td>' +
         '<td>' + esc(e.city) + '</td><td>' + esc(e.payer) + '</td>' +
         '<td class="num">' + eur(e.cents) + orig + '</td>' +
-        '<td title="' + esc(e.split.map(function(i){ return MEM[i]; }).join(', ')) + '">' + e.split.length + '</td>' +
+        '<td title="' + esc(e.split.map(nameById).join(', ')) + '">' + e.split.length + '</td>' +
         '<td><button class="btn sm" data-delsp="' + e.id + '">×</button></td></tr>';
     }).join('') : '<tr><td colspan="6" style="color:var(--tx3)">Nothing logged yet.</td></tr>';
 
     var bal = balances();
     document.getElementById('settle').innerHTML = SPEND.length
-      ? MEM.map(function(m,i){
-          var v = bal[i] || 0;
+      ? MEM.map(function(m){
+          var v = bal[m.id] || 0;
           var cls = v > 0 ? 'up' : (v < 0 ? 'down' : '');
           var word = v > 0 ? 'is owed' : (v < 0 ? 'owes the pot' : 'is square');
-          return '<div class="owe ' + cls + '"><b>' + esc(m) + '</b> <span style="color:var(--tx3)">' + word +
+          return '<div class="owe ' + cls + '"><b>' + esc(m.name) + '</b> <span style="color:var(--tx3)">' + word +
                  '</span><span class="amt">' + (v === 0 ? '—' : eur(Math.abs(v))) + '</span></div>';
         }).join('')
       : '<div class="empty">Log an expense and this fills in.</div>';
@@ -2345,13 +2374,17 @@
   /* Whole cents only: give the remainder to the earliest people in the split so
      the column always sums to zero instead of drifting a cent per expense. */
   function balances(){
-    var bal = [0,0,0,0,0,0];
+    var bal = {};
+    MEM.forEach(function(m){ bal[m.id] = 0; });
     SPEND.forEach(function(e){
       var n = e.split.length; if(!n) return;
       var each = Math.floor(e.cents / n), extra = e.cents - each * n;
-      e.split.forEach(function(m, idx){ bal[m] -= each + (idx < extra ? 1 : 0); });
-      var payer = MEM.indexOf(e.payer);
-      if(payer >= 0) bal[payer] += e.cents;
+      e.split.forEach(function(memberId, idx){
+        if(bal[memberId] === undefined) bal[memberId] = 0;
+        bal[memberId] -= each + (idx < extra ? 1 : 0);
+      });
+      var payer = MEM.filter(function(m){ return m.name === e.payer; })[0];
+      if(payer) bal[payer.id] += e.cents;
     });
     return bal;
   }
@@ -2437,8 +2470,28 @@
   load();
   if(!canSave) document.getElementById('lsWarn').style.display = 'block';
 
-  elWho.innerHTML = MEM.map(function(m,i){ return '<option value="' + i + '"' + (i===ST.me?' selected':'') + '>' + esc(m) + '</option>'; }).join('');
+  function fillSelectors(){
+    elWho.innerHTML = MEM.map(function(m){
+      return '<option value="' + m.id + '"' + (m.id===ST.me?' selected':'') + '>' + esc(m.name) + '</option>';
+    }).join('');
+    if(midx(ST.me) < 0 && MEM.length){ ST.me = MEM[0].id; elWho.value = String(ST.me); save(); }
+    var sp = document.getElementById('spSplit');
+    var checked = {};
+    [...sp.querySelectorAll('input')].forEach(function(c){ checked[c.value] = c.checked; });
+    var fresh = !Object.keys(checked).length;
+    sp.innerHTML = MEM.map(function(m){
+      var on = fresh || checked[m.id] !== false;
+      return '<label class="' + (on?'on':'') + '" data-i="' + m.id + '"><input type="checkbox"' + (on?' checked':'') +
+             ' value="' + m.id + '">' + esc(m.name) + '</label>';
+    }).join('');
+    var bh = document.getElementById('bkHolder');
+    var keep = bh.value;
+    bh.innerHTML = MEM.map(function(m){ return '<option value="' + esc(m.name) + '">' + esc(m.name) + '</option>'; }).join('');
+    if(keep) bh.value = keep;
+  }
   elWho.addEventListener('change', function(){ ST.me = +elWho.value; save(); renderCards(); });
+  function shortName(n){ return n.length > 7 ? n.slice(0,6) : n; }
+  fillSelectors();
 
   renderAll();
 
@@ -2470,16 +2523,29 @@
   elCards.addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('button') : null;
     if(!b) return;
-    if(b.dataset.nudge != null){ var i = +b.dataset.nudge; wa(nudgeText(i), ST.ph[i]); }
+    if(b.dataset.nudge != null){ var i = +b.dataset.nudge; wa(nudgeText(i), ST.ph[mid(i)]); }
     else if(b.dataset.copy != null){ copy(nudgeText(+b.dataset.copy), 'Reminder copied — paste it in the chat.'); }
     else if(b.dataset.phone != null){
       var j = +b.dataset.phone;
-      var v = window.prompt('WhatsApp number for ' + MEM[j] + ' (with country code, e.g. 919876543210).\nLeave blank to clear — WhatsApp will then ask who to send to.', ST.ph[j] || '91');
+      var pid = mid(j);
+      var v = window.prompt('WhatsApp number for ' + mname(j) + ' (with country code, e.g. 919876543210).\nLeave blank to clear — WhatsApp will then ask who to send to.', ST.ph[pid] || '91');
       if(v === null) return;
       v = v.replace(/\D/g,'');
-      if(v) ST.ph[j] = v; else delete ST.ph[j];
+      if(v) ST.ph[pid] = v; else delete ST.ph[pid];
       save(); renderCards();
     }
+  });
+
+  document.getElementById('btnAddMember').addEventListener('click', function(){
+    if(needsConnection()) return;
+    var name = window.prompt('Who else is coming? First name is enough.');
+    if(!name || !name.trim()) return;
+    api('/members', {name: name.trim()})
+      .then(function(d){
+        applyServer(d);
+        toast(name.trim() + ' added — they get their own column everywhere.');
+      })
+      .catch(apiFail);
   });
 
   document.getElementById('btnNudgeAll').addEventListener('click', function(){ wa(groupText()); });
@@ -2636,9 +2702,6 @@
 
   /* ---- spend ---- */
   var elSplit = document.getElementById('spSplit');
-  elSplit.innerHTML = MEM.map(function(m,i){
-    return '<label class="on" data-i="' + i + '"><input type="checkbox" checked value="' + i + '">' + esc(m) + '</label>';
-  }).join('');
   elSplit.addEventListener('change', function(e){
     var l = e.target.closest('label');
     if(l) l.classList.toggle('on', e.target.checked);
@@ -2672,7 +2735,6 @@
 
   /* ---- bookings ---- */
   var bkHolder = document.getElementById('bkHolder');
-  bkHolder.innerHTML = MEM.map(function(m,i){ return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join('');
 
   document.getElementById('bkAdd').addEventListener('click', function(){
     if(needsConnection()) return;

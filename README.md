@@ -1,6 +1,6 @@
 # Europe 2026
 
-Itinerary, budget, nightlife and visa plan for six travellers.
+Itinerary, budget, nightlife and visa plan for the group.
 Amsterdam · Berlin · Budapest · Prague, 1–13 October 2026.
 
 `index.html` is the whole site — one self-contained file, no build step and no
@@ -15,6 +15,18 @@ reaches everyone else within about ten seconds.
 Phone numbers saved for the WhatsApp nudge buttons stay in the browser that
 entered them. They are never sent to the server, written into this file, or put
 in a sync link.
+
+## The roster
+
+Travellers live in the `members` table, not in the code. **Add traveller** on the
+Tracker tab adds someone live; everyone else's page picks them up within ten
+seconds and they get a column in the tracker, the packing list, the split picker
+and the owner dropdowns.
+
+Member **ids are permanent and never reused**. Every checkbox key, expense split
+and booking owner refers to an id, not to a position in the list, so adding or
+removing someone can never silently reassign somebody else's ticks. Removing a
+traveller needs the admin key and deletes their ticks and votes with them.
 
 ## Suggestions
 
