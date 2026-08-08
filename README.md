@@ -16,6 +16,23 @@ Phone numbers saved for the WhatsApp nudge buttons stay in the browser that
 entered them. They are never sent to the server, written into this file, or put
 in a sync link.
 
+## Suggestions
+
+The Suggestions tab is where the plan gets argued with. Anyone can post a
+suggestion against a city or topic, reply to one, and vote. Shashank holds an
+admin key; approving a suggestion pins it to an **Agreed changes** block at the
+top of the Overview and Day-by-day tabs, so the plan and the argument about it
+stay in one place.
+
+The key is a Worker secret, not in this repo. To change it:
+
+    cd worker && npx wrangler secret put ADMIN_KEY
+
+Anyone who has the page URL can post and reply — there is no login. Authors must
+be one of the six named travellers and text is length-capped, but treat the board
+as unlisted rather than private. Only the admin key can approve, turn down or
+delete.
+
 ### How the sync works
 
 `worker/` is a Cloudflare Worker backed by a D1 database, deployed separately

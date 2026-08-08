@@ -176,6 +176,45 @@
   .syncpill.live{border-color:rgba(77,212,172,.35)} .syncpill.off{border-color:rgba(255,92,108,.4)}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   @media(prefers-reduced-motion:reduce){.syncpill.busy i{animation:none}}
+  /* ---------- SUGGESTIONS ---------- */
+  .compose{display:grid;gap:10px;grid-template-columns:1fr 190px}
+  .compose .full{grid-column:1/-1}
+  .compose textarea{min-height:74px;font-family:inherit;font-size:14.5px}
+  .compose input[type="text"]{width:100%}
+  @media(max-width:640px){ .compose{grid-template-columns:1fr} }
+
+  .post{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px}
+  .post.approved{border-color:rgba(77,212,172,.42);background:linear-gradient(180deg,rgba(77,212,172,.05),transparent 70%)}
+  .post.rejected{opacity:.62}
+  .phead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+  .ptitle{font-size:16.5px;font-weight:700;letter-spacing:-.01em;flex:1 1 260px;text-wrap:balance}
+  .chip{font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:var(--card2);color:var(--tx2);white-space:nowrap}
+  .chip.ams{color:var(--ams)} .chip.ber{color:var(--ber)} .chip.bud{color:var(--bud)} .chip.prg{color:var(--prg)}
+  .st{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .st.open{background:var(--card2);color:var(--tx3)}
+  .st.approved{background:rgba(77,212,172,.16);color:var(--good)}
+  .st.rejected{background:rgba(255,92,108,.14);color:var(--bad)}
+  .pmeta{font-size:12.5px;color:var(--tx3);margin-bottom:9px}
+  .pbody{font-size:14.5px;color:var(--tx2);white-space:pre-wrap;margin-bottom:12px}
+  .pacts{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .btn.voted{background:rgba(91,141,255,.16);border-color:rgba(91,141,255,.5);color:#9dbaff}
+  .thread{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;display:none}
+  .thread.on{display:block}
+  .cmt{display:flex;gap:9px;padding:7px 0;font-size:14px;border-top:1px solid rgba(255,255,255,.04)}
+  .cmt:first-child{border-top:none}
+  .cmt .ca{font-weight:700;flex:0 0 auto;color:var(--tx)}
+  .cmt .cb{flex:1;color:var(--tx2);white-space:pre-wrap}
+  .cmt .ct{font-size:11.5px;color:var(--tx3);white-space:nowrap}
+  .creply{display:flex;gap:8px;margin-top:10px}
+  .creply input{flex:1}
+  .empty{color:var(--tx3);font-size:14.5px;padding:22px;text-align:center;border:1px dashed var(--line2);border-radius:12px}
+
+  .agreed{border:1px solid rgba(77,212,172,.35);background:rgba(77,212,172,.06);border-radius:14px;padding:16px 20px;margin:18px 0}
+  .agreed h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--good);font-weight:800;margin-bottom:9px}
+  .agreed ul{margin:0;padding-left:18px}
+  .agreed li{margin-bottom:5px;font-size:14.5px}
+  .agreed li b{font-weight:700}
+
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
     background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:11px 18px;
@@ -218,6 +257,7 @@
     <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p6">Don't get done</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p7">Tracker</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p8">Suggestions</button>
   </div>
 </nav>
 
@@ -230,6 +270,8 @@
     <b>Do this first — deadline 17 August</b>
     The Netherlands' own guidance is to lodge a Schengen application <strong>no later than 45 days before travel</strong>. For a 1 October departure that is <strong>17 August 2026</strong>. High-season Dutch processing runs 15–25 calendar days and can legally take 45. Submit in the next nine days or the trip is at risk. Full detail in the <strong>Visa &amp; logistics</strong> tab.
   </div>
+
+  <div id="agreed0"></div>
 
   <h2>The route</h2>
   <p class="lede">You land at Schiphol and leave from Prague, so the trip runs one way, west to east. That is the cheapest shape — no backtracking, no return leg wasted.</p>
@@ -305,6 +347,7 @@
 <!-- ============ DAY BY DAY ============ -->
 <section role="tabpanel" id="p1">
   <h2>Day by day</h2>
+  <div id="agreed1"></div>
   <p class="lede">Times are indicative. Anything marked <span class="pill p-book">book ahead</span> sells out or costs materially more at the door.</p>
 
   <div class="day ams">
@@ -811,6 +854,40 @@
   </div>
 </section>
 
+<!-- ============ SUGGESTIONS ============ -->
+<section role="tabpanel" id="p8">
+  <h2>Suggestions</h2>
+  <p class="lede">Anywhere you think the plan is wrong, say so here rather than in the group chat where it scrolls away. Anyone can post and reply. Shashank approves — and anything approved is pinned to the top of the Overview and Day-by-day tabs, so the agreed plan and the argument about it never drift apart.</p>
+
+  <div class="card">
+    <p style="margin-bottom:12px"><b>Suggest a change</b> <span style="color:var(--tx3);font-size:13.5px">— posting as <b id="asWho">—</b>, change it with the "I am" box on the Tracker tab</span></p>
+    <div class="compose">
+      <input type="text" id="npTitle" class="full" maxlength="120" placeholder="What should change? One line — e.g. &quot;Swap a Szimpla night for the Rudas night baths&quot;">
+      <textarea id="npBody" class="full" maxlength="1200" placeholder="Why, and anything the rest of us need to know — price, opening hours, what it displaces. Optional."></textarea>
+      <select id="npTarget">
+        <option>Amsterdam</option><option>Berlin</option><option>Budapest</option><option>Prague</option>
+        <option>Trains</option><option>Nightlife</option><option>Money</option><option>Visa</option>
+        <option selected>General</option>
+      </select>
+      <button class="btn pri" id="btnPost">Post it</button>
+    </div>
+  </div>
+
+  <div class="trk-bar">
+    <label for="fFilter">Show</label>
+    <select id="fFilter">
+      <option value="all">Everything</option>
+      <option value="open">Still undecided</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Turned down</option>
+    </select>
+    <span class="spacer"></span>
+    <button class="btn" id="btnAdmin">Admin</button>
+  </div>
+
+  <div id="feed"></div>
+</section>
+
 <footer>
   <p>Built 8 August 2026 for a group of six · Prices in EUR at ~₹108/€, ~€1 = 400 HUF = 24.5 CZK. Fares, opening hours and tourist-tax rates move — reconfirm anything you're booking. Two things worth rechecking closer to the date: whether Prague's tourist fee has doubled to 100 CZK, and the exact EuroNight Metropol departure time, since the Berlin engineering works may shift it.</p>
 </footer>
@@ -1160,8 +1237,8 @@
     .then(function(d){
       /* only clear what we actually sent — a tick made mid-flight survives */
       ops.forEach(function(o){ if(sync.pending[o.k] === o.v) delete sync.pending[o.k]; });
-      sync.flushing = false; sync.fails = 0; sync.rev = d.rev;
-      applyDoc(d.doc || {});
+      sync.flushing = false; sync.fails = 0;
+      applyServer(d);
       pill('live', 'Synced');
       if(Object.keys(sync.pending).length) flushOps();
     })
@@ -1184,13 +1261,136 @@
       var doc = d.doc || {};
       /* nothing shared yet and this device has work — it becomes the seed */
       if(first && !Object.keys(doc).length && anyLocalTicks()){ pushAll(); return; }
-      applyDoc(doc);
+      applyServer(d);
       pill('live', 'Synced');
     })
     .catch(function(){
       sync.fails++;
       if(sync.fails >= 2) pill('off', 'Offline — saved here');
     });
+  }
+
+  /* ---- suggestions board ---- */
+  var FEED = [], ADMIN_KEY = null, feedFilter = 'all', openThreads = {};
+  var CITY_CLASS = { Amsterdam:'ams', Berlin:'ber', Budapest:'bud', Prague:'prg' };
+  var ADMIN_STORE = 'europe2026.adminkey';
+
+  function me(){ return MEM[ST.me]; }
+  function ago(ts){
+    var s = (Date.now() - ts) / 1000;
+    if(s < 90) return 'just now';
+    if(s < 3600) return Math.round(s/60) + 'm ago';
+    if(s < 86400) return Math.round(s/3600) + 'h ago';
+    return Math.round(s/86400) + 'd ago';
+  }
+
+  function api(path, body, key){
+    var h = {'Content-Type':'application/json'};
+    if(key) h.Authorization = 'Bearer ' + key;
+    return fetch(SYNC_URL + path, {method:'POST', headers:h, body: JSON.stringify(body || {})})
+      .then(function(r){
+        return r.json().then(function(d){
+          if(!r.ok) throw new Error((d && d.error) || ('HTTP ' + r.status));
+          return d;
+        });
+      });
+  }
+
+  /* every endpoint answers with the whole picture, so one path applies it */
+  function applyServer(d){
+    if(d.rev != null) sync.rev = d.rev;
+    if(d.doc) applyDoc(d.doc);
+    if(d.feed){ FEED = d.feed; renderFeed(); renderAgreed(); }
+  }
+
+  function adminButtons(p){
+    var b = '';
+    if(p.status !== 'approved') b += '<button class="btn sm wa" data-mod="approved" data-id="' + p.id + '">Approve</button>';
+    if(p.status !== 'rejected') b += '<button class="btn sm" data-mod="rejected" data-id="' + p.id + '">Turn down</button>';
+    if(p.status !== 'open')     b += '<button class="btn sm" data-mod="open" data-id="' + p.id + '">Reopen</button>';
+    b += '<button class="btn sm" data-mod="deleted" data-id="' + p.id + '">Delete</button>';
+    return b;
+  }
+
+  function postHtml(p){
+    var voted = p.votes.indexOf(me()) >= 0;
+    var label = p.status === 'open' ? 'undecided' : (p.status === 'approved' ? 'approved' : 'turned down');
+    return '<div class="post ' + p.status + '" data-id="' + p.id + '">' +
+      '<div class="phead">' +
+        '<span class="chip ' + (CITY_CLASS[p.target] || '') + '">' + esc(p.target) + '</span>' +
+        '<span class="ptitle">' + esc(p.title) + '</span>' +
+        '<span class="st ' + p.status + '">' + label + '</span>' +
+      '</div>' +
+      '<div class="pmeta">' + esc(p.author) + ' · ' + ago(p.created) + '</div>' +
+      (p.body ? '<div class="pbody">' + esc(p.body) + '</div>' : '') +
+      '<div class="pacts">' +
+        '<button class="btn sm' + (voted ? ' voted' : '') + '" data-vote="' + p.id + '" title="' +
+          (p.votes.length ? esc(p.votes.join(', ')) : 'Nobody yet') + '">' +
+          (voted ? '▲ ' : '△ ') + p.votes.length + '</button>' +
+        '<button class="btn sm" data-thread="' + p.id + '">' +
+          (p.comments.length ? p.comments.length + (p.comments.length === 1 ? ' reply' : ' replies') : 'Reply') + '</button>' +
+        (ADMIN_KEY ? adminButtons(p) : '') +
+      '</div>' +
+      '<div class="thread' + (openThreads[p.id] ? ' on' : '') + '">' +
+        p.comments.map(function(c){
+          return '<div class="cmt"><span class="ca">' + esc(c.author) + '</span>' +
+                 '<span class="cb">' + esc(c.body) + '</span>' +
+                 '<span class="ct">' + ago(c.created) + '</span></div>';
+        }).join('') +
+        '<div class="creply">' +
+          '<input type="text" maxlength="1200" data-reply="' + p.id + '" placeholder="Reply as ' + esc(me()) + '">' +
+          '<button class="btn sm" data-send="' + p.id + '">Send</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderFeed(){
+    var el = document.getElementById('feed');
+    if(!el) return;
+    if(!syncOn()){
+      el.innerHTML = '<div class="empty">Suggestions need a connection — this copy of the page is running offline.</div>';
+      return;
+    }
+    var list = FEED.filter(function(p){ return feedFilter === 'all' || p.status === feedFilter; });
+    /* approved sits on top: it is the part that is actually the plan now */
+    list.sort(function(a,b){
+      var byStatus = (a.status === 'approved' ? 0 : 1) - (b.status === 'approved' ? 0 : 1);
+      return byStatus || b.id - a.id;
+    });
+    el.innerHTML = list.length
+      ? list.map(postHtml).join('')
+      : '<div class="empty">' + (FEED.length
+          ? 'Nothing under that filter.'
+          : 'Nothing suggested yet. If a piece of this plan looks wrong to you, it probably is — say so here.') + '</div>';
+  }
+
+  function renderAgreed(){
+    var ok = FEED.filter(function(p){ return p.status === 'approved'; });
+    var html = ok.length
+      ? '<div class="agreed"><h4>Agreed changes to the plan · ' + ok.length + '</h4><ul>' +
+        ok.map(function(p){
+          var extra = p.body ? ' <span style="color:var(--tx3)">— ' +
+            esc(p.body.length > 170 ? p.body.slice(0, 170) + '…' : p.body) + '</span>' : '';
+          return '<li><b>' + esc(p.target) + '</b> · ' + esc(p.title) + extra + '</li>';
+        }).join('') + '</ul></div>'
+      : '';
+    ['agreed0','agreed1'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.innerHTML = html;
+    });
+  }
+
+  function setAdmin(key){
+    ADMIN_KEY = key || null;
+    var b = document.getElementById('btnAdmin');
+    b.textContent = ADMIN_KEY ? 'Admin — on' : 'Admin';
+    b.className = 'btn' + (ADMIN_KEY ? ' pri' : '');
+    try{
+      if(ADMIN_KEY) localStorage.setItem(ADMIN_STORE, ADMIN_KEY);
+      else localStorage.removeItem(ADMIN_STORE);
+    }catch(e){}
+    renderFeed();
   }
 
   function startSync(){
@@ -1298,6 +1498,106 @@
   }
   fromLink();
   window.addEventListener('hashchange', fromLink);
+
+  /* ---- suggestions wiring ---- */
+  var elFeed = document.getElementById('feed');
+
+  function whoLabel(){ document.getElementById('asWho').textContent = me(); }
+  whoLabel();
+  elWho.addEventListener('change', function(){ whoLabel(); renderFeed(); });
+
+  function needsConnection(){
+    if(syncOn()) return false;
+    toast('Suggestions need a connection — open the hosted page.');
+    return true;
+  }
+  function apiFail(err){ toast(String(err && err.message || err)); }
+
+  document.getElementById('btnPost').addEventListener('click', function(){
+    if(needsConnection()) return;
+    var title = document.getElementById('npTitle');
+    var body = document.getElementById('npBody');
+    var target = document.getElementById('npTarget').value;
+    if(!title.value.trim()){ toast('Give it a one-line summary first.'); title.focus(); return; }
+    api('/posts', {author: me(), target: target, title: title.value, body: body.value})
+      .then(function(d){
+        title.value = ''; body.value = '';
+        applyServer(d);
+        toast('Posted — the others will see it within ten seconds.');
+      })
+      .catch(apiFail);
+  });
+
+  document.getElementById('fFilter').addEventListener('change', function(e){
+    feedFilter = e.target.value; renderFeed();
+  });
+
+  document.getElementById('btnAdmin').addEventListener('click', function(){
+    if(needsConnection()) return;
+    if(ADMIN_KEY){
+      if(window.confirm('Turn admin off on this device?')) { setAdmin(null); toast('Admin off.'); }
+      return;
+    }
+    var key = window.prompt('Admin key — this lets you approve suggestions for the whole group.');
+    if(!key) return;
+    api('/admin/check', {}, key.trim())
+      .then(function(){ setAdmin(key.trim()); toast('Admin on — you can approve now.'); })
+      .catch(function(){ toast('That key was not accepted.'); });
+  });
+
+  function sendReply(id){
+    var input = elFeed.querySelector('[data-reply="' + id + '"]');
+    if(!input || !input.value.trim()) return;
+    var text = input.value;
+    input.value = '';
+    openThreads[id] = true;
+    api('/comments', {post: id, author: me(), body: text})
+      .then(applyServer)
+      .catch(function(e){ input.value = text; apiFail(e); });
+  }
+
+  elFeed.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('button') : null;
+    if(!b || needsConnection()) return;
+
+    if(b.dataset.vote){
+      api('/votes', {post: +b.dataset.vote, author: me()}).then(applyServer).catch(apiFail);
+    } else if(b.dataset.thread){
+      var id = b.dataset.thread;
+      openThreads[id] = !openThreads[id];
+      renderFeed();
+      if(openThreads[id]){
+        var i = elFeed.querySelector('[data-reply="' + id + '"]');
+        if(i) i.focus();
+      }
+    } else if(b.dataset.send){
+      sendReply(b.dataset.send);
+    } else if(b.dataset.mod){
+      var status = b.dataset.mod, pid = +b.dataset.id;
+      if(status === 'deleted' && !window.confirm('Delete this suggestion and its replies for everyone?')) return;
+      api('/moderate', {post: pid, status: status}, ADMIN_KEY)
+        .then(function(d){
+          applyServer(d);
+          toast(status === 'approved' ? 'Approved — it is now on the Overview and Day-by-day tabs.'
+              : status === 'deleted' ? 'Deleted.'
+              : status === 'rejected' ? 'Turned down.' : 'Reopened.');
+        })
+        .catch(function(err){
+          if(String(err.message).indexOf('not allowed') >= 0){ setAdmin(null); toast('Admin key rejected — turned admin off.'); }
+          else apiFail(err);
+        });
+    }
+  });
+
+  elFeed.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target.dataset && e.target.dataset.reply) sendReply(e.target.dataset.reply);
+  });
+
+  try{
+    var savedKey = localStorage.getItem(ADMIN_STORE);
+    if(savedKey) setAdmin(savedKey);
+  }catch(e){}
+  renderFeed();
 
   startSync();
 })();
