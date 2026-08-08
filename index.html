@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Europe 2026 · 6 Guys, 4 Cities, 13 Days</title>
+<style>
+  :root{
+    --bg:#0b0d12; --bg2:#12151d; --card:#171b26; --card2:#1e2331;
+    --line:#2a3042; --line2:#3a4258;
+    --tx:#e8ecf5; --tx2:#a4aec4; --tx3:#6f7a94;
+    --ams:#ff8c42; --ber:#5b8dff; --bud:#4dd4ac; --prg:#c77dff;
+    --warn:#ffb020; --bad:#ff5c6c; --good:#4dd4ac;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--tx);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 80px}
+
+  /* ---------- HERO ---------- */
+  header{
+    padding:56px 0 28px;
+    background:radial-gradient(1200px 400px at 50% -10%, rgba(91,141,255,.18), transparent 70%);
+    border-bottom:1px solid var(--line);
+    margin-bottom:0;
+  }
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);font-weight:600}
+  h1{font-size:clamp(34px,6vw,56px);line-height:1.05;letter-spacing:-.03em;font-weight:800;margin:10px 0 14px}
+  h1 .g{background:linear-gradient(100deg,var(--ams),var(--ber) 40%,var(--bud) 70%,var(--prg));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--tx2);font-size:17px;max-width:62ch}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .hs{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:120px}
+  .hs b{display:block;font-size:22px;font-weight:750;letter-spacing:-.02em}
+  .hs span{font-size:11.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+  /* ---------- TABS ---------- */
+  nav{position:sticky;top:0;z-index:50;background:rgba(11,13,18,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .tabs{max-width:1120px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    background:none;border:none;color:var(--tx3);font:inherit;font-weight:600;font-size:14px;
+    padding:15px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;
+  }
+  .tab:hover{color:var(--tx2)}
+  .tab[aria-selected="true"]{color:var(--tx);border-bottom-color:var(--ber)}
+  section[role="tabpanel"]{display:none;padding-top:34px;animation:fade .25s ease}
+  section[role="tabpanel"].on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2{font-size:26px;font-weight:750;letter-spacing:-.02em;margin:38px 0 6px}
+  h2:first-child{margin-top:0}
+  h3{font-size:17px;font-weight:700;margin:26px 0 10px;letter-spacing:-.01em}
+  .lede{color:var(--tx2);margin-bottom:20px;max-width:75ch}
+  p{margin-bottom:12px}
+  a{color:#7fa9ff}
+  ul{margin:0 0 14px 20px}
+  li{margin-bottom:6px}
+  small{color:var(--tx3)}
+
+  /* ---------- CARDS ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+
+  .callout{border-radius:14px;padding:18px 20px;margin:18px 0;border:1px solid;font-size:15px}
+  .c-bad{background:rgba(255,92,108,.09);border-color:rgba(255,92,108,.4)}
+  .c-warn{background:rgba(255,176,32,.09);border-color:rgba(255,176,32,.38)}
+  .c-good{background:rgba(77,212,172,.09);border-color:rgba(77,212,172,.35)}
+  .callout b{display:block;margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.09em}
+  .c-bad b{color:var(--bad)} .c-warn b{color:var(--warn)} .c-good b{color:var(--good)}
+
+  /* ---------- TABLES ---------- */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-bottom:18px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+  th{background:var(--card2);text-align:left;padding:11px 14px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);font-weight:700;border-bottom:1px solid var(--line)}
+  td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,.02)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tot td{background:var(--card2);font-weight:700}
+
+  /* ---------- DAY CARDS ---------- */
+  .day{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+  .day.ams{border-left-color:var(--ams)} .day.ber{border-left-color:var(--ber)}
+  .day.bud{border-left-color:var(--bud)} .day.prg{border-left-color:var(--prg)}
+  .day.mv{border-left-color:var(--tx3);background:var(--bg2)}
+  .dhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .ddate{font-size:19px;font-weight:750;letter-spacing:-.02em}
+  .dcity{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 9px;border-radius:20px;background:var(--card2);color:var(--tx2)}
+  .ams .dcity{color:var(--ams)} .ber .dcity{color:var(--ber)}
+  .bud .dcity{color:var(--bud)} .prg .dcity{color:var(--prg)}
+  .dtag{font-size:12px;color:var(--tx3);margin-left:auto}
+  .slot{display:flex;gap:14px;padding:7px 0;border-top:1px solid rgba(255,255,255,.045)}
+  .slot:first-of-type{border-top:none}
+  .slot .t{flex:0 0 92px;font-size:12px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;padding-top:3px}
+  .slot .b{flex:1;font-size:14.5px}
+  .slot .b em{color:var(--tx3);font-style:normal;font-size:13px}
+
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;letter-spacing:.04em}
+  .p-book{background:rgba(255,176,32,.16);color:var(--warn)}
+  .p-big{background:rgba(199,125,255,.16);color:var(--prg)}
+  .p-free{background:rgba(77,212,172,.14);color:var(--good)}
+
+  .money{font-variant-numeric:tabular-nums;font-weight:650;color:var(--tx)}
+
+  /* ---------- CHECKLIST ---------- */
+  .chk{display:flex;gap:12px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);align-items:flex-start}
+  .chk .box{flex:0 0 18px;height:18px;border:2px solid var(--line2);border-radius:5px;margin-top:2px}
+  .chk .txt{flex:1;font-size:14.5px}
+  .chk .when{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--warn);white-space:nowrap;padding-top:2px}
+  .chk.now{border-color:rgba(255,92,108,.45)} .chk.now .when{color:var(--bad)}
+
+  .rank{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .rank:last-child{border-bottom:none}
+  .rank .n{flex:0 0 26px;height:26px;border-radius:8px;background:var(--card2);display:grid;place-items:center;font-size:13px;font-weight:750;color:var(--tx2)}
+
+  /* ---------- TRACKER ---------- */
+  .trk-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:18px}
+  .trk-bar label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3)}
+  select,input[type="text"],textarea{
+    background:var(--card2);color:var(--tx);border:1px solid var(--line2);border-radius:8px;
+    padding:8px 10px;font:inherit;font-size:14px;outline:none;
+  }
+  select:focus,input:focus,textarea:focus{border-color:var(--ber)}
+  textarea{width:100%;min-height:76px;resize:vertical;font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.5}
+  .btn{
+    background:var(--card2);color:var(--tx);border:1px solid var(--line2);border-radius:8px;
+    padding:8px 13px;font:inherit;font-size:13.5px;font-weight:650;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--tx3);background:var(--line)}
+  .btn.pri{background:var(--ber);border-color:var(--ber);color:#08101f}
+  .btn.pri:hover{filter:brightness(1.1);background:var(--ber)}
+  .btn.sm{padding:5px 10px;font-size:12px}
+  .btn.wa{background:rgba(77,212,172,.14);border-color:rgba(77,212,172,.45);color:var(--good)}
+  .btn.wa:hover{background:rgba(77,212,172,.24)}
+  .spacer{margin-left:auto}
+
+  .mcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .mcard.me{border-color:var(--ber);box-shadow:0 0 0 1px rgba(91,141,255,.25)}
+  .mcard .mh{display:flex;align-items:baseline;gap:8px;margin-bottom:3px}
+  .mcard .mn{font-size:16px;font-weight:750;letter-spacing:-.01em}
+  .mcard .mp{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;margin-left:auto;font-variant-numeric:tabular-nums}
+  .mcard .ms{font-size:12.5px;color:var(--tx3);margin-bottom:9px}
+  .mcard .ms .late{color:var(--bad);font-weight:700}
+  .bar{height:6px;background:var(--bg2);border-radius:6px;overflow:hidden;margin-bottom:11px}
+  .bar i{display:block;height:100%;width:0;background:var(--good);border-radius:6px;transition:width .25s}
+  .bar i.part{background:var(--warn)} .bar i.low{background:var(--bad)}
+  .mcard .acts{display:flex;gap:6px;flex-wrap:wrap}
+
+  table.mx{min-width:640px}
+  table.mx th.pc,table.mx td.cell{width:52px;text-align:center;padding-left:2px;padding-right:2px}
+  table.mx th.pc{font-size:11px;letter-spacing:.04em}
+  td.cell{cursor:pointer;user-select:none;-webkit-user-select:none}
+  td.cell:hover .tick{border-color:var(--tx3)}
+  .tick{display:inline-grid;place-items:center;width:22px;height:22px;border:2px solid var(--line2);border-radius:6px;font-size:13px;font-weight:800;color:transparent;transition:.12s}
+  .tick.on{background:var(--good);border-color:var(--good);color:#08110d}
+  tr.sec td{background:var(--bg2);font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--tx2);padding:9px 14px}
+  .tname{font-weight:650}
+  .tnote{display:block;font-size:12.5px;color:var(--tx3);margin-top:2px;font-weight:400}
+  .due{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;white-space:nowrap;background:var(--card2);color:var(--tx3)}
+  .due.soon{background:rgba(255,176,32,.16);color:var(--warn)}
+  .due.late{background:rgba(255,92,108,.16);color:var(--bad)}
+  .due.done{background:rgba(77,212,172,.14);color:var(--good)}
+  .ownsel{font-size:13px;padding:5px 8px}
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+    background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:11px 18px;
+    font-size:14px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;transition:.25s;z-index:200;pointer-events:none;max-width:90vw;text-align:center;
+  }
+  .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:22px;color:var(--tx3);font-size:13px}
+  @media(max-width:640px){
+    .slot{flex-direction:column;gap:2px}
+    .slot .t{flex:none}
+    .hs{flex:1 1 calc(50% - 5px);min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">1 – 13 October 2026 · 6 travellers</div>
+    <h1><span class="g">Amsterdam · Berlin<br>Budapest · Prague</span></h1>
+    <p class="sub">Twelve nights, four cities, one overnight train. Built around shoulder-season prices, an easier Sunday door at Berghain, and a Saturday night in a thermal bath. Croatia dropped — it sat 900&nbsp;km off the line and would have cost two full travel days.</p>
+    <div class="hero-stats">
+      <div class="hs"><b>12</b><span>Nights</span></div>
+      <div class="hs"><b>4</b><span>Cities</span></div>
+      <div class="hs"><b>€1,950</b><span>Est. per person</span></div>
+      <div class="hs"><b>€120</b><span>Transport pp</span></div>
+      <div class="hs"><b>8</b><span>Big nights out</span></div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="p0">Overview</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p1">Day by day</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p2">Nightlife</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p3">Getting between cities</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p4">Visa &amp; logistics</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p6">Don't get done</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p7">Tracker</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ OVERVIEW ============ -->
+<section role="tabpanel" id="p0" class="on">
+
+  <div class="callout c-bad">
+    <b>Do this first — deadline 17 August</b>
+    The Netherlands' own guidance is to lodge a Schengen application <strong>no later than 45 days before travel</strong>. For a 1 October departure that is <strong>17 August 2026</strong>. High-season Dutch processing runs 15–25 calendar days and can legally take 45. Submit in the next nine days or the trip is at risk. Full detail in the <strong>Visa &amp; logistics</strong> tab.
+  </div>
+
+  <h2>The route</h2>
+  <p class="lede">You land at Schiphol and leave from Prague, so the trip runs one way, west to east. That is the cheapest shape — no backtracking, no return leg wasted.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>City</th><th>Nights</th><th>Dates</th><th>Days of week</th><th>Why this many</th></tr></thead>
+    <tbody>
+      <tr><td><strong style="color:var(--ams)">Amsterdam</strong></td><td>3</td><td>1–4 Oct</td><td>Thu · Fri · Sat</td><td>Lands you the first weekend. Also your visa's first point of entry.</td></tr>
+      <tr><td><strong style="color:var(--ber)">Berlin</strong></td><td>3</td><td>4–7 Oct</td><td>Sun · Mon · Tue</td><td>Sunday arrival is deliberate — Berghain's Klubnacht is still running and the door is at its softest.</td></tr>
+      <tr><td style="color:var(--tx3)"><strong>Night train</strong></td><td>1</td><td>7–8 Oct</td><td>Wed</td><td>Private 6-berth compartment. Saves a hotel night and a travel day.</td></tr>
+      <tr><td><strong style="color:var(--bud)">Budapest</strong></td><td>3</td><td>8–11 Oct</td><td>Thu · Fri · Sat</td><td>Saturday is the only night the Széchenyi Sparty runs. Cheapest city — spend here.</td></tr>
+      <tr><td><strong style="color:var(--prg)">Prague</strong></td><td>2</td><td>11–13 Oct</td><td>Sun · Mon</td><td>Beer spa, castle, one night out, fly home Tuesday.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout c-warn">
+    <b>The 3 / 3 / 3 tie is intentional — mention it in your cover letter</b>
+    Netherlands, Germany and Hungary each get three nights, so no single "main destination" exists. Under <strong>EU Visa Code Art. 5(1)(c)</strong>, a tie falls to the state whose external border you cross first — Schiphol. That makes the Netherlands the correct consulate, which is where your appointment is. State this explicitly in the cover letter so no officer has to guess. If you want the tie removed entirely, move one Prague night to Amsterdam.
+  </div>
+
+  <h2>What's happening while you're there</h2>
+  <div class="tw">
+  <table>
+    <thead><tr><th>When</th><th>What</th><th>Effect on you</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sat 3 Oct</strong></td><td>German Unity Day</td><td>Public holiday. Shops shut Sat <em>and</em> Sun in Germany — but you're still in Amsterdam. Trains into Berlin on the 4th will be busy: reserve seats.</td></tr>
+      <tr><td><strong>From 2 Oct</strong></td><td>Hannover–Berlin line closure begins</td><td><strong>Adds ~70 min to your Amsterdam→Berlin train.</strong> Plan ~7 hours, not 5h42. See the transport tab.</td></tr>
+      <tr><td><strong>9–18 Oct</strong></td><td>Berlin Festival of Lights</td><td>Free landmark projections. You leave Berlin on the 7th — you'll miss it.</td></tr>
+      <tr><td><strong>Sat 10 Oct</strong></td><td>Széchenyi Sparty, Budapest</td><td>Runs Saturdays only. This is why Budapest is timed the way it is. Book 2–3 weeks out.</td></tr>
+      <tr><td><strong>11 Oct</strong></td><td>Budapest Marathon</td><td>Danube-bank road closures the morning you leave. Take the metro to the station, not a taxi. Leave early.</td></tr>
+      <tr><td><strong>21–25 Oct</strong></td><td>Amsterdam Dance Event</td><td>You miss it by eight days — which is why Amsterdam hotels are half price for you. Fair trade.</td></tr>
+      <tr><td><strong>19 Sep – 4 Oct</strong></td><td>Oktoberfest, Munich</td><td>Ends the day you reach Berlin. See below.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Why not Oktoberfest?</h3>
+  <p>It is genuinely running during your trip — closing weekend is 3–4 October. Catching it would mean gutting Amsterdam to a single night and swapping Berlin for Munich. Two reasons not to: at eight weeks out, tent table reservations for the final weekend are long gone and Munich beds for six on the closing Saturday are both scarce and priced accordingly. And for a group whose stated brief is "party", Berlin's club scene beats a beer tent you can't get a table in. Noted so you know it was considered, not missed.</p>
+
+  <h2>What you're actually doing</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--ams)">Amsterdam · 3 nights</h3>
+      <p>Rent your own electric boat and drive it yourselves down the canals with your own drinks on board — €17 each for two hours and the single best group photo of the trip. Van Gogh and Anne Frank need booking weeks out. Nights: Melkweg or Paradiso, both easy doors. De Pijp as your base.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--ber)">Berlin · 3 nights</h3>
+      <p>The most serious daytime city of the four — Wall Memorial, Topography of Terror, East Side Gallery, all free. Reichstag dome is free but needs registering weeks ahead with all six passport numbers. Nights: Sisyphos or Sunday-evening Berghain. Base yourselves in Friedrichshain.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--bud)">Budapest · 3 nights</h3>
+      <p>Cheapest city by a distance, so this is where you spend. Széchenyi baths by day, ruin bars by night, a Danube party boat with unlimited drinks for €58, and the Saturday Sparty. Stay in District VII, directly above the ruin bars.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--prg)">Prague · 2 nights</h3>
+      <p>Beer spa — oak tubs, unlimited self-poured beer, and Beerland's Suite 2 holds exactly six. €47 each. Prague Castle in the morning, Roxy or Cross Club at night, Náplavka riverbank in between. Stay in Holešovice or Vinohrady, not Old Town.</p>
+    </div>
+  </div>
+
+  <h2>Weather — pack for this</h2>
+  <p class="lede">Early October across all four cities: highs 13–17&nbsp;°C, lows 6–9&nbsp;°C, and it gets dark around 18:30. Amsterdam is the wettest and windiest. This is not shorts weather.</p>
+  <ul>
+    <li>One warm layer plus a <strong>waterproof</strong> jacket — umbrellas are useless in Amsterdam wind</li>
+    <li>Boots or trainers you can stand in for six hours. Berlin clubs are concrete floors and long nights</li>
+    <li>Dark, plain clothing for Berlin doors. No football shirts, no suits, no going-out shirts</li>
+    <li>Swim shorts, flip-flops and a towel — mandatory for the Sparty and useful at the beer spa</li>
+    <li>One collared shirt each, for Prague's dressier clubs and any nice dinner</li>
+  </ul>
+</section>
+
+<!-- ============ DAY BY DAY ============ -->
+<section role="tabpanel" id="p1">
+  <h2>Day by day</h2>
+  <p class="lede">Times are indicative. Anything marked <span class="pill p-book">book ahead</span> sells out or costs materially more at the door.</p>
+
+  <div class="day ams">
+    <div class="dhead"><span class="ddate">Thu 1 Oct</span><span class="dcity">Amsterdam</span><span class="dtag">Night 1</span></div>
+    <div class="slot"><div class="t">Arrival</div><div class="b">Land at Schiphol. <strong>Budget 60–90 minutes for immigration</strong> — EES biometric registration is mandatory and six first-timers will not clear fast. Train to Amsterdam Centraal, €5.50, 17 minutes.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Drop bags in De Pijp. Walk it off — Albert Cuyp Market, then the Jordaan canals. Do not sleep, you'll wreck the whole trip.</div></div>
+    <div class="slot"><div class="t">Evening</div><div class="b">Foodhallen in Oud-West — 20+ stalls, six different opinions, one building. <span class="money">€12–18 pp</span></div></div>
+    <div class="slot"><div class="t">Night</div><div class="b">Easy first night. Brown-café crawl in the Jordaan. <em>Beer €7.50 for a half-litre — Amsterdam is the priciest of the four.</em></div></div>
+  </div>
+
+  <div class="day ams">
+    <div class="dhead"><span class="ddate">Fri 2 Oct</span><span class="dcity">Amsterdam</span><span class="dtag">Night 2</span></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Anne Frank House, €16.50 <span class="pill p-book">book ahead</span> — tickets release every Tuesday 10:00 CET for the date six weeks later and vanish within hours. Two of you buy simultaneously; one transaction rarely gets six.</div></div>
+    <div class="slot"><div class="t">Midday</div><div class="b">Van Gogh Museum, €27 <span class="pill p-book">book ahead</span> — online only, never sold at the door. Fries at Vleminckx on the way.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b"><strong>Self-drive canal boat.</strong> Eco Boats: 7-seater at €50/hour, 2-hour minimum = <span class="money">€17 each</span>. No licence, electric, bring your own drinks. <span class="pill p-book">book ahead</span></div></div>
+    <div class="slot"><div class="t">Evening</div><div class="b">Indonesian rijsttafel — the classic Dutch group meal, dozens of shared dishes. <span class="money">€30–40 pp</span></div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> Melkweg or Paradiso, €10–25. Both relaxed doors, both walkable from Leidseplein, ID mandatory.</div></div>
+  </div>
+
+  <div class="day ams">
+    <div class="dhead"><span class="ddate">Sat 3 Oct</span><span class="dcity">Amsterdam</span><span class="dtag">Night 3</span></div>
+    <div class="slot"><div class="t">Late morning</div><div class="b">Heineken Experience, ~€25 — self-guided, ends with two beers, and it's five minutes from De Pijp for lunch after.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Ferry to Amsterdam Noord (free) — A'DAM Lookout swing, NDSM warehouses, cheap beer. Or Rijksmuseum, €27, if it's raining hard.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> Shelter (Noord) or De Marktkantine (West). <strong>Shelter explicitly refuses large groups.</strong> Pre-buy tickets, split into pairs, arrive five minutes apart, phones stay in pockets on the floor — they will eject you for filming. Softer alternative: RADION or back to Melkweg.</div></div>
+    <div class="slot"><div class="t">Before bed</div><div class="b">Pack. The Berlin train leaves early and it's a long one.</div></div>
+  </div>
+
+  <div class="day mv">
+    <div class="dhead"><span class="ddate">Sun 4 Oct</span><span class="dcity">Amsterdam → Berlin</span><span class="dtag">~7 hours</span></div>
+    <div class="slot"><div class="t">08:00</div><div class="b">Direct ICE from Amsterdam Centraal. <strong>Take the earliest departure.</strong> From 2 Oct the Hannover–Berlin line is closed for works and trains divert via Hamburg, adding ~70 minutes. <span class="pill p-book">reserve seats</span> — it's a public-holiday weekend.</div></div>
+    <div class="slot"><div class="t">~15:00</div><div class="b">Arrive Berlin Hauptbahnhof. Check in, Friedrichshain. Grab a 7-day AB ticket, €43.50.</div></div>
+    <div class="slot"><div class="t">Evening</div><div class="b">Mustafa's Gemüse Kebap on Mehringdamm — expect a queue, it's worth it. Curry 36 is 30 seconds away if it isn't.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> <strong>This is your Berghain window.</strong> Klubnacht runs continuously from Saturday midnight to Monday morning, and by Sunday night the queue is short and the door is far softer than Saturday. Go in ones and twos, arrive sober, no phones, no talking in the queue. €20–30, cash. If it doesn't happen: <strong>Sisyphos</strong> also runs Friday through Monday, has a friendly door and is arguably the better night anyway.</div></div>
+  </div>
+
+  <div class="day ber">
+    <div class="dhead"><span class="ddate">Mon 5 Oct</span><span class="dcity">Berlin</span><span class="dtag">Night 2</span></div>
+    <div class="slot"><div class="t">Late start</div><div class="b">Earned.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Third Reich + Cold War walking tour, ~€26, 2 hours — Brandenburg Gate, Holocaust Memorial, the Führerbunker car park, Checkpoint Charlie, Topography of Terror. The sites are free; you're paying for someone who can join them up.</div></div>
+    <div class="slot"><div class="t">Late afternoon</div><div class="b">Berlin Wall Memorial at Bernauer Straße — the only place the full death strip survives. Free.</div></div>
+    <div class="slot"><div class="t">Evening</div><div class="b">Kreuzberg — Görlitzer Park end for bars, Markthalle Neun if it's open. Beer €3.50–4.50, the cheapest of the trip.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b">Quiet one. Renate or Chalet if anyone has legs left — easiest doors of the serious clubs, €10–15.</div></div>
+  </div>
+
+  <div class="day ber">
+    <div class="dhead"><span class="ddate">Tue 6 Oct</span><span class="dcity">Berlin</span><span class="dtag">Night 3</span></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Reichstag glass dome — <strong>free, but you must register online weeks ahead with all six passport numbers.</strong> Do this the day you read this. <span class="pill p-free">free</span> <span class="pill p-book">register now</span></div></div>
+    <div class="slot"><div class="t">Midday</div><div class="b">East Side Gallery, then a Spree cruise (~€20–25, 1 hour) or Museum Island if the weather turns.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Prenzlauer Berg beer garden, or Mauerpark if you want the flea-market version.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> <strong>Tresor</strong> (€12–15, the original basement vault) or <strong>://about blank</strong>. Draw <strong>€100–150 cash each first — most Berlin clubs don't take cards</strong> and the in-club ATMs are predatory.</div></div>
+  </div>
+
+  <div class="day mv">
+    <div class="dhead"><span class="ddate">Wed 7 Oct</span><span class="dcity">Berlin → night train</span><span class="dtag">Sleeper</span></div>
+    <div class="slot"><div class="t">Day</div><div class="b">Check out, leave bags at the Hauptbahnhof lockers. Museum Island, Tempelhofer Feld, or Markthalle Neun's Street Food Thursday's smaller Wednesday sibling. Last currywurst.</div></div>
+    <div class="slot"><div class="t">~19:20</div><div class="b"><strong>EuroNight "Metropol" to Budapest.</strong> Six of you = the entire 6-berth couchette compartment, no strangers. €59 each, light breakfast included. <span class="pill p-book">book now</span></div></div>
+    <div class="slot"><div class="t">Onboard</div><div class="b">Bring beers and snacks from the station — the on-board options are thin. <strong>Keep passports on you:</strong> Germany has reintroduced temporary internal border checks.</div></div>
+  </div>
+
+  <div class="day bud">
+    <div class="dhead"><span class="ddate">Thu 8 Oct</span><span class="dcity">Budapest</span><span class="dtag">Night 1</span></div>
+    <div class="slot"><div class="t">~08:30</div><div class="b">Arrive Budapest Nyugati. Check in, District VII (Jewish Quarter). 72-hour travelcard, 5,750&nbsp;HUF ≈ €14.40.</div></div>
+    <div class="slot"><div class="t">Midday</div><div class="b">Great Market Hall — lángos and goulash upstairs, €5–7. Then walk the Chain Bridge to Buda.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Buda Castle, Fisherman's Bastion, Matthias Church. Mostly free walking; the Bastion's upper towers are ~€4.</div></div>
+    <div class="slot"><div class="t">Evening</div><div class="b">Gettó Gulyás for the real thing — <strong>reserve, it's tiny.</strong> €12–18 pp.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b">Szimpla Kert, the original ruin bar. <strong>Go before 22:00</strong> or you'll queue 45 minutes. Free entry, drinks €3–6. Then Instant-Fogas — seven venues under one roof, open until 06:00, no door politics.</div></div>
+  </div>
+
+  <div class="day bud">
+    <div class="dhead"><span class="ddate">Fri 9 Oct</span><span class="dcity">Budapest</span><span class="dtag">Night 2</span></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Széchenyi Thermal Baths. The "good morning" ticket is 10,500&nbsp;HUF (~€26) before 09:00 on weekdays — cheapest slot and near-empty outdoor pools. Book online to skip the queue.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Escape room — Budapest invented them and they're ~€15–20 each for a six-person room. Or the Parliament interior tour <span class="pill p-book">book ahead</span>.</div></div>
+    <div class="slot"><div class="t">Early evening</div><div class="b">Rooftop drinks at 360 Bar or High Note SkyBar. <em>Note: 360 is relaxed, White Raven enforces a strict dress code.</em></div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> <strong>Danube party boat</strong> — 2.5 hours, DJ, <span class="money">€58 with unlimited drinks</span>. Go early: the city lights switch off around 22:00. Then Doboz or Akvárium.</div></div>
+  </div>
+
+  <div class="day bud">
+    <div class="dhead"><span class="ddate">Sat 10 Oct</span><span class="dcity">Budapest</span><span class="dtag">Night 3 · Sparty</span></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Slow. Ruin-bar brunch, Karaván street food, Bors GasztroBár.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b">Margaret Island, or Memento Park's Communist statues if anyone wants the odd one out.</div></div>
+    <div class="slot"><div class="t">21:30–02:00</div><div class="b"><span class="pill p-big">the big one</span> <strong>Széchenyi Sparty.</strong> A spa party in the thermal baths, Saturdays only. <span class="money">€65 basic / €81 premium</span> (premium adds four drinks and a 19:00 warm-up party). <strong>Bring swim shorts, flip-flops, a towel, photo ID and cash</strong> — cards aren't taken for the cup deposit. 18+. <span class="pill p-book">book 2–3 weeks out</span></div></div>
+    <div class="slot"><div class="t">After</div><div class="b">Back to the Jewish Quarter. Everything runs to 06:00.</div></div>
+  </div>
+
+  <div class="day mv">
+    <div class="dhead"><span class="ddate">Sun 11 Oct</span><span class="dcity">Budapest → Prague</span><span class="dtag">~6h50</span></div>
+    <div class="slot"><div class="t">Early</div><div class="b"><strong>Budapest Marathon day.</strong> Danube-bank roads close and Bolt surges. Take the metro to the station and leave a buffer — do not rely on a taxi.</div></div>
+    <div class="slot"><div class="t">~09:40</div><div class="b">EuroCity / Railjet via Bratislava, ~6h50, <span class="money">€21 each</span>, restaurant car and power sockets. RegioJet is the alternative — from €19.90, seat reservation included and <strong>fully refundable up to 15 minutes before departure</strong>, which is the right call for a morning after the Sparty.</div></div>
+    <div class="slot"><div class="t">~16:30</div><div class="b">Arrive Prague. Check in — Holešovice or Vinohrady, not Old Town. 72-hour transport pass ~350&nbsp;CZK (€14.40). <strong>Validate every ticket in the yellow machine before boarding.</strong></div></div>
+    <div class="slot"><div class="t">Night</div><div class="b">Lokál for tank Pilsner and proper Czech food — <strong>reserve for six</strong>, ~€10–14 pp. Then Náplavka's riverbank cellar bars.</div></div>
+  </div>
+
+  <div class="day prg">
+    <div class="dhead"><span class="ddate">Mon 12 Oct</span><span class="dcity">Prague</span><span class="dtag">Last night</span></div>
+    <div class="slot"><div class="t">08:00</div><div class="b">Charles Bridge and Old Town Square before the crowds. By 10:00 both are unbearable and pickpocket-dense.</div></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Prague Castle, Circuit B, 250&nbsp;CZK (~€10) — St Vitus, Old Royal Palace, Golden Lane. <strong>Pre-book on hrad.cz</strong> and the queue drops from an hour to ten minutes.</div></div>
+    <div class="slot"><div class="t">Afternoon</div><div class="b"><span class="pill p-big">the group one</span> <strong>Beer spa.</strong> Beerland's Suite 2 is three oak tubs for up to six, from <span class="money">€47 each</span> — unlimited self-poured beer during the session, straw beds by a fire, free beer bread. 18+. <span class="pill p-book">book ahead</span></div></div>
+    <div class="slot"><div class="t">Sunset</div><div class="b">Letná beer garden for the skyline. Beer ~55&nbsp;CZK.</div></div>
+    <div class="slot"><div class="t">Night</div><div class="b"><span class="pill p-big">big one</span> <strong>Roxy</strong> (€10–20, where locals actually go, peaks 01:00–04:00) or <strong>Cross Club</strong> in Holešovice (€4–10, steampunk sculpture interior, cheapest and most distinctive). Karlovy Lázně is five floors and famous but entirely tourists — worth one hour as a novelty, no more.</div></div>
+  </div>
+
+  <div class="day mv">
+    <div class="dhead"><span class="ddate">Tue 13 Oct</span><span class="dcity">Prague → home</span><span class="dtag">Departure</span></div>
+    <div class="slot"><div class="t">Morning</div><div class="b">Bus 119 to metro line A on one 50&nbsp;CZK ticket, 35–45 minutes to the airport — plus a 20&nbsp;CZK ticket for large luggage. Airport Express is 200&nbsp;CZK direct from the main station. Taxi should be 600–800&nbsp;CZK; use Bolt so the price is locked.</div></div>
+    <div class="slot"><div class="t">At the airport</div><div class="b"><strong>Go through exit passport control properly.</strong> EES records your departure, and that record is what proves you didn't overstay — it matters for every future Schengen application.</div></div>
+  </div>
+
+  <div class="callout c-good">
+    <b>One swap worth considering</b>
+    If you'd rather have Prague on a Saturday than the Budapest Sparty, run Budapest 2 nights (8–10 Oct) and Prague 3 (10–13 Oct). You gain Prague's best club night and dodge the marathon entirely; you lose the Sparty, which only runs Saturdays. My call is to keep the Sparty — a spa party in a Neo-Baroque bathhouse is the more memorable story. But it's genuinely close.
+  </div>
+</section>
+
+<!-- ============ NIGHTLIFE ============ -->
+<section role="tabpanel" id="p2">
+  <h2>Nightlife</h2>
+  <p class="lede">The single biggest risk to your nights out is not price — it's being turned away. Six men arriving together is the exact silhouette European door staff are trained to refuse. Every venue below is graded on that.</p>
+
+  <div class="callout c-warn">
+    <b>The rule that gets you in everywhere</b>
+    Never queue as six. Split into pairs, arrive five minutes apart, buy tickets online in advance where possible, one person talks, nobody argues with a refusal, no group photos in the line. This is not superstition — Shelter's published house rules state that large groups can be refused, and Berghain's door explicitly discourages groups above three.
+  </div>
+
+  <h3>Door difficulty, hardest first</h3>
+  <div class="card">
+    <div class="rank"><div class="n">1</div><div><strong>Berghain, Berlin</strong> — near-certain refusal as a six. Go in ones and twos, Sunday night not Saturday, dark plain clothes, sober, silent. Accept rejection gracefully. €20–30, cash, no phones inside.</div></div>
+    <div class="rank"><div class="n">2</div><div><strong>KitKatClub, Berlin</strong> — certain refusal in street clothes. The dress code <em>is</em> the door: fetish, latex or near-nudity. It is also a genuinely sex-positive venue. Go only if all six actually want that; otherwise skip it without regret.</div></div>
+    <div class="rank"><div class="n">3</div><div><strong>Shelter / RADION, Amsterdam</strong> — large groups explicitly refused, phones banned on the floor, cashless, 18+. Pre-buy tickets and split up.</div></div>
+    <div class="rank"><div class="n">4</div><div><strong>Rembrandtplein clubs, Amsterdam</strong> (Escape, NYX, Jimmy Woo) — unwritten gender-ratio policy. This is where you're most likely to be bounced with no reason given. Also the most expensive drinks in the city.</div></div>
+    <div class="rank"><div class="n">5</div><div><strong>Epic / Duplex, Prague</strong> — dress code only. Collared shirt, no sportswear, no caps, no flip-flops and you're fine.</div></div>
+    <div class="rank"><div class="n">6</div><div><strong>Everything else</strong> — Sisyphos, Tresor, Renate, Chalet (Berlin); Szimpla, Instant-Fogas, Doboz, Akvárium (Budapest); Roxy, Cross Club, Chapeau Rouge (Prague); Melkweg, Paradiso, De Marktkantine (Amsterdam). All realistically fine for six.</div></div>
+  </div>
+
+  <h3>Where to go, by city</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>City</th><th>Venue</th><th>Best night</th><th class="num">Entry</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4" style="color:var(--ams)"><strong>Amsterdam</strong></td><td>Melkweg</td><td>Fri / Sat</td><td class="num">€10–25</td><td>Multi-room, live gig into club night. Your safest good night.</td></tr>
+      <tr><td>Paradiso</td><td>Fri / Sat</td><td class="num">€10–25</td><td>Converted church. Some nights add a €4 membership — check the ticket page.</td></tr>
+      <tr><td>Shelter</td><td>Fri / Sat, 23:00–08:00</td><td class="num">€15–25</td><td>Strictest door in the city. Underground techno, worth the effort.</td></tr>
+      <tr><td>De Marktkantine</td><td>Sat</td><td class="num">€12–22</td><td>Art-deco ballroom, house and disco, much softer door.</td></tr>
+
+      <tr><td rowspan="4" style="color:var(--ber)"><strong>Berlin</strong></td><td>Sisyphos</td><td>Fri → Mon, non-stop</td><td class="num">€10–15</td><td>Former dog-biscuit factory with a beach and ponds. <strong>Your realistic big Berlin night.</strong></td></tr>
+      <tr><td>Berghain</td><td>Sun night</td><td class="num">€20–30</td><td>Klubnacht runs to Monday morning. Sunday is the soft window.</td></tr>
+      <tr><td>Tresor</td><td>Fri / Sat</td><td class="num">€12–15</td><td>The original basement vault. Moderate door.</td></tr>
+      <tr><td>Renate / Chalet</td><td>Fri / Sat</td><td class="num">€10–15</td><td>Easiest doors of the serious clubs — your fallback plan.</td></tr>
+
+      <tr><td rowspan="4" style="color:var(--bud)"><strong>Budapest</strong></td><td>Instant-Fogas</td><td>Any, 18:00–06:00</td><td class="num">Free–€10</td><td>Seven venues, one building. Best single destination for six. 18+ after 23:00. Single-entry ticket — leave and you pay again.</td></tr>
+      <tr><td>Szimpla Kert</td><td>Tue early / any</td><td class="num">Free</td><td>The original ruin bar. Go before 22:00 or queue 45 min.</td></tr>
+      <tr><td>Széchenyi Sparty</td><td>Saturdays only</td><td class="num">€65–81</td><td>Spa party in the thermal baths. Book 2–3 weeks out.</td></tr>
+      <tr><td>Doboz / Akvárium</td><td>Thu–Sat</td><td class="num">€0–12</td><td>More local than Szimpla. Akvárium sits under a former pool.</td></tr>
+
+      <tr><td rowspan="4" style="color:var(--prg)"><strong>Prague</strong></td><td>Roxy</td><td>Fri / Sat, peaks 01:00</td><td class="num">€10–20</td><td>1920s cinema. Where locals actually go.</td></tr>
+      <tr><td>Cross Club</td><td>Wed–Sat</td><td class="num">€4–10</td><td>Steampunk sculpture interior in Holešovice. Cheapest, most distinctive, easy door.</td></tr>
+      <tr><td>Chapeau Rouge</td><td>Any</td><td class="num">Free–low</td><td>Three floors, cheap shots, chaotic. The "we don't know what to do" default.</td></tr>
+      <tr><td>Karlovy Lázně</td><td>Fri / Sat</td><td class="num">~€10</td><td>Five floors, one genre each. Entirely tourists — one hour as a novelty.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>What a night actually costs, per person</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>City</th><th class="num">Entry</th><th class="num">Beer</th><th class="num">Cocktail</th><th class="num">Full night</th></tr></thead>
+    <tbody>
+      <tr><td>Amsterdam</td><td class="num">€10–25</td><td class="num">€4–7.50</td><td class="num">€8–14</td><td class="num"><strong>€50–80</strong></td></tr>
+      <tr><td>Berlin</td><td class="num">€10–30</td><td class="num">€3–5</td><td class="num">€7–10</td><td class="num"><strong>€80–150</strong></td></tr>
+      <tr><td>Budapest</td><td class="num">€0–10</td><td class="num">€3–5</td><td class="num">€5–8</td><td class="num"><strong>€25–50</strong></td></tr>
+      <tr><td>Prague</td><td class="num">€4–20</td><td class="num">€2–5</td><td class="num">€6–14</td><td class="num"><strong>€28–60</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout c-warn">
+    <b>Cash</b>
+    Most Berlin clubs are cash only and the ATMs inside them charge brutal fees. Draw €100–150 each before going out. Budapest and Prague are card-friendly but ruin bars and small pubs often aren't.
+  </div>
+</section>
+
+<!-- ============ TRANSPORT ============ -->
+<section role="tabpanel" id="p3">
+  <h2>Getting between cities</h2>
+
+  <div class="callout c-bad">
+    <b>You are late, not early — book this week</b>
+    DB, MÁV, ČD and ÖBB all open international sales <strong>six months ahead</strong>, which for early-October travel was early April. You're 54 days out and the cheap advance quotas are draining. There is no upcoming sale to wait for. Book all three legs now.
+  </div>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Leg</th><th>Mode</th><th>Time</th><th class="num">Per person</th><th class="num">All six</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Amsterdam → Berlin</strong><br><small>Sun 4 Oct</small></td><td>Direct ICE, DB Group Saver Fare Europe</td><td>~7h (diverted)</td><td class="num">€40</td><td class="num">€240</td></tr>
+      <tr><td><strong>Berlin → Budapest</strong><br><small>Wed 7 Oct, overnight</small></td><td>EuroNight "Metropol", 6-berth couchette</td><td>~12–13h</td><td class="num">€59</td><td class="num">€354</td></tr>
+      <tr><td><strong>Budapest → Prague</strong><br><small>Sun 11 Oct</small></td><td>EC / Railjet via Bratislava, or RegioJet</td><td>~6h50</td><td class="num">€21</td><td class="num">€126</td></tr>
+      <tr class="tot"><td>Total</td><td></td><td></td><td class="num">€120</td><td class="num">€720</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Leg A — Amsterdam to Berlin: the one problem in the itinerary</h3>
+  <p>DB begins a full renovation of the Hannover–Berlin corridor on <strong>2 October 2026</strong>, two days before you travel. NS International confirms the split: <strong>four daily trains run direct to Berlin via Hamburg</strong> (calling at Hamburg-Harburg and Hamburg-Bergedorf), while three terminate at Hannover and need a change. NS says only that the journey will be "longer"; rail-industry reporting puts it at about <strong>+70 minutes, so plan roughly 7 hours rather than 5h42</strong>. Take the earliest departure so a delay doesn't eat your Sunday night.</p>
+  <p><strong>The lever most people miss:</strong> DB's <em>Group Saver Fare Europe</em> starts at exactly six passengers — your group — from €16.99 per person with <strong>free seat reservations included</strong>. Book on int.bahn.de or in DB Navigator. Even at the higher buckets you'll beat the €90–150 KLM fare, and KLM is the only airline flying this pair nonstop.</p>
+
+  <h3>Leg B — Berlin to Budapest: the best value on the trip</h3>
+  <p>The EuroNight <em>Metropol</em> leaves Berlin around 19:20 and reaches Budapest Nyugati around 08:30. A 6-berth couchette is <strong>€59 each — and six of you is exactly one compartment</strong>, so you get it to yourselves. Light breakfast included.</p>
+  <p>It also deletes a hotel night. Six beds in Berlin on a Wednesday runs €150–250, so the true net cost of this leg is closer to €100–200 for the whole group. Wizz Air flies BER–BUD for €25–60, but once you add cabin-bag fees, two airport transfers and the hotel night you didn't save, the sleeper wins on money and on time. <em>Confirm the exact departure at booking — sources differ on the routing and the Berlin works may shift it.</em></p>
+
+  <h3>Leg C — Budapest to Prague</h3>
+  <p>EuroCity and Railjet run via Bratislava roughly every two hours, ~6h50, from €21 with a restaurant car, power and Wi-Fi. <strong>RegioJet</strong> is the smarter pick for a Sunday morning after the Sparty: from €19.90, seat reservation included, free Illy coffee, and <strong>fully refundable up to 15 minutes before departure</strong>.</p>
+
+  <div class="callout c-bad">
+    <b>Do not buy a rail pass — and do not buy the wrong one</b>
+    <strong>Interrail is for European citizens and residents only. As Indian passport holders you would need Eurail</strong> — get this wrong and the pass is void at inspection. Either way the maths kills it: point-to-point costs €120 per person; a Eurail Global Flexi 4-day is €279 all-in for an adult, €226 for a youth pass, because the sleeper berth supplement is payable regardless. You only have three travel days. Skip it.
+  </div>
+
+  <h3>Getting around inside each city</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>City</th><th>Pass</th><th>Airport transfer</th><th>Watch out</th></tr></thead>
+    <tbody>
+      <tr><td>Amsterdam</td><td>GVB 7-day €43 · 24h €10</td><td>NS train €5.50, 17 min</td><td>—</td></tr>
+      <tr><td>Berlin</td><td>7-day AB €43.50</td><td>FEX from BER, ABC ticket €4.70–5, 23 min</td><td>BER is Zone C — you need ABC, not AB. Fare-dodging fine €60, inspectors are plain-clothes.</td></tr>
+      <tr><td>Budapest</td><td>72h 5,750 HUF (€14.40)</td><td>100E bus 2,500 HUF, 40 min</td><td><strong>100E is not covered by the travelcard</strong> — buy a separate ticket. Fine 12,000 HUF.</td></tr>
+      <tr><td>Prague</td><td>72h ~350 CZK (€14.40)</td><td>Bus 119 + metro A, 50 CZK, 40 min</td><td><strong>Validate in the yellow machine before boarding.</strong> Extra 20 CZK ticket for big luggage. Fine ~1,000–1,500 CZK.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><small>Berlin's U-Bahn and S-Bahn run all night Friday and Saturday. Prague's metro stops around midnight but night trams 90–99 run until morning and all interchange at Lazarská.</small></p>
+</section>
+
+<!-- ============ VISA ============ -->
+<section role="tabpanel" id="p4">
+  <h2>Visa &amp; logistics</h2>
+
+  <div class="callout c-bad">
+    <b>The 45-day deadline is 17 August 2026</b>
+    The Dutch government's instruction is to apply <strong>no later than 45 days before your trip</strong>, and its own published processing time for a short-stay Schengen visa is <strong>25 calendar days on average</strong> — extending to <strong>45 calendar days</strong> where an application needs further consideration or extra documents. The clock starts when the consular office receives your complete file from VFS, not at your appointment, and collection or courier adds time on top.
+    <br><br>
+    Lodge around 20 August → passports back roughly 20–25 September, about a week of slack. Lodge in mid-September → you miss the trip. There is no expedited option for a holiday.
+  </div>
+
+  <h3>Why the Netherlands is the right consulate</h3>
+  <p>Your nights split Netherlands 3 / Germany 3 / Hungary 3 / Czechia 2. With a three-way tie, no main destination exists, so <strong>EU Visa Code Art. 5(1)(c)</strong> applies: the application goes to the state whose external border you cross first. That's Schiphol. Your appointment is correctly booked.</p>
+  <p><strong>Put this in the cover letter in one sentence</strong> — "the Netherlands is both the first point of entry and joint-longest stay" — so no officer has to work it out. One caveat worth knowing: counted by calendar days rather than nights, Germany arguably edges ahead, since you're in Germany from the 4th to the evening of the 7th. The night-count reading is the standard one and it's consistent with your arrival airport, so it holds. If you want the ambiguity gone entirely, move one Prague night to Amsterdam.</p>
+
+  <div class="callout c-warn">
+    <b>Worth knowing for next time</b>
+    The Netherlands refused <strong>20.6%</strong> of Indian applications in 2025. Germany refused <strong>10.5%</strong>. If your slot were still movable, making Germany the clear main destination would roughly halve the refusal risk. Since your appointment is booked, don't change course now — just make the file airtight.
+  </div>
+
+  <h3>Document checklist — Netherlands, tourism</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Item</th><th>Requirement</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Passport</strong></td><td>Issued within the last 10 years · at least 2 blank visa pages · valid at least 3 months beyond your exit → <strong>valid to 13 January 2027 minimum</strong>. Check all six today; a passport problem takes weeks to fix.</td></tr>
+      <tr><td><strong>Photo</strong></td><td>Colour, under 6 months old, <strong>35 × 45 mm</strong>, white or light background</td></tr>
+      <tr><td><strong>Form</strong></td><td>Complete online, print the unique code, sign it</td></tr>
+      <tr><td><strong>Accommodation</strong></td><td>Bookings covering <strong>every one of the 12 nights</strong>, in each applicant's name. Refundable is fine.</td></tr>
+      <tr><td><strong>Flights</strong></td><td>A <strong>reservation</strong> — the Dutch checklist states explicitly that a paid ticket is not required. Do not buy six non-refundable tickets before the visa is granted.</td></tr>
+      <tr><td><strong>Bank statements</strong></td><td>Last <strong>3 months</strong>. See the funds calculation below.</td></tr>
+      <tr><td><strong>Payslips</strong></td><td>3 recent ones, or ITR if self-employed</td></tr>
+      <tr><td><strong>Employer letter</strong></td><td>On letterhead: job title, contract duration, salary, and approved leave for the dates</td></tr>
+      <tr><td><strong>Insurance</strong></td><td>≥ <strong>€30,000</strong> medical, covering hospitalisation, emergency care, prescriptions <strong>and repatriation to India including in the event of death</strong>. Repatriation is mandatory, not optional.</td></tr>
+      <tr><td><strong>Itinerary</strong></td><td>Not strictly mandated — but attach a day-by-day one anyway. With four countries it's what lets the officer connect your bookings to your story. <em>Print the Day-by-day tab of this page.</em></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Proof of funds</h3>
+  <p>The Netherlands' official reference amount is <strong>€55 per person per day</strong>. Over 13 days that's <strong>€715 (~₹77,000) each</strong>, or <strong>€4,290 for the group</strong>.</p>
+  <p>Show more than that. Czechia's own threshold is CZK 1,565/day ≈ €63, higher than the Dutch figure, and a bare-minimum balance reads as "just scraped through" to an officer at a consulate refusing one in five Indian applicants. <strong>Target ₹1.5–2 lakh per person, held steady across all three months.</strong></p>
+
+  <div class="callout c-bad">
+    <b>Do not top up the accounts now</b>
+    Sudden unexplained credits in the final month before an application are one of the most common refusal triggers. If money has to move, be ready to document where it came from — a sponsor letter plus the sponsor's own statements works for anyone whose personal balance is thin. Better to arrange that now than to explain it later.
+  </div>
+
+  <h3>Cost per applicant</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Item</th><th class="num">INR</th></tr></thead>
+    <tbody>
+      <tr><td>Schengen visa fee (€90, collected in INR at the mission's fixed rate)</td><td class="num">₹9,100–9,900</td></tr>
+      <tr><td>VFS service charge, Netherlands India (incl. GST, with biometrics)</td><td class="num">₹1,855</td></tr>
+      <tr><td>Travel insurance, 13 days</td><td class="num">₹450–900</td></tr>
+      <tr><td>Passport courier return <small>(optional, take it)</small></td><td class="num">₹686–930</td></tr>
+      <tr><td>SMS tracking, photos</td><td class="num">₹175–650</td></tr>
+      <tr class="tot"><td>Per applicant</td><td class="num">₹12,300–14,200</td></tr>
+      <tr class="tot"><td>All six</td><td class="num">₹74,000–85,000</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><small>All fees are non-refundable on refusal. Skip the Premium Lounge — it buys a shorter wait at the counter, not faster processing.</small></p>
+
+  <h3>Six applicants, six appointments</h3>
+  <p>The Dutch MFA is explicit: applying for multiple people means <strong>a separate appointment for each person</strong> — six forms, six fee payments, six slots. Book them back to back on the same day at the same centre.</p>
+  <p>Everyone attends biometrics in person. There is a five-year reuse rule — if anyone gave Schengen fingerprints since roughly September 2021 they may be exempt, but only if they bring <strong>the old passport containing the previous visa sticker</strong> so VFS can link the record. A new passport without the old one usually breaks the link. Book everyone for full biometrics anyway; if it's waived on the day you've lost nothing.</p>
+
+  <h3>At the border — EES, and why ETIAS doesn't apply to you</h3>
+  <p>The EU Entry/Exit System has been fully operational since 10 April 2026. At Schiphol you'll follow the non-EU lane to either a self-service kiosk or a Marechaussee desk, where your passport data, face and fingerprints are captured. <strong>It replaces the passport stamp</strong> — expect no ink. The registration lasts three years.</p>
+  <p><strong>Budget 60–90 minutes.</strong> Schiphol has 161 kiosks, but aviation bodies have reported waits of up to two hours at peaks, and six first-time registrations will not be quick. Don't plan anything tight for arrival afternoon.</p>
+  <p><strong>ETIAS does not apply to you.</strong> It covers only visa-free nationalities. You hold a Schengen visa, so there is nothing to file and no €20 fee — and in any case ETIAS isn't mandatory until 2027. If an agent tries to sell you one, walk away.</p>
+  <p>NL→DE, DE→HU and HU→CZ are internal Schengen crossings with no formal checks — but the Netherlands and Germany have both reintroduced temporary internal border controls, so <strong>carry your passport at all times</strong>, including on the night train.</p>
+
+  <h3>Worth asking for: a multi-entry visa</h3>
+  <p>Under the 2024 EU–India cascade rules, anyone with <strong>two lawfully used Schengen visas in the past three years</strong> can be issued a two-year multi-entry visa, and later a five-year one. It costs nothing extra. Whoever qualifies should request it in the cover letter and attach copies of the previous visas plus entry/exit evidence. It won't change this trip — everything is inside Schengen — but it makes the next one trivial.</p>
+
+  <h3>Countdown</h3>
+  <div class="chk now"><div class="box"></div><div class="txt"><strong>Check all six passports</strong> — 10-year rule, 2 blank pages, valid to 13 Jan 2027</div><div class="when">Today</div></div>
+  <div class="chk now"><div class="box"></div><div class="txt"><strong>Hold refundable flight reservations and block all 12 nights of accommodation</strong> with free cancellation, in each traveller's name</div><div class="when">This week</div></div>
+  <div class="chk now"><div class="box"></div><div class="txt"><strong>Collect employer NOC letters, 3 months of stamped bank statements, 3 payslips each</strong></div><div class="when">This week</div></div>
+  <div class="chk now"><div class="box"></div><div class="txt"><strong>Buy travel insurance</strong> — €100,000 cover, not the bare €30,000. The difference is a couple of hundred rupees and it reads better.</div><div class="when">This week</div></div>
+  <div class="chk now"><div class="box"></div><div class="txt"><strong>Submit at VFS</strong> — the 45-day mark</div><div class="when">By 17 Aug</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Book all three train legs — advance quotas are draining now</div><div class="when">This week</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Register the Reichstag dome online with all six passport numbers</div><div class="when">This week</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Anne Frank House — tickets drop Tuesdays 10:00 CET for six weeks ahead. Set an alarm; two people buy simultaneously.</div><div class="when">Tue mornings</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Book Van Gogh Museum, canal boat, Sparty, beer spa, Prague Castle</div><div class="when">By mid-Sep</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Order forints and koruna, or set up Revolut/Wise cards. Neither Hungary nor Czechia uses the euro.</div><div class="when">Late Sep</div></div>
+  <div class="chk"><div class="box"></div><div class="txt">Reserve Gettó Gulyás (Budapest) and Lokál (Prague) for six</div><div class="when">Late Sep</div></div>
+</section>
+
+<!-- ============ MONEY ============ -->
+<section role="tabpanel" id="p5">
+  <h2>Money</h2>
+  <p class="lede">Per person, twelve nights, excluding your international flights and visa costs. Built on shoulder-season prices with no major festival in town.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Category</th><th class="num">Lean</th><th class="num">Planned</th><th class="num">Generous</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Accommodation (11 hotel nights)</td><td class="num">€340</td><td class="num">€405</td><td class="num">€540</td><td>Incl. tourist taxes. Amsterdam is by far the priciest.</td></tr>
+      <tr><td>Inter-city transport</td><td class="num">€110</td><td class="num">€120</td><td class="num">€165</td><td>Two trains plus the sleeper.</td></tr>
+      <tr><td>Local transport &amp; airport transfers</td><td class="num">€60</td><td class="num">€70</td><td class="num">€90</td><td>Four city passes plus two airport runs.</td></tr>
+      <tr><td>Food</td><td class="num">€290</td><td class="num">€375</td><td class="num">€520</td><td>Street food and markets at the low end; one nice dinner per city at the high end.</td></tr>
+      <tr><td>Nightlife (8 big nights)</td><td class="num">€400</td><td class="num">€580</td><td class="num">€800</td><td>Includes the Sparty. The single most elastic line here.</td></tr>
+      <tr><td>Daytime activities</td><td class="num">€200</td><td class="num">€270</td><td class="num">€330</td><td>Museums, canal boat, baths, party boat, beer spa, castle.</td></tr>
+      <tr><td>Contingency</td><td class="num">€100</td><td class="num">€150</td><td class="num">€250</td><td>Non-negotiable. See the next tab for why.</td></tr>
+      <tr class="tot"><td>Total per person</td><td class="num">€1,500</td><td class="num">€1,970</td><td class="num">€2,695</td><td></td></tr>
+      <tr class="tot"><td>Total per person (₹, at ₹108/€)</td><td class="num">₹1.62L</td><td class="num">₹2.13L</td><td class="num">₹2.91L</td><td></td></tr>
+      <tr class="tot"><td>Group of six</td><td class="num">€9,000</td><td class="num">€11,820</td><td class="num">€16,170</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout c-good">
+    <b>You have headroom</b>
+    At €1,970 the planned column sits comfortably inside your €2,000–3,000 band, with roughly €700 per person of slack before you hit the ceiling. Spend it in Budapest and Prague, where it goes furthest, and hold it back in Amsterdam, where it disappears fastest.
+  </div>
+
+  <h3>Where the money actually goes, by city</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>City</th><th class="num">Nights</th><th class="num">Bed pp/night</th><th class="num">Food pp/day</th><th class="num">Big night pp</th><th>Tourist tax</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--ams)"><strong>Amsterdam</strong></td><td class="num">3</td><td class="num">€45–55</td><td class="num">€35–50</td><td class="num">€50–80</td><td><strong>12.5% of net room rate</strong> — and accommodation VAT rose from 9% to 21% on 1 Jan 2026, so the real tax load is ~33%. Assume the headline price is a third short.</td></tr>
+      <tr><td style="color:var(--ber)"><strong>Berlin</strong></td><td class="num">3</td><td class="num">€30–45</td><td class="num">€25–35</td><td class="num">€80–150</td><td>5% City Tax</td></tr>
+      <tr><td style="color:var(--bud)"><strong>Budapest</strong></td><td class="num">3</td><td class="num">€20–30</td><td class="num">€18–28</td><td class="num">€25–50</td><td>~4% per person per night, collected at check-in and rarely in the online price</td></tr>
+      <tr><td style="color:var(--prg)"><strong>Prague</strong></td><td class="num">2</td><td class="num">€28–40</td><td class="num">€20–30</td><td class="num">€28–60</td><td>50 CZK (~€2) pp/night — a bill to double it to 100 CZK is with lawmakers, check nearer the time</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Booking notes that cost real money</h3>
+  <ul>
+    <li><strong>Amsterdam caps holiday rentals at 4 guests.</strong> A listing advertising 6 beds is either illegal or a licensed aparthotel — illegal ones get cancelled at short notice. Book <strong>2 triples / 3 twins in a hotel</strong>, or a licensed aparthotel (Zoku, Cityden, The Social Hub), which is exempt because it's a hotel.</li>
+    <li>Apartments beat hotels from four nights up in Prague and Budapest, once the cleaning fee (€40–80) and platform fee (10–16%) amortise. For two nights in Prague, run the numbers both ways.</li>
+    <li><strong>Airbnb's guest service fee is never refunded</strong> under any cancellation policy. Given your visa timeline, prefer Booking.com free cancellation.</li>
+    <li>Always decline "would you like to be charged in EUR/INR?" at a card terminal. Choose the local currency every time — dynamic currency conversion costs 3–8%.</li>
+    <li>Hungary uses forint, Czechia uses koruna. Anywhere quoting prices in euros is marking up.</li>
+  </ul>
+
+  <h3>How to split it without falling out</h3>
+  <ul>
+    <li>One shared pot for accommodation, trains and group activities — one person books, everyone transfers before departure.</li>
+    <li><strong>Splitwise</strong> for everything else. Log it the same night; nobody remembers on day nine.</li>
+    <li>Draw cash as a group in Berlin (clubs), Budapest (ruin bars) and Prague (small pubs) and settle from the pot rather than six people each finding an ATM at 03:00.</li>
+    <li>Agree the €150 contingency is <em>each person's own</em>, not the pot's. It exists for a lost phone or a bad taxi, not for a round of shots.</li>
+  </ul>
+</section>
+
+<!-- ============ SCAMS ============ -->
+<section role="tabpanel" id="p6">
+  <h2>Don't get done</h2>
+  <p class="lede">Realistically, the biggest financial risk on this trip isn't the budget — it's one bad hour. Two of your four cities run scams aimed specifically at groups of young men on a night out. Read this on the plane.</p>
+
+  <div class="callout c-bad">
+    <b>Budapest — the "consume girls" bar scam</b>
+    Friendly women, or a helpful local, approach young male tourists — most often on <strong>Váci utca, around Vörösmarty tér and the Danube promenade</strong> — and suggest a drink at a bar they know. The bar is in on it. The bill arrives at <strong>€500–2,000</strong> for a bottle of water or "champagne", and security walks you to an ATM. The UK and US embassies issue standing warnings about named Budapest venues. Intoxicated groups of men are the whole target market.
+    <br><br>
+    <strong>Three rules that make this impossible:</strong> never let a stranger choose the venue · never enter a bar you didn't look up yourself · check prices before ordering. If you're trapped: refuse to pay, call 112 and the English-speaking Tourist Police on <strong>+36 1 438 8080</strong>. Real police turning up usually ends it.
+  </div>
+
+  <div class="callout c-bad">
+    <b>Prague — taxis, strip clubs, exchange booths</b>
+    <strong>Taxis:</strong> airport to centre is legitimately 600–800 CZK. Victims routinely pay 2,000–3,000. Use Bolt or Uber so the price is locked, and never take a cab parked outside a club, hotel or tourist square.
+    <br><br>
+    <strong>Strip clubs:</strong> touts on Na Příkopě, Wenceslas Square and Old Town Square offer "VIP access" or "free entry". Inside, hidden fees of 3,000 CZK+ per person appear and security escorts you to an ATM. Some run card-skimming alongside. This is the number one way groups like yours lose money in Prague. Assume every single one is a scam, because it is.
+    <br><br>
+    <strong>Exchange booths:</strong> headline rates near Old Town Square apply only to €500+, or carry hidden commission — effective markups of 15–20%. Some hand you Hungarian forint instead of koruna. Use bank ATMs only (ČSOB, Komerční, Česká spořitelna), never Euronet, and always decline dynamic currency conversion.
+  </div>
+
+  <div class="callout c-warn">
+    <b>Restaurant bills in Prague and Budapest</b>
+    Items you didn't order appear on the bill — bread, olives, and at U Fleků a shot of Becherovka placed on your table unasked at ~90 CZK. Refuse it the moment it arrives or you're paying for it. Meat priced per 100g turns a "180 CZK" pork knuckle into 700 CZK. Many Budapest restaurants auto-add a 10–15% <em>szervízdíj</em> — check before tipping on top. Read the bill line by line, every time.
+  </div>
+
+  <div class="callout c-warn">
+    <b>Amsterdam — fines and fake drugs</b>
+    The city runs an official "Stay Away" campaign <strong>explicitly targeting young male party tourists</strong>. Enforcement toward your exact demographic is deliberate, not incidental.
+    <ul style="margin-top:10px;margin-bottom:0">
+      <li>Drinking alcohol in the street: <strong>€95–140</strong></li>
+      <li>Smoking cannabis outdoors in De Wallen, Dam, Damrak, Nieuwmarkt: <strong>€100</strong></li>
+      <li>Photographing sex workers: <strong>€100</strong> — the most-enforced rule in the city, and phones get grabbed</li>
+      <li>Public urination: <strong>€150</strong> · Noise in residential streets: <strong>€150–450</strong> · Nitrous possession: <strong>€250</strong></li>
+    </ul>
+    <br>
+    <strong>Never buy from a street dealer.</strong> Counterfeit product around De Wallen — the well-documented case being white heroin sold as cocaine — has killed tourists. Nothing sold on the street is what it claims to be. Coffeeshops are 18+, need a passport, max 5g per purchase.
+  </div>
+
+  <div class="callout c-warn">
+    <b>Berlin — the rules that catch tourists out</b>
+    <ul style="margin-bottom:0">
+      <li><strong>Quiet hours, 22:00–06:00 daily plus all day Sunday</strong>, are legally enforceable in an apartment. Six men coming home loudly at 05:00 gets the police called and can get your booking cancelled. Silence in the stairwell.</li>
+      <li><strong>Sat 3 and Sun 4 October are both closed days</strong> — Unity Day then Sunday. Supermarkets shut. Restaurants, bars, clubs and Spätis stay open.</li>
+      <li>Jaywalking is an actual offence (€5–10) and locals will tell you off. Crossing on red in front of children is treated more seriously.</li>
+      <li><strong>Nazi salutes and symbols are a criminal offence</strong>, including as a joke for a photo. Tourists are prosecuted for this every year. Don't.</li>
+      <li>Görlitzer Park after dark: no. Kottbusser Tor and Warschauer Straße late at night: keep your wits.</li>
+    </ul>
+  </div>
+
+  <h3>Everywhere</h3>
+  <ul>
+    <li>Pickpockets work Prague's tram 22 and metro A, Budapest's metro M1 and tram 2, and Amsterdam Centraal. Front pockets, zipped bags, nothing in a back pocket.</li>
+    <li>Photograph every passport and visa page and put them in a shared group chat before you fly.</li>
+    <li>Agree a meeting point in each city before the first night out. Phones die, and roaming data at 04:00 is exactly when it fails.</li>
+    <li>Emergency number across all four countries: <strong>112</strong>.</li>
+  </ul>
+</section>
+
+<!-- ============ TRACKER ============ -->
+<section role="tabpanel" id="p7">
+  <h2>Tracker</h2>
+  <p class="lede">Six people, one visa deadline, and no way to tell who has actually done anything. Tick your own boxes, see everyone else's, and nudge whoever is behind straight into WhatsApp.</p>
+
+  <div class="callout c-bad">
+    <b>The only date that matters</b>
+    Everything in the <b>Visa file</b> block below has to be at VFS by <b>17 August 2026</b>. Six people means six separate appointments, six forms and six fee payments — one person's missing employer letter delays nobody but themselves, and that person doesn't travel.
+  </div>
+
+  <div class="trk-bar">
+    <label for="who">I am</label>
+    <select id="who"></select>
+    <span class="spacer"></span>
+    <button class="btn wa" id="btnNudgeAll">Nudge the group</button>
+    <button class="btn pri" id="btnCopyLink">Copy sync link</button>
+    <button class="btn" id="btnCopyCode">Copy code</button>
+    <button class="btn" id="btnReset">Reset</button>
+  </div>
+
+  <div id="mcards" class="grid g3" style="margin-bottom:26px"></div>
+
+  <h3>Everyone's own list</h3>
+  <p class="lede">Twenty-one items each. The visa block is the one with a hard deadline; the rest can slide a little.</p>
+  <div class="tw">
+    <table class="mx">
+      <thead><tr><th>What</th><th style="width:110px">Due</th><th class="pc" id="h0"></th><th class="pc" id="h1"></th><th class="pc" id="h2"></th><th class="pc" id="h3"></th><th class="pc" id="h4"></th><th class="pc" id="h5"></th></tr></thead>
+      <tbody id="mx"></tbody>
+    </table>
+  </div>
+
+  <h3>Group bookings — one person books for all six</h3>
+  <p class="lede">These are booked once, by one named person, and everyone settles up from the pot. Change the owner if someone else picks it up. An unassigned booking is a booking nobody makes.</p>
+  <div class="tw">
+    <table style="min-width:640px">
+      <thead><tr><th>What</th><th style="width:110px">Due</th><th style="width:96px" class="num">Cost</th><th style="width:130px">Owner</th><th style="width:64px" class="pc">Done</th></tr></thead>
+      <tbody id="gx"></tbody>
+    </table>
+  </div>
+
+  <h3>Keeping six phones in sync</h3>
+  <p class="lede">This page has no server, so your ticks live in your own browser. Sharing them takes one tap: <b>Copy sync link</b> puts a link in your clipboard that already carries every tick. Post it in the group chat, and whoever opens it has their tracker brought up to date automatically. <b>Copy code</b> does the same as bare text, for when a link gets mangled.</p>
+  <div class="callout c-good">
+    <b>How six people stay level</b>
+    Tick your boxes, post a sync link, and the next person opens it, adds their own, and posts a fresh one. Links only ever add ticks, so it doesn't matter who posts when and nothing anyone has done can be wiped by someone else's stale link.
+  </div>
+  <div class="card">
+    <p style="margin-bottom:10px"><b>Or paste a code by hand</b></p>
+    <textarea id="codeIn" placeholder="E26-..." spellcheck="false"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn pri" id="btnMerge">Merge in</button>
+      <button class="btn" id="btnReplace">Replace mine</button>
+      <span style="font-size:13px;color:var(--tx3);align-self:center">Merge only ever adds ticks — it can't un-tick something you've done.</span>
+    </div>
+    <p style="margin-top:12px;font-size:13.5px;color:var(--tx3)">Whoever is chasing the visas should be the one who posts a fresh code after each update. Owners of group bookings are always taken from the newest code pasted.</p>
+  </div>
+
+  <div class="callout c-warn" id="lsWarn" style="display:none">
+    <b>This browser won't save your ticks</b>
+    Local storage is blocked, which happens when the file is opened straight off the desktop in some browsers. Your ticks work for this session but vanish on reload — copy the sync code before you close the tab, or move the file into a folder you open through a local server.
+  </div>
+</section>
+
+<footer>
+  <p>Built 8 August 2026 for a group of six · Prices in EUR at ~₹108/€, ~€1 = 400 HUF = 24.5 CZK. Fares, opening hours and tourist-tax rates move — reconfirm anything you're booking. Two things worth rechecking closer to the date: whether Prague's tourist fee has doubled to 100 CZK, and the exact EuroNight Metropol departure time, since the Berlin engineering works may shift it.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('section[role="tabpanel"]'));
+  function show(id){
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', t.dataset.p === id ? 'true' : 'false'); });
+    panels.forEach(function(p){ p.classList.toggle('on', p.id === id); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ show(t.dataset.p); }); });
+})();
+</script>
+
+<script>
+/* ================= TRACKER ================= */
+(function(){
+  var MEM = ['Shashank','Chetan','Ajay','Pramod','Ashish','Anand'];
+  var KEY = 'europe2026.tracker.v1';
+
+  /* Deadlines. Visa block is hard-dated; the rest are the checklist's own targets. */
+  var D_NOW='2026-08-08', D_WEEK='2026-08-15', D_VFS='2026-08-17', D_TUE='2026-08-11',
+      D_MIDSEP='2026-09-15', D_LATESEP='2026-09-28', D_FLY='2026-09-29';
+
+  var PERSONAL = [
+    {sec:'Visa file — due at VFS by 17 August'},
+    {id:'pp',  t:'Passport checked',            n:'Issued within the last 10 years · 2 blank visa pages · valid to at least 13 Jan 2027', d:D_NOW},
+    {id:'pho', t:'Photos',                      n:'Colour, under 6 months old, 35 × 45 mm, white background', d:D_WEEK},
+    {id:'frm', t:'Application form',            n:'Completed online, unique code printed, signed', d:D_WEEK},
+    {id:'cvl', t:'Cover letter',                n:'One sentence: the Netherlands is both first point of entry and joint-longest stay', d:D_WEEK},
+    {id:'acc', t:'Accommodation bookings',      n:'All 12 nights, in your own name. Free cancellation is fine — use Booking.com, not Airbnb', d:D_WEEK},
+    {id:'flt', t:'Flight reservation',          n:'A reservation, NOT a paid ticket. The Dutch checklist says so explicitly', d:D_WEEK},
+    {id:'bnk', t:'Bank statements',             n:'Last 3 months, bank-stamped. Target ₹1.5–2 lakh held steady — do NOT top up now', d:D_WEEK},
+    {id:'pay', t:'Payslips',                    n:'Three most recent', d:D_WEEK},
+    {id:'emp', t:'Employer NOC letter',         n:'On letterhead: job title, contract duration, salary, leave approved for 1–13 Oct', d:D_WEEK},
+    {id:'itr', t:'ITR / Form 16',               n:'Last 2 years. Not on the Dutch list — cheap insurance anyway', d:D_WEEK},
+    {id:'ins', t:'Travel insurance',            n:'€100,000 cover, must include repatriation to India. €30,000 is the legal floor; buy more', d:D_WEEK},
+    {id:'itn', t:'Itinerary printed',           n:'Print the Day-by-day tab of this page and attach it', d:D_WEEK},
+    {id:'old', t:'Old passport found',          n:'Only if you gave Schengen biometrics since ~Sep 2021 — bring the passport with the sticker or they re-take them', d:D_WEEK},
+    {id:'mul', t:'Multi-entry requested',       n:'Two lawfully used Schengen visas in 3 years? Ask for the 2-year visa in the cover letter. Costs nothing', d:D_WEEK},
+    {id:'apt', t:'VFS appointment booked',      n:'Six separate slots, back to back, same day, same centre', d:D_VFS},
+    {id:'fee', t:'Fees paid',                   n:'€90 visa fee + ₹1,855 VFS + courier ≈ ₹13,000 each. Non-refundable if refused', d:D_VFS},
+    {id:'sub', t:'Submitted at VFS',            n:'The 45-day deadline. Miss it and you are not on this trip', d:D_VFS},
+
+    {sec:'Before you fly'},
+    {id:'pot', t:'Share paid into the group pot',n:'Covers accommodation, trains and group activities. Everything else goes on Splitwise', d:D_LATESEP},
+    {id:'crd', t:'Revolut or Wise card set up', n:'Hungary uses forint, Czechia uses koruna. Neither is the euro', d:D_LATESEP},
+    {id:'scn', t:'Passport + visa page in the group chat', n:'Photograph every page. Do it before you fly, not after you lose the passport', d:D_FLY},
+    {id:'spl', t:'Splitwise installed',         n:'Log expenses the same night. Nobody remembers on day nine', d:D_FLY}
+  ];
+
+  var GROUP = [
+    {id:'tr1', t:'Amsterdam → Berlin ICE',        n:'DB Group Saver Fare Europe starts at exactly 6 pax, free seat reservations · int.bahn.de', d:D_WEEK,   c:'€40 pp',   o:0},
+    {id:'tr2', t:'Berlin → Budapest EuroNight',   n:'6-berth couchette = the whole compartment to yourselves · oebb.at', d:D_WEEK,   c:'€59 pp',   o:1},
+    {id:'tr3', t:'Budapest → Prague',             n:'RegioJet is refundable to 15 min before departure — the right call the morning after the Sparty', d:D_WEEK,   c:'€21 pp',   o:2},
+    {id:'hot', t:'Block all 12 nights',           n:'Free cancellation, each traveller named. Amsterdam caps rentals at 4 guests — hotel or licensed aparthotel', d:D_WEEK,   c:'≈€405 pp', o:0},
+    {id:'rei', t:'Reichstag dome registration',   n:'Free, but needs all six passport numbers and weeks of lead time · bundestag.de', d:D_WEEK,   c:'Free',     o:3},
+    {id:'anf', t:'Anne Frank House',              n:'Tickets drop Tuesdays 10:00 CET for six weeks ahead and vanish. Two people buy simultaneously', d:D_TUE,    c:'€16.50 pp',o:4},
+    {id:'vgm', t:'Van Gogh Museum',               n:'Online only, never sold at the door', d:D_MIDSEP, c:'€27 pp',   o:4},
+    {id:'spa', t:'Széchenyi Sparty, Sat 10 Oct',  n:'Saturdays only, sells out 2–3 weeks ahead. This is why Budapest is timed the way it is', d:D_MIDSEP, c:'€65–81 pp',o:5},
+    {id:'bsp', t:'Prague beer spa',               n:'Beerland Suite 2 holds exactly six', d:D_MIDSEP, c:'€47 pp',   o:5},
+    {id:'bot', t:'Amsterdam canal boat',          n:'Eco Boats 7-seater, 2-hour minimum, bring your own drinks', d:D_MIDSEP, c:'€17 pp',   o:2},
+    {id:'pbt', t:'Budapest party boat, Fri 9 Oct',n:'2.5 hours with unlimited drinks. Go early — the city lights go off around 22:00', d:D_MIDSEP, c:'€58 pp',   o:1},
+    {id:'cas', t:'Prague Castle Circuit B',       n:'Pre-book on hrad.cz and the queue drops from an hour to ten minutes', d:D_LATESEP,c:'€10 pp',   o:3},
+    {id:'tur', t:'Berlin walking tour',           n:'Third Reich + Cold War, 2 hours', d:D_LATESEP,c:'€26 pp',   o:3},
+    {id:'rst', t:'Gettó Gulyás + Lokál',          n:'Both need reserving for six. Gettó Gulyás is tiny', d:D_LATESEP,c:'—',        o:1},
+    {id:'clb', t:'Club tickets bought online',    n:'Shelter and any Berghain-night events. Pre-buying is half of getting in as six', d:D_LATESEP,c:'€10–30 pp',o:2},
+    {id:'mtg', t:'Meeting point agreed per city', n:'For when phones die at 04:00, which they will', d:D_FLY,    c:'—',        o:0}
+  ];
+
+  var PT = PERSONAL.filter(function(x){ return x.id; });
+
+  /* ---- state ---- */
+  var ST = {p:{}, g:{}, o:{}, ph:{}, me:0}, canSave = true;
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var s = JSON.parse(raw); ST.p=s.p||{}; ST.g=s.g||{}; ST.o=s.o||{}; ST.ph=s.ph||{}; ST.me=s.me||0; }
+      localStorage.setItem(KEY+'.probe','1'); localStorage.removeItem(KEY+'.probe');
+    }catch(e){ canSave = false; }
+  }
+  function save(){ if(!canSave) return; try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){ canSave=false; } }
+
+  function tick(id,i){ return !!(ST.p[id] && ST.p[id][i]); }
+  function setTick(id,i,v){ if(!ST.p[id]) ST.p[id]=[0,0,0,0,0,0]; ST.p[id][i] = v?1:0; }
+  function owner(t){ return (ST.o[t.id]==null) ? t.o : ST.o[t.id]; }
+
+  /* ---- dates ---- */
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt(d){ var p = d.split('-'); return (+p[2]) + ' ' + MON[+p[1]-1]; }
+  function daysLeft(d){
+    var due = new Date(d + 'T23:59:59');
+    return Math.ceil((due - new Date()) / 86400000);
+  }
+  function badge(d, done){
+    if(done) return '<span class="due done">done</span>';
+    var n = daysLeft(d), cls = n < 0 ? 'late' : (n <= 7 ? 'soon' : '');
+    var txt = fmt(d) + (n < 0 ? ' · late' : (n === 0 ? ' · today' : ''));
+    return '<span class="due ' + cls + '" title="' + (n<0 ? (-n)+' days overdue' : n+' days left') + '">' + txt + '</span>';
+  }
+
+  /* ---- open items for one person ---- */
+  function openFor(i){
+    var out = [];
+    PT.forEach(function(t){ if(!tick(t.id,i)) out.push({t:t.t, d:t.d}); });
+    GROUP.forEach(function(t){ if(owner(t)===i && !ST.g[t.id]) out.push({t:t.t + ' — books for the group', d:t.d}); });
+    out.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
+    return out;
+  }
+  function lateCount(list){ return list.filter(function(o){ return daysLeft(o.d) < 0; }).length; }
+  function totalFor(i){ return PT.length + GROUP.filter(function(t){ return owner(t)===i; }).length; }
+
+  /* ---- render ---- */
+  var elCards = document.getElementById('mcards'),
+      elMx    = document.getElementById('mx'),
+      elGx    = document.getElementById('gx'),
+      elWho   = document.getElementById('who');
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderCards(){
+    elCards.innerHTML = MEM.map(function(m,i){
+      var open = openFor(i), tot = totalFor(i), done = tot - open.length,
+          pct = tot ? Math.round(done/tot*100) : 0, late = lateCount(open);
+      var cls = pct === 100 ? '' : (pct >= 50 ? 'part' : 'low');
+      var ph = ST.ph[i];
+      return '<div class="mcard' + (i===ST.me ? ' me' : '') + '">' +
+        '<div class="mh"><span class="mn">' + esc(m) + '</span><span class="mp">' + done + '/' + tot + '</span></div>' +
+        '<div class="ms">' + (open.length === 0
+            ? 'All clear.'
+            : open.length + ' open' + (late ? ' · <span class="late">' + late + ' overdue</span>' : '')) + '</div>' +
+        '<div class="bar"><i class="' + cls + '" style="width:' + pct + '%"></i></div>' +
+        '<div class="acts">' +
+          '<button class="btn sm wa" data-nudge="' + i + '"' + (open.length?'':' disabled style="opacity:.4;cursor:default"') + '>Nudge</button>' +
+          '<button class="btn sm" data-copy="' + i + '"' + (open.length?'':' disabled style="opacity:.4;cursor:default"') + '>Copy</button>' +
+          '<button class="btn sm" data-phone="' + i + '" title="' + (ph ? 'Sending to ' + esc(ph) : 'No number saved — WhatsApp will ask who to send to') + '">' + (ph ? '☎ saved' : '☎ number') + '</button>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  function renderMatrix(){
+    MEM.forEach(function(m,i){ document.getElementById('h'+i).textContent = m.length > 7 ? m.slice(0,6) : m; });
+    elMx.innerHTML = PERSONAL.map(function(t){
+      if(t.sec) return '<tr class="sec"><td colspan="8">' + esc(t.sec) + '</td></tr>';
+      var allDone = MEM.every(function(_,i){ return tick(t.id,i); });
+      return '<tr><td><span class="tname">' + esc(t.t) + '</span><span class="tnote">' + esc(t.n) + '</span></td>' +
+        '<td>' + badge(t.d, allDone) + '</td>' +
+        MEM.map(function(_,i){
+          return '<td class="cell" data-t="' + t.id + '" data-i="' + i + '"><span class="tick' + (tick(t.id,i)?' on':'') + '">✓</span></td>';
+        }).join('') + '</tr>';
+    }).join('');
+  }
+
+  function renderGroup(){
+    elGx.innerHTML = GROUP.map(function(t){
+      var done = !!ST.g[t.id], own = owner(t);
+      return '<tr><td><span class="tname">' + esc(t.t) + '</span><span class="tnote">' + esc(t.n) + '</span></td>' +
+        '<td>' + badge(t.d, done) + '</td>' +
+        '<td class="num">' + esc(t.c) + '</td>' +
+        '<td><select class="ownsel" data-own="' + t.id + '">' +
+          MEM.map(function(m,i){ return '<option value="' + i + '"' + (i===own?' selected':'') + '>' + esc(m) + '</option>'; }).join('') +
+        '</select></td>' +
+        '<td class="cell" data-g="' + t.id + '"><span class="tick' + (done?' on':'') + '">✓</span></td></tr>';
+    }).join('');
+  }
+
+  function renderAll(){ renderCards(); renderMatrix(); renderGroup(); }
+
+  /* ---- messages ---- */
+  function nudgeText(i){
+    var open = openFor(i), late = open.filter(function(o){ return daysLeft(o.d) < 0; }),
+        soon = open.filter(function(o){ return daysLeft(o.d) >= 0; });
+    var L = ['*Europe 2026 — ' + MEM[i] + '*'];
+    L.push('_' + open.length + ' still open' + (late.length ? ', ' + late.length + ' overdue' : '') + '_');
+    function block(title, arr, cap){
+      if(!arr.length) return;
+      L.push(''); L.push('*' + title + '*');
+      arr.slice(0, cap).forEach(function(o){ L.push('• ' + o.t + ' — ' + fmt(o.d)); });
+      if(arr.length > cap) L.push('• …and ' + (arr.length - cap) + ' more');
+    }
+    block('Overdue', late, 6);
+    block('Coming up', soon, 7);
+    var n = daysLeft(D_VFS);
+    L.push('');
+    L.push(n < 0 ? 'The 17 Aug VFS deadline has passed — call the centre today.'
+                 : 'VFS deadline is 17 Aug — ' + n + ' day' + (n===1?'':'s') + ' left.');
+    L.push('Full list: Tracker tab of the itinerary page.');
+    return L.join('\n');
+  }
+
+  function groupText(){
+    var n = daysLeft(D_VFS);
+    var L = ['*Europe 2026 — where we are*'];
+    L.push('_VFS deadline 17 Aug' + (n < 0 ? ' — passed' : ' — ' + n + ' day' + (n===1?'':'s') + ' left') + '_');
+    L.push('');
+    MEM.forEach(function(m,i){
+      var open = openFor(i), late = lateCount(open);
+      L.push(open.length === 0 ? '✅ ' + m + ' — all clear'
+        : (late ? '🔴 ' : '• ') + m + ' — ' + open.length + ' open' + (late ? ' (' + late + ' overdue)' : ''));
+    });
+    var unbooked = GROUP.filter(function(t){ return !ST.g[t.id] && daysLeft(t.d) <= 21; });
+    if(unbooked.length){
+      L.push(''); L.push('*Bookings still not made*');
+      unbooked.slice(0,8).forEach(function(t){ L.push('• ' + t.t + ' — ' + MEM[owner(t)] + ', by ' + fmt(t.d)); });
+      if(unbooked.length > 8) L.push('• …and ' + (unbooked.length - 8) + ' more');
+    }
+    return L.join('\n');
+  }
+
+  function wa(text, phone){
+    var base = phone ? 'https://wa.me/' + phone.replace(/\D/g,'') + '?text=' : 'https://wa.me/?text=';
+    window.open(base + encodeURIComponent(text), '_blank');
+  }
+
+  /* ---- clipboard + toast ---- */
+  var toastEl = null, toastT = null;
+  function toast(msg){
+    if(!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg;
+    void toastEl.offsetWidth;
+    toastEl.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toastEl.classList.remove('on'); }, 2600);
+  }
+  function copy(text, okMsg){
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try{ ok = document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta);
+      if(ok) toast(okMsg); else window.prompt('Copy this:', text);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast(okMsg); }, fallback);
+    } else fallback();
+  }
+
+  /* ---- sync code ---- */
+  function encode(){
+    var p = PT.map(function(t){ return MEM.map(function(_,i){ return tick(t.id,i) ? 1 : 0; }).join(''); }).join('.');
+    var g = GROUP.map(function(t){ return ST.g[t.id] ? 1 : 0; }).join('');
+    var o = GROUP.map(function(t){ return owner(t); }).join('');
+    return 'E26-' + p + '-' + g + '-' + o;
+  }
+  function decode(raw){
+    var s = (raw||'').trim().replace(/\s+/g,'');
+    var parts = s.split('-');
+    if(parts.length !== 4 || parts[0] !== 'E26') return null;
+    var p = parts[1].split('.');
+    if(p.length !== PT.length || parts[2].length !== GROUP.length || parts[3].length !== GROUP.length) return null;
+    if(!/^[01.]+$/.test(parts[1]) || !/^[01]+$/.test(parts[2]) || !/^[0-5]+$/.test(parts[3])) return null;
+    if(!p.every(function(r){ return r.length === MEM.length; })) return null;
+    return {p:p, g:parts[2], o:parts[3]};
+  }
+  function apply(dec, mode){
+    var added = 0;
+    PT.forEach(function(t, ti){
+      MEM.forEach(function(_, i){
+        var v = dec.p[ti].charAt(i) === '1';
+        if(mode === 'replace'){ setTick(t.id, i, v); }
+        else if(v && !tick(t.id,i)){ setTick(t.id, i, true); added++; }
+      });
+    });
+    GROUP.forEach(function(t, gi){
+      var v = dec.g.charAt(gi) === '1';
+      if(mode === 'replace') ST.g[t.id] = v ? 1 : 0;
+      else if(v && !ST.g[t.id]){ ST.g[t.id] = 1; added++; }
+      ST.o[t.id] = +dec.o.charAt(gi);
+    });
+    save(); renderAll();
+    toast(mode === 'replace' ? 'Replaced with the pasted code.' : (added ? added + ' new tick' + (added===1?'':'s') + ' merged in.' : 'Nothing new in that code.'));
+  }
+
+  /* ---- wiring ---- */
+  load();
+  if(!canSave) document.getElementById('lsWarn').style.display = 'block';
+
+  elWho.innerHTML = MEM.map(function(m,i){ return '<option value="' + i + '"' + (i===ST.me?' selected':'') + '>' + esc(m) + '</option>'; }).join('');
+  elWho.addEventListener('change', function(){ ST.me = +elWho.value; save(); renderCards(); });
+
+  renderAll();
+
+  elMx.addEventListener('click', function(e){
+    var td = e.target.closest ? e.target.closest('td.cell') : null;
+    if(!td) return;
+    setTick(td.dataset.t, +td.dataset.i, !tick(td.dataset.t, +td.dataset.i));
+    save(); renderAll();
+  });
+
+  elGx.addEventListener('click', function(e){
+    var td = e.target.closest ? e.target.closest('td.cell') : null;
+    if(!td) return;
+    ST.g[td.dataset.g] = ST.g[td.dataset.g] ? 0 : 1;
+    save(); renderAll();
+  });
+  elGx.addEventListener('change', function(e){
+    if(!e.target.dataset || !e.target.dataset.own) return;
+    ST.o[e.target.dataset.own] = +e.target.value;
+    save(); renderAll();
+  });
+
+  elCards.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('button') : null;
+    if(!b) return;
+    if(b.dataset.nudge != null){ var i = +b.dataset.nudge; wa(nudgeText(i), ST.ph[i]); }
+    else if(b.dataset.copy != null){ copy(nudgeText(+b.dataset.copy), 'Reminder copied — paste it in the chat.'); }
+    else if(b.dataset.phone != null){
+      var j = +b.dataset.phone;
+      var v = window.prompt('WhatsApp number for ' + MEM[j] + ' (with country code, e.g. 919876543210).\nLeave blank to clear — WhatsApp will then ask who to send to.', ST.ph[j] || '91');
+      if(v === null) return;
+      v = v.replace(/\D/g,'');
+      if(v) ST.ph[j] = v; else delete ST.ph[j];
+      save(); renderCards();
+    }
+  });
+
+  document.getElementById('btnNudgeAll').addEventListener('click', function(){ wa(groupText()); });
+  document.getElementById('btnCopyCode').addEventListener('click', function(){
+    copy(encode(), 'Sync code copied — paste it in the group chat.');
+  });
+  document.getElementById('btnCopyLink').addEventListener('click', function(){
+    if(location.protocol === 'http:' || location.protocol === 'https:'){
+      copy(location.origin + location.pathname + location.search + '#' + encode(),
+           'Sync link copied — post it in the group chat.');
+    } else {
+      copy(encode(), 'Opened from a file, so there is no link to share — the code is copied instead.');
+    }
+  });
+  document.getElementById('btnReset').addEventListener('click', function(){
+    if(!window.confirm('Clear every tick for all six people? Saved phone numbers stay.')) return;
+    ST.p = {}; ST.g = {}; ST.o = {};
+    save(); renderAll(); toast('Tracker cleared.');
+  });
+
+  function doImport(mode){
+    var dec = decode(document.getElementById('codeIn').value);
+    if(!dec){ toast('That code is not readable — copy the whole thing, starting with E26-'); return; }
+    if(mode === 'replace' && !window.confirm('Replace all your ticks with the pasted code? Anything you ticked that the code does not have will be lost.')) return;
+    apply(dec, mode);
+    document.getElementById('codeIn').value = '';
+  }
+  document.getElementById('btnMerge').addEventListener('click', function(){ doImport('merge'); });
+  document.getElementById('btnReplace').addEventListener('click', function(){ doImport('replace'); });
+
+  /* Arriving on a sync link: merge it in, then strip it off the URL so a
+     reload doesn't keep re-applying a code that's since gone stale. */
+  function fromLink(){
+    var h = (location.hash || '').replace(/^#/, '');
+    if(h.indexOf('E26-') !== 0) return;
+    var dec = decode(h);
+    try{ history.replaceState(null, '', location.pathname + location.search); }
+    catch(e){ location.hash = ''; }
+    if(!dec){ toast('That sync link is out of date — ask for a fresh one.'); return; }
+    apply(dec, 'merge');
+    document.querySelector('.tab[data-p="p7"]').click();
+  }
+  fromLink();
+  window.addEventListener('hashchange', fromLink);
+})();
+</script>
+</body>
+</html>
