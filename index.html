@@ -176,6 +176,27 @@
   .syncpill.live{border-color:rgba(77,212,172,.35)} .syncpill.off{border-color:rgba(255,92,108,.4)}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   @media(prefers-reduced-motion:reduce){.syncpill.busy i{animation:none}}
+  /* ---------- VENUE CARDS (from the expanded nightlife research) ---------- */
+  h4{font-size:15.5px;font-weight:750;margin:24px 0 9px;letter-spacing:-.01em;color:var(--tx)}
+  .venue{border-bottom:1px solid var(--line);padding:13px 0}
+  .venue:last-child{border-bottom:none}
+  .vh{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .vn{font-size:15px;font-weight:750;letter-spacing:-.01em}
+  .vloc{font-size:12px;color:var(--tx3);font-weight:600}
+  .vpr{font-size:12.5px;font-weight:700;color:var(--tx2);margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .vd{font-size:14px;color:var(--tx2);margin-top:5px;line-height:1.55}
+  .vsix{font-size:12.5px;margin-top:5px;color:var(--tx3)}
+  .vsix b{color:var(--tx2);font-weight:700}
+  .tagn{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
+  .t-ok{background:rgba(77,212,172,.15);color:var(--good)}
+  .t-mid{background:rgba(255,176,32,.15);color:var(--warn)}
+  .t-no{background:rgba(255,92,108,.15);color:var(--bad)}
+  .t-dead{background:rgba(255,255,255,.07);color:var(--tx3);text-decoration:line-through}
+  .srcs{font-size:12px;color:var(--tx3);margin-top:10px;line-height:1.7}
+  .srcs a{color:var(--tx3);text-decoration:underline;text-decoration-color:var(--line2)}
+  .srcs a:hover{color:#7fa9ff}
+  @media(max-width:640px){ .vpr{margin-left:0;width:100%} }
+
   /* ---------- MAP ---------- */
   .mapwrap{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px;overflow-x:auto}
   .mapwrap svg{display:block;width:100%;min-width:520px;height:auto}
@@ -248,7 +269,7 @@
   .empty{color:var(--tx3);font-size:14.5px;padding:22px;text-align:center;border:1px dashed var(--line2);border-radius:12px}
 
   .agreed{border:1px solid rgba(77,212,172,.35);background:rgba(77,212,172,.06);border-radius:14px;padding:16px 20px;margin:18px 0}
-  .agreed h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--good);font-weight:800;margin-bottom:9px}
+  .agreed h4{margin:0 0 9px;font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--good);font-weight:800;margin-bottom:9px}
   .agreed ul{margin:0;padding-left:18px}
   .agreed li{margin-bottom:5px;font-size:14.5px}
   .agreed li b{font-weight:700}
@@ -289,7 +310,8 @@
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-p="p0">Overview</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p1">Day by day</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="p2">Nightlife</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p2">Bars &amp; clubs</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p10">Adults only</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p3">Getting between cities</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p4">Visa &amp; logistics</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p5">Money</button>
@@ -502,72 +524,553 @@
 
 <!-- ============ NIGHTLIFE ============ -->
 <section role="tabpanel" id="p2">
-  <h2>Nightlife</h2>
-  <p class="lede">The single biggest risk to your nights out is not price — it's being turned away. Six men arriving together is the exact silhouette European door staff are trained to refuse. Every venue below is graded on that.</p>
+  <h2>Bars, clubs and nights out</h2>
+  <p class="lede">Re-researched 8 Aug 2026 against operator sites, city listings and Time Out. Two things drive everything below: <strong>which nights you're actually in each city</strong> — Berlin gets Sun/Mon/Tue and Prague gets Sun/Mon, both weak windows — and the fact that six men arriving together is the exact silhouette European door staff are trained to refuse.</p>
+
+  <div class="callout c-bad">
+    <b>Seven venues on the old plan are dead — don't route to them</b>
+    <strong>Watergate</strong> (Berlin) closed permanently end of 2024. <strong>Salon zur Wilden Renate</strong> survived and reopened April 2026, but runs Thu–Sat only, so it's shut all three of your Berlin nights. <strong>De School</strong> (Amsterdam) is permanently closed. <strong>Ellátó Kert</strong> (2019), <strong>Anker't</strong> (2020) and <strong>Corvintető</strong> (2018) are all long gone in Budapest — Corvin Palace is now Time Out Market. <strong>K5 Relax</strong> and <strong>OSSEGG</strong> are closed in Prague. Any 2026 "guide" still listing these is AI-generated filler; several do.
+  </div>
 
   <div class="callout c-warn">
     <b>The rule that gets you in everywhere</b>
-    Never queue as six. Split into pairs, arrive five minutes apart, buy tickets online in advance where possible, one person talks, nobody argues with a refusal, no group photos in the line. This is not superstition — Shelter's published house rules state that large groups can be refused, and Berghain's door explicitly discourages groups above three.
+    Never queue as six. Split into 2+2+2 and join the line 10–15 minutes apart. Don't wave or shout across the queue — if the door reads you as one unit of six, you're all out. If a bouncer tells you to split, split instantly; refusing is a documented instant rejection. Buy tickets online in advance, arrive sober, phones away in the line, and if you're refused say nothing and walk. Rejection rates of 60–80% are normal on a busy Berlin night and mean nothing about you.
   </div>
 
-  <h3>Door difficulty, hardest first</h3>
+  <h3 style="color:var(--ams)">Amsterdam · Thu 1 – Sun 4 Oct</h3>
+  <div class="callout c-warn">
+    <b>Thursday closes early — plan it as a club night, not a bar crawl</b>
+    Under the citywide catering policy in force since the start of 2026, <strong>bars shut at 01:00 on weekdays</strong> (that includes your Thursday) and 03:00 Fri/Sat. Clubs get 04:00 weekday, 05:00 weekend. Inside the Red Light District it's stricter still: bars close 02:00 and admit nobody new after 01:00. So Thursday = Garage Noord (bar from 20:00, club from 23:00) or Chin Chin, rather than four bars in a row.
+  </div>
+
   <div class="card">
-    <div class="rank"><div class="n">1</div><div><strong>Berghain, Berlin</strong> — near-certain refusal as a six. Go in ones and twos, Sunday night not Saturday, dark plain clothes, sober, silent. Accept rejection gracefully. €20–30, cash, no phones inside.</div></div>
-    <div class="rank"><div class="n">2</div><div><strong>KitKatClub, Berlin</strong> — certain refusal in street clothes. The dress code <em>is</em> the door: fetish, latex or near-nudity. It is also a genuinely sex-positive venue. Go only if all six actually want that; otherwise skip it without regret.</div></div>
-    <div class="rank"><div class="n">3</div><div><strong>Shelter / RADION, Amsterdam</strong> — large groups explicitly refused, phones banned on the floor, cashless, 18+. Pre-buy tickets and split up.</div></div>
-    <div class="rank"><div class="n">4</div><div><strong>Rembrandtplein clubs, Amsterdam</strong> (Escape, NYX, Jimmy Woo) — unwritten gender-ratio policy. This is where you're most likely to be bounced with no reason given. Also the most expensive drinks in the city.</div></div>
-    <div class="rank"><div class="n">5</div><div><strong>Epic / Duplex, Prague</strong> — dress code only. Collared shirt, no sportswear, no caps, no flip-flops and you're fine.</div></div>
-    <div class="rank"><div class="n">6</div><div><strong>Everything else</strong> — Sisyphos, Tresor, Renate, Chalet (Berlin); Szimpla, Instant-Fogas, Doboz, Akvárium (Budapest); Roxy, Cross Club, Chapeau Rouge (Prague); Melkweg, Paradiso, De Marktkantine (Amsterdam). All realistically fine for six.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Café Hoppe</span><span class="vloc">Spui 18, Centrum</span><span class="vpr">Beer €5–7</span></div>
+      <div class="vd">Interior barely touched since 1670 and the crowd spills out onto the square. The easiest classic brown café for a group — everyone stands anyway, so six is invisible.</div>
+      <div class="vsix"><span class="tagn t-ok">six walk in fine</span> <b>Best brown café for your group.</b> No bookings, no need.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hannekes Boom</span><span class="vloc">Dijksgracht 4, Oosterdok</span><span class="vpr">Beer €4–7 · cocktails €12</span></div>
+      <div class="vd">Waterfront shack with picnic tables, snacks €8–15, a short walk behind Centraal. Genuinely the best group hang in the city and it costs nothing to sit down.</div>
+      <div class="vsix"><span class="tagn t-ok">six walk in fine</span> Early evening. It's outdoors — October, so bring the jacket.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Proeflokaal Arendsnest</span><span class="vloc">Herengracht 90, canal belt</span><span class="vpr">Beer €5–9 · flight €12–18</span></div>
+      <div class="vd">Dutch beer only — 52 taps, 50-plus breweries, on a canal. The single best beer education in Amsterdam. Sun–Thu to midnight, Fri/Sat to 01:00.</div>
+      <div class="vsix"><span class="tagn t-mid">go before 20:00</span> Narrow room. For a guaranteed spot, email <b>info@arendsnest.nl</b> and book the Gulpener Kamer tasting room.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Café 't Smalle</span><span class="vloc">Egelantiersgracht 12, Jordaan</span><span class="vpr">Beer €5–8 · jenever €3.50</span></div>
+      <div class="vd">A 1786 former jenever distillery with the prettiest canal terrace in Amsterdam. This is the photo everyone actually keeps.</div>
+      <div class="vsix"><span class="tagn t-mid">terrace only</span> Tiny inside. Six works on the terrace or standing; no bookings taken.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">In 't Aepjen</span><span class="vloc">Zeedijk 1, edge of De Wallen</span><span class="vpr">Draft ~€4.50</span></div>
+      <div class="vd">Claims 1519 and is one of only two remaining wooden-fronted houses in the city. A sailors' bar, and the cheapest beer on this list.</div>
+      <div class="vsix"><span class="tagn t-mid">six is the ceiling</span> Very small, walk-in only.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Wynand Fockink</span><span class="vloc">Pijlsteeg 31, behind Dam</span><span class="vpr">Tastings from €4</span></div>
+      <div class="vd">Jenever tasting house since 1679, 70-plus varieties, and the traditional bow-to-the-glass first sip because they fill it to the brim. Closes early evening — do it before dinner.</div>
+      <div class="vsix"><span class="tagn t-ok">standing room, fine</span> Group tastings by arrangement; hours weren't verifiable, so check before walking over.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Café Soundgarden</span><span class="vloc">Marnixstraat 164, Jordaan</span><span class="vpr">Beer €4–7 · cocktails €10–14</span></div>
+      <div class="vd">Rock dive bar with a pool table and a canal-side deck out the back. Zero pretence, zero door policy, and the one place nobody will look at six of you twice.</div>
+      <div class="vsix"><span class="tagn t-ok">ideal for six</span> Walk in.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Brouwerij 't IJ</span><span class="vloc">Funenkade 7, Oost</span><span class="vpr">Beer €4–8 · flight €12–16</span></div>
+      <div class="vd">Amsterdam's best-known independent brewery, in the shadow of the De Gooyer windmill. Big terrace. Strictly an afternoon stop — it shuts early.</div>
+      <div class="vsix"><span class="tagn t-ok">excellent for six</span> Pair it with the canal boat on your first full day.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">LuminAir</span><span class="vloc">11th floor, DoubleTree, Oosterdoksstraat 4</span><span class="vpr">Cocktails €20–29</span></div>
+      <div class="vd"><strong>Note the rebrand</strong> — this was SkyLounge, and every older listing has the wrong name. Panoramic terrace over the IJ, next to Centraal. Thu–Sat until 02:00/03:00.</div>
+      <div class="vsix"><span class="tagn t-mid">reserve</span> Book six through their site. Expensive per round — one drink for the view, then move.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Twenty Third Bar</span><span class="vloc">23rd floor, Hotel Okura, De Pijp</span><span class="vpr">Cocktails ~€18–25</span></div>
+      <div class="vd">Highest classic hotel bar in the city, with bites from the Michelin kitchen downstairs. Thu–Sat 18:00–01:00.</div>
+      <div class="vsix"><span class="tagn t-no">dress code enforced</span> <b>No shorts, sportswear, flip-flops, ripped jeans, caps or hoodies.</b> Phone ahead: +31 20 678 8300. This is the one Amsterdam venue where the collared shirt earns its luggage space.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Door 74 / Hiding in Plain Sight</span><span class="vloc">Reguliersdwarsstraat 74 / Rapenburg 18</span><span class="vpr">Cocktails €16–25</span></div>
+      <div class="vd">The city's two benchmark speakeasies. Door 74 is unmarked and takes reservations only; HPS is dark, small and superb.</div>
+      <div class="vsix"><span class="tagn t-no">bad for six</span> Both are small rooms built for pairs. Either book well ahead and accept two separate tables, or send three and let the others go to Soundgarden.</div></div>
   </div>
 
-  <h3>Where to go, by city</h3>
-  <div class="tw">
-  <table>
-    <thead><tr><th>City</th><th>Venue</th><th>Best night</th><th class="num">Entry</th><th>Note</th></tr></thead>
+  <h4 style="margin-top:22px">Amsterdam clubs</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Club</th><th>Nights</th><th class="num">Entry</th><th>Door for six men</th></tr></thead>
     <tbody>
-      <tr><td rowspan="4" style="color:var(--ams)"><strong>Amsterdam</strong></td><td>Melkweg</td><td>Fri / Sat</td><td class="num">€10–25</td><td>Multi-room, live gig into club night. Your safest good night.</td></tr>
-      <tr><td>Paradiso</td><td>Fri / Sat</td><td class="num">€10–25</td><td>Converted church. Some nights add a €4 membership — check the ticket page.</td></tr>
-      <tr><td>Shelter</td><td>Fri / Sat, 23:00–08:00</td><td class="num">€15–25</td><td>Strictest door in the city. Underground techno, worth the effort.</td></tr>
-      <tr><td>De Marktkantine</td><td>Sat</td><td class="num">€12–22</td><td>Art-deco ballroom, house and disco, much softer door.</td></tr>
-
-      <tr><td rowspan="4" style="color:var(--ber)"><strong>Berlin</strong></td><td>Sisyphos</td><td>Fri → Mon, non-stop</td><td class="num">€10–15</td><td>Former dog-biscuit factory with a beach and ponds. <strong>Your realistic big Berlin night.</strong></td></tr>
-      <tr><td>Berghain</td><td>Sun night</td><td class="num">€20–30</td><td>Klubnacht runs to Monday morning. Sunday is the soft window.</td></tr>
-      <tr><td>Tresor</td><td>Fri / Sat</td><td class="num">€12–15</td><td>The original basement vault. Moderate door.</td></tr>
-      <tr><td>Renate / Chalet</td><td>Fri / Sat</td><td class="num">€10–15</td><td>Easiest doors of the serious clubs — your fallback plan.</td></tr>
-
-      <tr><td rowspan="4" style="color:var(--bud)"><strong>Budapest</strong></td><td>Instant-Fogas</td><td>Any, 18:00–06:00</td><td class="num">Free–€10</td><td>Seven venues, one building. Best single destination for six. 18+ after 23:00. Single-entry ticket — leave and you pay again.</td></tr>
-      <tr><td>Szimpla Kert</td><td>Tue early / any</td><td class="num">Free</td><td>The original ruin bar. Go before 22:00 or queue 45 min.</td></tr>
-      <tr><td>Széchenyi Sparty</td><td>Saturdays only</td><td class="num">€65–81</td><td>Spa party in the thermal baths. Book 2–3 weeks out.</td></tr>
-      <tr><td>Doboz / Akvárium</td><td>Thu–Sat</td><td class="num">€0–12</td><td>More local than Szimpla. Akvárium sits under a former pool.</td></tr>
-
-      <tr><td rowspan="4" style="color:var(--prg)"><strong>Prague</strong></td><td>Roxy</td><td>Fri / Sat, peaks 01:00</td><td class="num">€10–20</td><td>1920s cinema. Where locals actually go.</td></tr>
-      <tr><td>Cross Club</td><td>Wed–Sat</td><td class="num">€4–10</td><td>Steampunk sculpture interior in Holešovice. Cheapest, most distinctive, easy door.</td></tr>
-      <tr><td>Chapeau Rouge</td><td>Any</td><td class="num">Free–low</td><td>Three floors, cheap shots, chaotic. The "we don't know what to do" default.</td></tr>
-      <tr><td>Karlovy Lázně</td><td>Fri / Sat</td><td class="num">~€10</td><td>Five floors, one genre each. Entirely tourists — one hour as a novelty.</td></tr>
+      <tr><td><strong>Garage Noord</strong><br><small style="color:var(--tx3)">Noord, leftfield electronic</small></td><td><strong>Thu</strong>, Fri, Sat<br><small style="color:var(--tx3)">bar 20:00, club 23:00</small></td><td class="num">event-dep.</td><td><span class="tagn t-ok">relaxed</span> Your Thursday answer. Free night ferry behind Centraal gets you there.</td></tr>
+      <tr><td><strong>Shelter</strong><br><small style="color:var(--tx3)">under A'DAM Toren, deep techno</small></td><td>Fri, Sat<br><small style="color:var(--tx3)">23:00–06:00</small></td><td class="num">~€20</td><td><span class="tagn t-mid">selective</span> 18+, <b>physical ID only</b>, no entry after 04:00. Refuses suits, dress shirts and football shirts. <b>Cashless.</b> Presale sells out.</td></tr>
+      <tr><td><strong>RADION</strong><br><small style="color:var(--tx3)">Nieuw-West, house/techno</small></td><td>Fri, Sat<br><small style="color:var(--tx3)">long sessions</small></td><td class="num">€10–25</td><td><span class="tagn t-mid">selective</span> <b>Digital copies of ID explicitly refused.</b> Closed-toe shoes. Some events 21+.</td></tr>
+      <tr><td><strong>Chin Chin Club</strong><br><small style="color:var(--tx3)">Jordaan, house/disco/R&amp;B</small></td><td>Thu, Fri, Sat<br><small style="color:var(--tx3)">to 03:00</small></td><td class="num">from €20</td><td><span class="tagn t-no">strict</span> 21+ Thu, 23+ Fri/Sat. No sportswear, caps, shorts or shoulder bags. <b>Book a VIP booth (4–16 people) — it includes fast entry and is the reliable way in for six.</b></td></tr>
+      <tr><td><strong>Melkweg / Paradiso</strong><br><small style="color:var(--tx3)">Leidseplein, the safe pair</small></td><td>Fri, Sat</td><td class="num">€10–25</td><td><span class="tagn t-ok">easiest good door</span> Both need <b>membership</b>: Melkweg €4.50/mo or €25/yr, Paradiso €4.50/mo or €9.50/yr — bundled into club-night tickets. Melkweg lockers €4/€7.50.</td></tr>
+      <tr><td><strong>Jimmy Woo</strong><br><small style="color:var(--tx3)">Leidseplein, hip-hop/R&amp;B</small></td><td>Fri, Sat</td><td class="num">~€10</td><td><span class="tagn t-no">hardest door here</span> For an all-male group, book a table or arrive in pairs before 00:30. Otherwise expect a no with no reason given.</td></tr>
+      <tr><td><strong>Escape</strong><br><small style="color:var(--tx3)">Rembrandtplein, big-room house</small></td><td>Daily<br><small style="color:var(--tx3)">Fri/Sat to 05:00</small></td><td class="num">€7–15</td><td><span class="tagn t-ok">easiest</span> Tourist-friendly by design. The fallback that always works.</td></tr>
     </tbody>
-  </table>
+  </table></div>
+  <p style="font-size:13.5px;color:var(--tx2)"><strong>Amsterdam Nightlife Ticket</strong> — €10 for one day, €12 for two, €20 for 3–7 days, covering 30-plus mainstream venues including Melkweg, Jimmy Woo and Escape, valid noon to 06:00. It does <em>not</em> cover Shelter, RADION or Garage Noord, and it doesn't guarantee entry anywhere. Worth it if you're doing Rembrandtplein; pointless if you're doing techno.</p>
+  <p style="font-size:13.5px;color:var(--tx2)"><strong>Getting home:</strong> trams and metro stop just after midnight. Eleven GVB night-bus lines run hourly 00:30–07:30 from Centraal, €5.70 a ticket, tap a contactless card — <strong>you cannot buy from the driver.</strong> The free IJ ferries behind Centraal run all night, which is how you reach Shelter and Garage Noord. Don't cycle drunk.</p>
+  <div class="callout c-good">
+    <b>The coffeeshop tourist ban was dropped — 3 June 2026</b>
+    The new city coalition rejected the residents-only rule outright, on the reasoning that a quarter of excluded tourists would simply buy from street dealers instead. Around 166 coffeeshops remain open to foreign visitors. Rules: 18+, <strong>original photo ID</strong>, max 5 g per person per day across all shops, no tobacco mixing indoors, no alcohol. <strong>Smoking outdoors in De Wallen, Dam, Damrak or Nieuwmarkt is a €100 fine.</strong> And street dealers sell fake or adulterated product — Amsterdam ran an official public campaign after "white heroin" sold as cocaine killed three tourists.
   </div>
+
+  <h3 style="color:var(--ber)">Berlin · Sun 4 – Wed 7 Oct</h3>
+  <div class="callout c-good">
+    <b>Correction to the old plan: go to Berghain on Sunday AFTERNOON, not Sunday night</b>
+    Klubnacht for your weekend starts Sat 3 Oct at 23:59 and runs continuously to <strong>Mon 5 Oct around 08:00</strong> — so your whole Sunday sits inside it. But the door is not uniform. Sunday 12:00–18:00 is the shortest queue and the most accessible door of the entire week, with entry rates reported at 65–80%. <strong>After 18:00 the door tightens again</strong> as the crowd shifts to regulars and reads tourist curiosity fast. Bouncer shifts change at 08:00 and 18:00, and a second attempt after a shift change is a known reset. Land, drop bags, be in line by 14:00–16:00.
+  </div>
+  <div class="callout c-bad">
+    <b>Be realistic about six men at Berghain</b>
+    Every source converges: groups of four or more are refused near-systematically, and groups of six are put under 20%. One long-time local writes that he has never seen a group of four or more get in. <strong>Split into 2+2+2, queue apart, and plan for a split outcome</strong> — four of six getting in is a good night, not a failure. Agree an inside meeting point and agree what the ones who don't get in will do. €25–30 entry, €5 re-entry, drinks €4–7. Cloakroom €2.50 coat plus €1.50 bag access, <strong>cash, bring coins</strong>. Door staff sticker over both phone cameras; <strong>a group selfie in the queue is a documented instant rejection.</strong> Sunglasses come off at the door. Know one DJ on the bill.
+  </div>
+
+  <h4>Bars — and critically, which are open Sun/Mon/Tue</h4>
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">Bei Schlawinchen</span><span class="vloc">Schönleinstr. 34, Kreuzberg</span><span class="vpr">€3.00 / 0.5 L</span></div>
+      <div class="vd">Legendary chaos-dive: dolls, bicycles and a gorilla nailed to the walls, table football, and a badge proving thirty years of never closing. <strong>Open 24 hours, every day.</strong> Cheapest verified beer in this brief.</div>
+      <div class="vsix"><span class="tagn t-ok">best value pick</span> Rammed at all hours, groups completely normal. Cash.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Monster Ronson's Ichiban Karaoke</span><span class="vloc">Warschauer Str. 34, Friedrichshain</span><span class="vpr">booth deals</span></div>
+      <div class="vd">Private karaoke booths plus an open stage. Oct–Apr it runs Sun–Thu 18:00–02:00; open stage Sun/Tue/Wed 21:00, Mon 20:00. Weekday deal: book two hours, get one free. 21+.</div>
+      <div class="vsix"><span class="tagn t-ok">book a booth online</span> <b>This is the honest answer to "what do six men do in Berlin on a Tuesday."</b> Strongest single recommendation for that night.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hops &amp; Barley</span><span class="vloc">Wühlischstr. 22–23, Friedrichshain</span><span class="vpr">~€4</span></div>
+      <div class="vd">Brewpub in a former butcher's shop, brews on site, football on the screen. <strong>Mon–Tue 17:00–24:00, Sun 14:00–24:00</strong> — open all three of your nights.</div>
+      <div class="vsix"><span class="tagn t-ok">best of the craft four for six</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hopfenreich</span><span class="vloc">Sorauer Str. 31, Kreuzberg</span><span class="vpr">~€4–6</span></div>
+      <div class="vd">Berlin's first craft-beer bar, 22 taps, unpretentious. <strong>Open every day 17:00–01:00.</strong></div>
+      <div class="vsix"><span class="tagn t-ok">standing room, easy</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Protokoll Taproom</span><span class="vloc">Boxhagener Str. 110, Friedrichshain</span><span class="vpr">~€5–7</span></div>
+      <div class="vd">24 rotating taps, cosy, themed nights. Mon–Thu 17:00–24:00, Sun 16:00–24:00.</div>
+      <div class="vsix"><span class="tagn t-ok">fine for six</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">The Muted Horn</span><span class="vloc">Flughafenstr. 49, Neukölln</span><span class="vpr">€5–8</span></div>
+      <div class="vd">Lambic and sour specialists with a bottle shop, board games and pub quizzes. Mon–Fri from 17:00, weekends from 15:00.</div>
+      <div class="vsix"><span class="tagn t-mid">split 3+3</span> Narrow room.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Ankerklause</span><span class="vloc">Kottbusser Damm 104, Kreuzberg</span><span class="vpr">cheap</span></div>
+      <div class="vd">Kitsch ship-themed Kneipe hanging over the canal, jukebox at 50c a song, cheap food. Daily from 10:00 — verify Monday.</div>
+      <div class="vsix"><span class="tagn t-ok">benches, group-friendly</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Rauschgold / Stagger Lee</span><span class="vloc">Oranienstr. 35 / Paul-Lincke-Ufer 44e, Kreuzberg</span><span class="vpr">Cocktails €8–12</span></div>
+      <div class="vd">The realistic cocktail options for a group. Rauschgold is loud and late with no attitude; Stagger Lee is well-designed and walk-in friendly.</div>
+      <div class="vsix"><span class="tagn t-ok">walk in</span> Opening days weren't verifiable — check before you commit the evening.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Buck &amp; Breck</span><span class="vloc">Brunnenstr. 177, Mitte</span><span class="vpr">~€15–18</span></div>
+      <div class="vd">Berlin's benchmark speakeasy — one communal island table around the bartender, 32 cocktails, permanent queue outside. Mon–Fri and Sun 20:00–02:00, <strong>closed Saturday.</strong></div>
+      <div class="vsix"><span class="tagn t-no">don't bring six</span> Send two, maybe four, and phone first: +49 30 40 555 994.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Café am Neuen See</span><span class="vloc">Lichtensteinallee 2, Tiergarten</span><span class="vpr">beer-garden prices</span></div>
+      <div class="vd">The only reliable beer garden in October — <strong>open daily 09:00–24:00 year-round</strong>, lakeside, with rowing boats. Prater Garten is a coin-flip this late in the season (its indoor Gaststätte is the fallback); Klunkerkranich is Fri/Sat only in October and therefore shut on all your nights.</div>
+      <div class="vsix"><span class="tagn t-ok">daytime, easy</span></div></div>
+  </div>
+
+  <h4 style="margin-top:22px">Berlin clubs, filtered to nights you're actually there</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Club</th><th>Your nights</th><th class="num">Entry</th><th>Reality for six men</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Berghain</strong><br><small style="color:var(--tx3)">Friedrichshain</small></td><td><strong>Sun ✓</strong> (Klubnacht to Mon 08:00)</td><td class="num">€25–30</td><td><span class="tagn t-no">under 20% as a six</span> Sunday <b>afternoon</b>. 2+2+2. No phones, no arguing, know a DJ. Cash for the cloakroom regardless of the card question.</td></tr>
+      <tr><td><strong>Sisyphos</strong><br><small style="color:var(--tx3)">Lichtenberg</small></td><td><strong>Sun ✓ Mon ✓</strong><br><small style="color:var(--tx3)">Fri 22:00 → Mon 10:00 non-stop</small></td><td class="num">€10–16</td><td><span class="tagn t-mid">best Sunday odds of any big club</span> "Strict but friendly", queue can top an hour, large groups restricted so go 2+2+2. Beer €3.50, <b>cash only</b>, ATMs on site. Festival site with a garden and hammocks. Dress creative and colourful — <b>not</b> Berghain-black cosplay.</td></tr>
+      <tr><td><strong>Tresor</strong><br><small style="color:var(--tx3)">Mitte, the original vault</small></td><td><strong>Mon ✓</strong><br><small style="color:var(--tx3)">doors 23:00</small></td><td class="num">€10–20</td><td><span class="tagn t-ok">the most winnable big door in Berlin</span> <b>Your Monday anchor.</b> Clear and tolerant, but still enter as pairs. Dark neutral streetwear and sneakers; avoid the stag-party look. Cash preferred, ATM inside.</td></tr>
+      <tr><td><strong>KitKatClub</strong><br><small style="color:var(--tx3)">Mitte</small></td><td><strong>Sun ✓</strong> (Nachspiel, from 08:00)<br><strong>Mon ✓</strong> (Electric Monday, 22:00)</td><td class="num">€15–25</td><td><span class="tagn t-no">hardest category for male groups</span> Fetish dress code is the door — see the <strong>Adults only</strong> tab before you consider it. Electric Monday is the tolerant night. Phones go in the cloakroom.</td></tr>
+      <tr><td><strong>://about blank</strong><br><small style="color:var(--tx3)">Ostkreuz</small></td><td><strong>Sun ✓</strong><br><small style="color:var(--tx3)">from 23:00</small></td><td class="num">€10–15</td><td><span class="tagn t-mid">medium</span> Protects its atmosphere rather than gatekeeping, and has a firm "no suits" ethos. Collectively run, explicitly queer-friendly, politically engaged — <b>not a bachelor-party venue.</b> Go quiet and respectful or don't go.</td></tr>
+      <tr><td><strong>Kater</strong><br><small style="color:var(--tx3)">Holzmarktstr. 25 — was Kater Blau</small></td><td><strong>Sun ✓ Tue ✓</strong><br><small style="color:var(--tx3)">Tue "Funky Chicken Club" 18:00–01:00</small></td><td class="num">€25 Sun<br>free to 20:00 Tue</td><td><span class="tagn t-mid">medium</span> <b>Your only verified Tuesday club.</b> Free before 20:00 on the Tuesday.</td></tr>
+      <tr><td><strong>RSO.Berlin</strong><br><small style="color:var(--tx3)">Schöneweide</small></td><td><strong>Sun ✓</strong><br><small style="color:var(--tx3)">Sat–Mon marathons</small></td><td class="num">€15–25</td><td><span class="tagn t-mid">quite strict but "come as you are"</span> Underrated Sunday option. <b>Card and cash both accepted.</b> Far out — plan the trip back before you go.</td></tr>
+      <tr><td><strong>Renate</strong> / <strong>Klunkerkranich</strong> / <strong>Watergate</strong></td><td colspan="3"><span class="tagn t-dead">not available to you</span> Renate is Thu–Sat only (and now card-only, no cash). Klunkerkranich is Fri/Sat in October. Watergate closed permanently in 2024.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout c-warn">
+    <b>Two Berlin facts that will bite you</b>
+    <strong>1. All-night U-Bahn and S-Bahn runs Friday, Saturday and Sunday nights only.</strong> Your Sunday night is covered — U-Bahn every 15 min, S-Bahn 24h. But <strong>Monday and Tuesday nights the rail stops around 01:00</strong> and you're on night buses N1–N9 or the 24-hour MetroTram. Berghain, Kater, about blank, Monster Ronson's and Hops &amp; Barley all cluster around Warschauer Str./Ostkreuz and you can walk between them — which sidesteps the problem entirely. Sisyphos (Lichtenberg) and RSO (Schöneweide) are what will strand you.<br><br>
+    <strong>2. Berlin is cash.</strong> Every major techno club runs primarily or exclusively on cash. Draw <strong>€150–200 each</strong> in one or two withdrawals from a bank-branded ATM — Sparkasse, Deutsche Bank, Commerzbank — never a standalone Euronet in a tourist strip. Keep €5–10 in coins for cloakrooms. Fares from 1 Jan 2026: single AB €4.00, 24-hour AB €11.20, and the <strong>4-trip strip at €12.40 (€3.10 a ride) is the cheapest real option.</strong>
+  </div>
+  <div class="callout c-good">
+    <b>Lucky timing — Tag der Clubkultur, 3–12 Oct 2026</b>
+    Berlin's club-culture festival week spans your entire stay, which usually means extra programming on exactly the off-nights you're stuck with. Check its programme in late September. Separately, German Unity Day falls on <strong>Saturday 3 October</strong> — the day before you arrive — so there's no bridge day and nothing is closed during your actual visit. Shops shut Sat and Sun; Spätis, station supermarkets and airport shops don't.
+  </div>
+
+  <h3 style="color:var(--bud)">Budapest · Thu 8 – Sun 11 Oct</h3>
+  <div class="callout c-good">
+    <b>Thursday is your best night in Budapest, and it's the free one</b>
+    Tuesday to Thursday the Jewish Quarter runs 60–70% local. Friday and Saturday, Kazinczy utca belongs to British, German and Dutch stag parties and switches to tourist-menu pricing. You're on the party boat Friday and at the Sparty Saturday anyway — so Thursday is the night to actually drink where Hungarians drink. Suggested run: Élesztőház or Keleti Waiting Room early → Fekete Kutya or Lámpás → Szimpla for one → Instant-Fogas until it stops being a good idea.
+  </div>
+
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">Instant-Fogas Complex</span><span class="vloc">Akácfa u. 49–51, District VII</span><span class="vpr">Free entry · beer ~1,100 HUF</span></div>
+      <div class="vd">Seven clubs, eighteen bars, roughly 1,100 m² over three floors: Instant, Fogas, Unterwelt (R&amp;B), Frame, Liebling, Robot (rock), Level (electro). <strong>Open every day 18:00–06:00, free entry</strong> except ticketed concerts.</div>
+      <div class="vsix"><span class="tagn t-ok">your anchor venue</span> Published door policy is minimal — refusal only for inappropriate or dirty clothing, intoxication or aggression. <b>No group-size limit; six men is unremarkable here.</b> After 23:00 it's 18+ and security can demand ID for alcohol service. Bags over 30 cm banned.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Keleti Waiting Room</span><span class="vloc">Bethlen Gábor u. 3, District VII</span><span class="vpr">450–690 HUF (€1.25–1.90)</span></div>
+      <div class="vd">Underground craft-beer cellar, 8–10 Hungarian taps, almost no tourists. <strong>The cheapest verified beer anywhere in this document.</strong> Fifteen minutes' walk east of the party district.</div>
+      <div class="vsix"><span class="tagn t-ok">excellent value</span> Small room, so go early.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Élesztőház</span><span class="vloc">Tűzoltó u. 22, District IX</span><span class="vpr">675–1,350 HUF · flight ~3,500</span></div>
+      <div class="vd">Hungary's first independent craft-brewery complex — around 30 taps in a converted glassworks with a big courtyard. Daily to about 01:00. One tram from District VII.</div>
+      <div class="vsix"><span class="tagn t-ok">ideal for six</span> Communal tables, local crowd. Best first stop of the night.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Fekete Kutya</span><span class="vloc">Dob u. 31, District VII</span><span class="vpr">800–1,900 HUF · cocktails 2,100–3,200</span></div>
+      <div class="vd">A cultural pub that deliberately rejects the ruin-bar-for-tourists aesthetic. Hungarians, cheap drinks, no door policy.</div>
+      <div class="vsix"><span class="tagn t-ok">very good</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Lámpás</span><span class="vloc">Dob u. 15, District VII</span><span class="vpr">900–2,300 HUF</span></div>
+      <div class="vd">Historic cellar bar with <strong>live music every night and no cover charge.</strong> A locals' pick, and the cellar rooms swallow a group.</div>
+      <div class="vsix"><span class="tagn t-ok">good</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Szimpla Kert</span><span class="vloc">Kazinczy u. 14, District VII</span><span class="vpr">950–1,350 HUF · cocktails 2,200–2,800</span></div>
+      <div class="vd">The original ruin bar, opened 2002 — bathtub seats, a bicycle on the wall, courtyard. Mandatory once, then leave. Mon–Fri 12:00–04:00, weekends from 09:00.</div>
+      <div class="vsix"><span class="tagn t-ok">good, but queue 23:00–01:00</span> Free entry always. Multiple rooms suit splitting and regrouping. Expect 10–20 minutes in line on a Friday or Saturday.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hopaholic / HOPS Beer Bar</span><span class="vloc">Akácfa u. 38 / Wesselényi u. 13</span><span class="vpr">~1,400–2,200 HUF</span></div>
+      <div class="vd">Beer-geek pair. Hopaholic rotates fast and does Czech pickled cheese, 50 m from Instant-Fogas; HOPS is a bottle shop with 10 taps and beer-coaster wallpaper, two minutes from Szimpla.</div>
+      <div class="vsix"><span class="tagn t-mid">small but workable</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Csendes Létterem</span><span class="vloc">Ferenczy István u. 5, District V</span><span class="vpr">1,600–2,000 HUF · cocktails 3,000–3,600</span></div>
+      <div class="vd">The ruin bar for people who want to hear each other talk. Mannequins, chandeliers, vintage junk, genuinely arty crowd. Closes 02:00 Thursday.</div>
+      <div class="vsix"><span class="tagn t-mid">grab a corner early</span></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hotsy Totsy</span><span class="vloc">Sip u., District VII</span><span class="vpr">Cocktails 3,800–6,500 HUF (€10.40–17.80)</span></div>
+      <div class="vd">Basement speakeasy — brick arches, red velvet, and ranked 267th on the World's 50 Best long list. The best cocktail room you'll realistically get into as a group.</div>
+      <div class="vsix"><span class="tagn t-mid">reserve for six</span> Walk-ins accepted but <b>seated service only</b> — if the seats are gone they cannot take you standing. There's a private "Hudson" room. Warm Up (Nagy Diófa u. 26, no printed menu, 4,000–6,500 HUF) and Boutiq'Bar (Paulay Ede u. 5) are better but effectively require bookings.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Mitico</span><span class="vloc">Kazinczy u. 47, District VII</span><span class="vpr">~3,500–5,000 HUF</span></div>
+      <div class="vd">Tropical/tiki with jungle interiors, bold drinks and live entertainment, right in the ruin-bar strip.</div>
+      <div class="vsix"><span class="tagn t-ok">better for six than the speakeasies</span> Built for volume.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">360 Bar</span><span class="vloc">Andrássy út 39, rooftop</span><span class="vpr">Cocktails 3,850–4,900 HUF</span></div>
+      <div class="vd">The rooftop with the real Pest-skyline sweep, open year-round with winter igloos. Party atmosphere at weekends.</div>
+      <div class="vsix"><span class="tagn t-mid">reserve — walk-ins may be charged an entry fee</span> Igloos carry a <b>30,000 HUF (€82) minimum spend.</b> Arrive 45 minutes before sunset. High Note SkyBar at the Aria has the better view and 5,900–6,200 HUF cocktails with a smart-casual rule.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Time Out Market Budapest</span><span class="vloc">Corvin Palace, Blaha Lujza tér</span><span class="vpr">market prices</span></div>
+      <div class="vd">Five floors of food and drink in the building that used to house Corvintető, opened September 2025. Eight minutes' walk from District VII and an excellent early-evening option for six.</div>
+      <div class="vsix"><span class="tagn t-ok">easy</span> A rooftop bar was announced for spring 2026 — unconfirmed.</div></div>
+  </div>
+
+  <h4 style="margin-top:22px">Budapest clubs</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Venue</th><th>Nights</th><th class="num">Entry</th><th>Notes for six</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Instant-Fogas</strong></td><td>Daily 18:00–06:00</td><td class="num">Free</td><td><span class="tagn t-ok">no issue</span> Seven rooms. Nobody gets stuck, nobody gets refused.</td></tr>
+      <tr><td><strong>Ötkert</strong><br><small style="color:var(--tx3)">Zrínyi u. 4/A, house/Top-40</small></td><td>Thu–Sat 23:00–05:00<br><small style="color:var(--tx3)">closed Sun–Wed</small></td><td class="num">Free Thu to midnight<br>~€10 otherwise</td><td><span class="tagn t-no">strictest on this list</span> <b>"Smart and Elegant"</b> — collared shirt, proper shoes, no shorts or sportswear. This is where six men are most likely to be split or slowed. <b>Mitigation: arrive Thursday before midnight while it's free, or book a table</b> (+36 70 333 2132 — ask about minimum spend, it isn't published).</td></tr>
+      <tr><td><strong>Akvárium Klub</strong><br><small style="color:var(--tx3)">Erzsébet tér 12</small></td><td>Thu–Sat<br><small style="color:var(--tx3)">see warning</small></td><td class="num">3,000–6,000 HUF</td><td><span class="tagn t-mid">verify first</span> Lease is secure to 2029, but it was renovating through summer 2026 and <b>nothing was listed for 8–10 October</b> when checked. Two big halls, no real dress code. <b>Check akvariumklub.hu two weeks out.</b></td></tr>
+      <tr><td><strong>Széchenyi Sparty</strong><br><small style="color:var(--tx3)">City Park, District XIV</small></td><td><strong>Sat 10 Oct</strong><br><small style="color:var(--tx3)">21:30–02:00, last entry 01:00</small></td><td class="num">€69 std<br>(often €59)</td><td><span class="tagn t-ok">booked, 18+</span> <b>Standard is entry plus a lockable locker only — drink coupons start at Premium (€96).</b> Swimwear mandatory, bring a towel, carry ID. Cup deposit ~€2, half refunded. The official page still carries obsolete Covid-passport text — ignore it. At 02:00 the M1 has stopped: book Bolt.</td></tr>
+      <tr><td><strong>Aether Club</strong><br><small style="color:var(--tx3)">Gozsdu Court, techno</small></td><td>Weekends to 06:00</td><td class="num">~4,000 HUF</td><td><span class="tagn t-mid">third-party figures only</span></td></tr>
+      <tr><td><strong>Corvintető</strong></td><td colspan="3"><span class="tagn t-dead">closed since 2018</span> Now Time Out Market. Remove it from any list you're carrying.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout c-warn">
+    <b>District VII has a midnight closing rule — and a night network that changed in July</b>
+    Erzsébetváros operates a general midnight closing time across the district, with exemptions for venues meeting published criteria. The big names hold permits — Szimpla advertises 04:00, Instant-Fogas 06:00 — but <strong>small side-street bars may genuinely shut at midnight.</strong> Build late nights around the big two.<br><br>
+    Metro stops around 23:00. <strong>Tram 6 runs 24/7</strong> along the Grand Boulevard through Blaha Lujza tér and Oktogon, straight past your district — that's your lifeline. The entire night-bus network was <strong>reorganised from 1–2 July 2026</strong>, so route numbers you find online are stale: use the BudapestGO app. After 02:00 the real answer is Bolt or Uber — <strong>Uber is operating in Budapest again</strong> via a Főtaxi partnership, on regulated fares. A cross-town ride is 2,000–3,500 HUF, about €1–1.60 each split six ways. Book two cars; six don't fit in one. Best ticket: <strong>72-hour travelcard, 5,750 HUF (€15.75)</strong>, covers Thu–Sun.
+  </div>
+  <div class="callout c-bad">
+    <b>Budapest has one serious threat and it targets exactly your group</b>
+    The consume-girl scam — organised, violent, and over €2.5 million taken from foreign men. It starts with a friendly English-speaking stranger suggesting a bar. Full detail, documented bills and the six rules are in the <strong>Adults only</strong> tab. Read it before Thursday night. The one rule that defeats the whole thing: <strong>never go to a bar suggested by someone who approached you.</strong>
+  </div>
+
+  <h3 style="color:var(--prg)">Prague · Sun 11 – Tue 13 Oct</h3>
+  <div class="callout c-warn">
+    <b>Two nights, and they're the two deadest of the Prague week</b>
+    Sunday 11 and Monday 12 October. Lucerna's famous 80s/90s video party is <strong>Friday and Saturday only</strong> — the single most-recommended Prague night is unavailable, and their October calendar showed nothing at all on the 11th, 12th or 13th. Prague Burlesque is Fridays only. The Náplavka farmers' market is Saturday only. Czech pubs close early on Sunday: Lokál Dlouhááá shuts at 22:00 Sunday against midnight the rest of the week. <strong>Plan accordingly rather than discovering it at 22:30.</strong><br><br>
+    <strong>Also: commercial guided pub crawls are banned 22:00–06:00.</strong> Don't buy one from a street promoter.
+  </div>
+  <div class="callout c-good">
+    <b>Your open question, answered: the Prague tourist fee is still 50 CZK</b>
+    The legal maximum has been 50 CZK per person per night since 2021 and is unchanged in 2026. <strong>The bill to double it to 100 CZK has not passed</strong> — it's still in the legislative process with no implementation date, and one MP described the 100 CZK cap as "a political compromise". Prague 1 has separately lobbied for 175–200 CZK; that's a district wish, not law. <strong>Your cost: 6 × 2 nights × 50 CZK = 600 CZK (€24.75)</strong>, usually charged at check-in and often not in the quoted room rate.
+  </div>
+
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">Cross Club</span><span class="vloc">Plynární 23, Holešovice</span><span class="vpr">Usually free midweek</span></div>
+      <div class="vd">A steampunk cathedral of welded scrap and kinetic machinery — drum &amp; bass, techno, dub, experimental. Café/bar daily 14:00–02:00, club 18:00–05:00. <strong>100 m from metro Nádraží Holešovice and in your own district.</strong></div>
+      <div class="vsix"><span class="tagn t-ok">your best Sun/Mon option</span> No door politics, no dress code, genuinely mixed local crowd — not a stag venue. Door fee only Fri/Sat. <b>Verify the 11–12 Oct programme at crossclub.cz nearer the date.</b></div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Lokál Korunní</span><span class="vloc">Korunní 39, Vinohrady</span><span class="vpr">74 CZK / €3.05 per 0.5 L</span></div>
+      <div class="vd">Best-poured Pilsner in your own neighbourhood, in a 1903 building with a tile stove and the only gold tank in the Lokál group. Spirits 55–79 CZK. No cocktails — Czech beer halls don't do them. <strong>Sun–Fri 11:00–23:30</strong>, so open both nights.</div>
+      <div class="vsix"><span class="tagn t-mid">book</span> Risky walking in 19:00–21:00. +420 604 500 257.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Zlý Časy</span><span class="vloc">Čestmírova 5, Nusle</span><span class="vpr">~60–110 CZK / €2.50–4.50</span></div>
+      <div class="vd"><strong>48 taps</strong> across a multi-room warren plus a basement and a bottle shop — the serious Czech beer-nerd hall, communal tables, young crowd. <strong>Sun to 01:00, Mon–Sat to 02:00, from 17:00 daily.</strong> Ten minutes by tram from Vinohrady.</div>
+      <div class="vsix"><span class="tagn t-ok">yes — that's the format</span> <b>Your best late option on both nights.</b> Takes cards.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">BeerGeek Bar</span><span class="vloc">Vinohradská 62, metro Jiřího z Poděbrad</span><span class="vpr">80–130 CZK Czech · 120–200 imports</span></div>
+      <div class="vd">32 taps with 5–10 new beers rotated daily — the biggest craft range in the country — and a wings kitchen. <strong>Open daily 15:00–02:00</strong>, including Sunday and Monday.</div>
+      <div class="vsix"><span class="tagn t-mid">tight at 40 seats</span> Email rezervace@beergeek.cz.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Vinohradský pivovar</span><span class="vloc">Korunní 106, Vinohrady</span><span class="vpr">72–74 CZK / €2.97–3.05</span></div>
+      <div class="vd">Independent microbrewery on the original 1893 site, with a copper vessel replicated from 1912. Big 100-capacity hall. <strong>Mon–Sat to midnight, Sun to 22:00.</strong></div>
+      <div class="vsix"><span class="tagn t-ok">generally fine</span> Reserve +420 602 549 557.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Prague Beer Museum</span><span class="vloc">Dlouhá 21, plus a branch at Americká 43</span><span class="vpr">~60–90 CZK est.</span></div>
+      <div class="vd">Thirty Czech beers on tap, all regional and craft, no macro brands, 100 seats plus a courtyard. <strong>Daily 12:00–02:00.</strong> The Americká branch at Náměstí Míru is walkable from Vinohrady.</div>
+      <div class="vsix"><span class="tagn t-ok">usually fine</span> Prices aren't published. +420 608 572 244.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">U Fleků</span><span class="vloc">Křemencova 11, New Town</span><span class="vpr">99 CZK / €4.08 per 0.4 L</span></div>
+      <div class="vd">Brewing since 1499 — 1,200 seats, an oompah band and a brewery museum. Openly a tourist institution; go once, knowingly. <strong>Daily 10:00–23:00.</strong> Menu explicitly valid from 1 Jan 2026.</div>
+      <div class="vsix"><span class="tagn t-mid">reserve</span> <b>Waiters circulate with trays of Becherovka and place shots on your table unasked — say no clearly or you pay for them.</b> No 0.5 L served, only 0.4.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Pivovar Marina</span><span class="vloc">Jankovcova 12, Holešovice port</span><span class="vpr">not published</span></div>
+      <div class="vd">Riverside brewpub in your own district doing a roasted dark special with coffee and caramel notes. Two rooms — a Mediterranean restaurant and a Czech carter's bar. <strong>Daily 11:00–24:00 year-round.</strong></div>
+      <div class="vsix"><span class="tagn t-ok">walk-in should be fine</span> rezervace@pivovarmarina.cz</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">AnonymouS Bar</span><span class="vloc">Michalská 12, Old Town</span><span class="vpr">245–385 CZK / €10.10–15.90</span></div>
+      <div class="vd">V-for-Vendetta themed with theatrical service — consistently Prague's most-booked cocktail room. <strong>Open daily 17:00–02:00.</strong></div>
+      <div class="vsix"><span class="tagn t-no">book</span> Six won't walk in. Black Angel's (Old Town Square 29, Gothic cellars, daily to 03:00, 18+) is the latest-closing alternative and limits large groups.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Hemingway Bar</span><span class="vloc">Karolíny Světlé 26, Old Town</span><span class="vpr">~250 CZK / €10.30 average</span></div>
+      <div class="vd">300-plus rums and a serious absinthe programme; World's 50 Best Discovery listed. Sunday it opens at 19:00 only.</div>
+      <div class="vsix"><span class="tagn t-no">critical for six</span> <b>Parties over five must book by phone (+420 773 974 764) and carry a 500 CZK (€20.60) minimum spend per person.</b> Online booking won't take you, tables are held 15 minutes, and six men walking in will be refused.</div></div>
+
+    <div class="venue"><div class="vh"><span class="vn">Náplavka</span><span class="vloc">Rašínovo nábřeží, New Town embankment</span><span class="vpr">—</span></div>
+      <div class="vd">Renovated arch vaults — the "kobky" — housing Kobka 6 Bar, (A)void and a bistro. In mid-October it's cold, dark by 18:15, and the summer seating is packed away.</div>
+      <div class="vsix"><span class="tagn t-mid">45-minute daytime stroll, not a night plan</span> The famous market is Saturday 08:00–14:00 — you miss it. Vnitroblock (Tusarova 31, Holešovice, daily to 22:00) is the better warm-up: a converted factory courtyard with a bar, gallery and cinema, five minutes from Cross Club.</div></div>
+  </div>
+
+  <h4 style="margin-top:22px">Prague clubs — what actually runs on a Sunday or Monday</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Club</th><th>Your nights</th><th class="num">Entry</th><th>Reality</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cross Club</strong><br><small style="color:var(--tx3)">Holešovice</small></td><td><strong>Sun ✓ Mon ✓</strong><br><small style="color:var(--tx3)">club 18:00–05:00</small></td><td class="num">usually free midweek</td><td><span class="tagn t-ok">best option, in your district</span> Ticketed or free rather than face-controlled. Mixed local crowd.</td></tr>
+      <tr><td><strong>Roxy</strong><br><small style="color:var(--tx3)">Dlouhá 33 — same building as Lokál</small></td><td><strong>Mon ✓</strong><br><small style="color:var(--tx3)">"Free Mondays w/ DJs"</small></td><td class="num">Free Mon<br>100–150 CZK else</td><td><span class="tagn t-ok">fine, ticketed door</span> Art-deco 1920s cinema with historic vaulted cellars, four bars. Free Mondays is a recurring format — <b>confirm the dated listing on GoOut two weeks out</b>, the site blocks automated checks.</td></tr>
+      <tr><td><strong>Karlovy Lázně</strong><br><small style="color:var(--tx3)">Smetanovo nábřeží 1, five floors</small></td><td><strong>Sun ✓ Mon ✓</strong><br><small style="color:var(--tx3)">"Sunday Shakedown", "Monday Mania", 22:00</small></td><td class="num">250 CZK before 23:00<br>320 CZK anytime</td><td><span class="tagn t-mid">tourist trap, straightforwardly</span> Practically the only five-floor club guaranteed to run on your dates. Near-zero Czechs, heavily 18–22, and it sits at the centre of Prague's promoter economy. <b>Prepaid ticket and pay per round = survivable fun. A free-entry flyer from a man on the street is not.</b> VIP table from 1,500 CZK. Their tickets page now renders as "Cliché Club" — possible rebrand.</td></tr>
+      <tr><td><strong>Lucerna Music Bar</strong></td><td colspan="3"><span class="tagn t-dead">write it off</span> The 80s/90s video party is Fri/Sat only, and their published October calendar had nothing on 11, 12 or 13 Oct. Check for a concert, otherwise skip.</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13.5px;color:var(--tx2)"><strong>Getting home:</strong> metro shuts around midnight. Night trams 91–99 run every 30 minutes from about 00:30 to 04:30 and <strong>every single one meets at Lazarská</strong> — get there, then take the right 9x. Night buses 901–915 every 30–60 min; bus 910 does airport to centre with no transfer. Best buy: <strong>72-hour pass, 340 CZK in the PID Lítačka app</strong> (350 paper). Validate paper tickets in the yellow machine <em>before</em> boarding — inspectors work tram 22 hard and the fine is somewhere around 1,200–1,500 CZK.</p>
 
   <h3>What a night actually costs, per person</h3>
   <div class="tw">
   <table>
     <thead><tr><th>City</th><th class="num">Entry</th><th class="num">Beer</th><th class="num">Cocktail</th><th class="num">Full night</th></tr></thead>
     <tbody>
-      <tr><td>Amsterdam</td><td class="num">€10–25</td><td class="num">€4–7.50</td><td class="num">€8–14</td><td class="num"><strong>€50–80</strong></td></tr>
-      <tr><td>Berlin</td><td class="num">€10–30</td><td class="num">€3–5</td><td class="num">€7–10</td><td class="num"><strong>€80–150</strong></td></tr>
-      <tr><td>Budapest</td><td class="num">€0–10</td><td class="num">€3–5</td><td class="num">€5–8</td><td class="num"><strong>€25–50</strong></td></tr>
-      <tr><td>Prague</td><td class="num">€4–20</td><td class="num">€2–5</td><td class="num">€6–14</td><td class="num"><strong>€28–60</strong></td></tr>
+      <tr><td>Amsterdam</td><td class="num">€10–25</td><td class="num">€4–8</td><td class="num">€12–25</td><td class="num"><strong>€50–80</strong></td></tr>
+      <tr><td>Berlin</td><td class="num">€10–30</td><td class="num">€3–5</td><td class="num">€8–13</td><td class="num"><strong>€60–120</strong></td></tr>
+      <tr><td>Budapest</td><td class="num">€0–10</td><td class="num">€1.25–4.40</td><td class="num">€6–17</td><td class="num"><strong>€30–50</strong></td></tr>
+      <tr><td>Prague</td><td class="num">€0–13</td><td class="num">€2.30–4.50</td><td class="num">€10–16</td><td class="num"><strong>€25–50</strong></td></tr>
     </tbody>
   </table>
   </div>
+  <p style="font-size:13px;color:var(--tx3)">Cocktail ranges are higher than the old estimates because the named venues above are the good ones, not the average ones. Amsterdam speakeasies genuinely charge €16–25. Budapest ruin-bar beer is genuinely under €2 if you go where locals go. A Budapest night at Keleti Waiting Room and Fekete Kutya costs a third of the same night on Kazinczy utca.</p>
 
   <div class="callout c-warn">
-    <b>Cash</b>
-    Most Berlin clubs are cash only and the ATMs inside them charge brutal fees. Draw €100–150 each before going out. Budapest and Prague are card-friendly but ruin bars and small pubs often aren't.
+    <b>Cash, by city</b>
+    <strong>Berlin €150–200 each</strong> — nearly every club is cash-first and the in-club ATMs are punishing. <strong>Amsterdam €150–250 each</strong> for three nights; many Dutch venues are debit-only and refuse credit cards, and Casa Rosso sells at the door only. Note Shelter is the reverse — <strong>cashless, cards only.</strong> <strong>Budapest 20,000–30,000 HUF on you at night</strong>, rest in the safe. <strong>Prague 1,500–2,500 CZK each</strong> — partly so that if anyone ends up somewhere sketchy they can pay a capped cash amount and have no card to hand over. Everywhere: use bank-branded ATMs, never standalone Euronet, and <strong>always decline the "charge in INR" prompt</strong> — dynamic currency conversion costs 3–10% and it's offered at every terminal in all four cities.
+  </div>
+
+  <div class="srcs">
+    Verified 8 Aug 2026 against: operator sites (Shelter, RADION, Chin Chin, Melkweg, Paradiso, Arendsnest, Instant-Fogas, Ötkert, Széchenyi, Lokál, U Fleků, BeerGeek, Cross Club, Karlovy Lázně, Roxy, Hemingway, AnonymouS, Hopfenreich, Muted Horn, Protokoll, Monster Ronson's, Kater, Renate, Klunkerkranich, Berliner Berg, Café am Neuen See), Time Out Amsterdam and Time Out Hungary (2026 menu prices), I amsterdam, NL Times, DutchNews, berlin.de, VBB, Gästeliste030, BKK, Erzsébetváros council, prague.eu, Prague Airport, CNB, Resident Advisor. Prices move — anything you're committing real money to should be reconfirmed on the venue's own site in late September.
   </div>
 </section>
 
 <!-- ============ TRANSPORT ============ -->
+<section role="tabpanel" id="p10">
+  <h2>Adults only</h2>
+  <p class="lede">Four countries, four completely different legal regimes. In two of them the adult-entertainment scene is legal, licensed and priced on a board at the door. In the other two it is the single largest financial threat to your trip, and the documented failure mode is a four-figure bill enforced by security staff who will not let you leave. Read the Budapest and Prague sections before you go out, not after.</p>
+
+  <div class="callout c-bad">
+    <b>The one-paragraph version</b>
+    <strong>Amsterdam and Berlin: fine.</strong> Legal, regulated, priced upfront. Know the rules that carry fines and the dress codes that get you refused. <strong>Budapest and Prague: no.</strong> Not on moral grounds — on arithmetic. In both cities the venue category is unregulated or outright unlawful, which means there is no licence to complain to, no posted price, and no consumer-protection footing if a bill is disputed. Real documented bills: <strong>€630 for one beer</strong> in Budapest, <strong>~$300 for a bottle of cheap champagne</strong> in Prague, with victims escorted to ATMs and held until they pay. Cross the category off in those two cities and spend the money on the beer spa and the Sparty instead.
+  </div>
+
+  <h3 style="color:var(--ams)">Amsterdam — legal, licensed, and heavily policed</h3>
+  <div class="card">
+    <p><strong>The law.</strong> Prostitution is legal and licensed — the brothel ban was lifted in October 2000. Operating a sex business requires a municipal licence, and sex workers are legally self-employed professionals who register with the Chamber of Commerce and pay tax. The national minimum age is 18, but <strong>Amsterdam's own bylaw requires 21.</strong> In May 2026 the cabinet announced plans to raise the national minimum to 21 and add a pimping ban — announced, not yet law.</p>
+    <p><strong>The window system.</strong> Workers rent a window and room per shift from a licensed operator. Price and services are negotiated directly at the door before you enter — nothing is set by the house, and the commonly quoted street rate is around €50 upward for a short basic service. Agree price <em>and</em> what's included before any money changes hands. Condom use is standard and non-negotiable. <strong>Never approach a window as a group of six</strong> — it's the fastest way to be told to move on by the operator's own staff.</p>
+    <p><strong>Hours, because most guides have this wrong.</strong> Window hours were cut to 03:00 in April 2023 and then <strong>restored to 06:00</strong> by Mayor Halsema in February 2024 on worker-safety grounds. But bars inside De Wallen close at <strong>02:00 and admit nobody new after 01:00</strong> — stricter than the rest of the city, in force since April 2023 and proposed to run to April 2027.</p>
+  </div>
+
+  <h4>Fines you will actually be issued</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Offence</th><th class="num">Fine</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Photographing or filming sex workers or occupied windows</strong></td><td class="num">€100</td><td><strong>The number one rule.</strong> Actively enforced, and the operators' own staff physically intervene before police get involved.</td></tr>
+      <tr><td>Smoking cannabis outdoors in De Wallen, Dam, Damrak or Nieuwmarkt</td><td class="num">€100</td><td>In force since May 2023. Legal inside coffeeshops.</td></tr>
+      <tr><td>Drinking alcohol on the street in designated zones</td><td class="num">€95–140</td><td>De Wallen is one of them.</td></tr>
+      <tr><td>Public drunkenness</td><td class="num">€140</td><td></td></tr>
+      <tr><td>Public urination</td><td class="num">€150</td><td>There are fewer than ten public urinals in the centre. Plan accordingly.</td></tr>
+      <tr><td>Noise / antisocial behaviour</td><td class="num">€150–450</td><td>Six men after 23:00 is exactly the profile being policed.</td></tr>
+      <tr><td>Not carrying original ID (16+)</td><td class="num">€100+</td><td>Photocopies and phone scans are not accepted. Your <strong>passport</strong> is the valid document — an Indian driving licence is not.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout c-bad">
+    <b>Do not book a Red Light District tour — they've been illegal since 1 April 2020</b>
+    Organised tours past the windows are banned outright. Citywide rules cap groups at 15, require a permit for 5 or more, and restrict tours to 08:00–22:00. Guide fines start at €190 and escalate to permit revocation; employers face €2,500–7,500. <strong>Any operator selling your group of six a walk past the windows is operating unlawfully.</strong> Walk it yourselves — it's a public street and it's free.
+  </div>
+
+  <h4>Erotic theatres and museums — verified prices</h4>
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">Casa Rosso</span><span class="vloc">Oudezijds Achterburgwal 106–108</span><span class="vpr">€65 pp incl. one drink</span></div>
+      <div class="vd">The famous one. Daily 19:00–02:00, continuous shows, stay as long as you like. 18+ with ID checked.</div>
+      <div class="vsix"><span class="tagn t-mid">door sales only</span> <b>Tickets are not sold online and there are no reservations.</b> Third-party resellers advertise "Casa Rosso tickets" at €60 with a print-or-be-refused clause — the official site says door only. Buy at the door. Six people = €390, in cash.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Moulin Rouge</span><span class="vloc">Oudezijds Achterburgwal 5–7</span><span class="vpr">€50 evening · €40 before 18:00</span></div>
+      <div class="vd">Roughly 50 minutes of shows — four ten-minute acts. Mon–Thu 20:00–02:00, Fri–Sun from 14:00. 18+. Door or online.</div>
+      <div class="vsix"><span class="tagn t-ok">cheaper, shorter</span> The better-value option if one venue is enough.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Bananenbar</span><span class="vloc">Oudezijds Achterburgwal 37</span><span class="vpr">€50 pp per hour, unlimited drinks</span></div>
+      <div class="vd">Open 20:00–02:00, an hour later Fri/Sat. A separate "Banana Club" runs €10 entry with a mandatory drink purchase.</div>
+      <div class="vsix"><span class="tagn t-no">read this before you go in</span> <b>Every requested act carries an extra charge described as "just as high as the entrance fee", and you're called out when the hour ends.</b> This venue is aimed squarely at large male groups, and it is exactly where six people run up a €600 bill without noticing. The pricing is legal and disclosed — which is precisely why nobody will help you afterwards.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Red Light Secrets — Museum of Prostitution</span><span class="vloc">Oudezijds Achterburgwal 60</span><span class="vpr">€14.50 online (€17 door)</span></div>
+      <div class="vd">Daily 11:00–01:00, last entry midnight, about 45 minutes. 16+. Group bookings by email.</div>
+      <div class="vsix"><span class="tagn t-ok">genuinely worth it</span> Told from the workers' side. The most informative hour available in the district, and the cheapest thing on this page.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Sexmuseum Venustempel · Erotic Museum</span><span class="vloc">Damrak 18 · OZ Achterburgwal 54</span><span class="vpr">€10 · €7.50</span></div>
+      <div class="vd">Cheap, mildly ridiculous, entirely safe. The Erotic Museum is 18+.</div>
+      <div class="vsix"><span class="tagn t-mid">hours unverified</span> Both only had third-party listings — confirm at the door. Sex shops on Warmoesstraat are ordinary licensed retail, 18+, cards fine.</div></div>
+  </div>
+
+  <div class="callout c-good">
+    <b>The "erotic centre" relocation is dead — the windows aren't moving</b>
+    The long-debated plan to move De Wallen's windows into a single purpose-built Erotic Centre in Zuid was <strong>scrapped by the incoming coalition at the end of May 2026</strong>, after opposition from residents, schools, Zuidas businesses and sex workers themselves. Smaller satellite locations have been floated and the mayor is publicly sceptical. Nothing is built or scheduled. De Wallen stays where it is.
+  </div>
+  <p style="font-size:13.5px;color:var(--tx2)"><strong>Etiquette that keeps you out of trouble:</strong> no photos ever, don't linger in front of a window as a group, keep voices down after 23:00, don't block bridges or alleys (one-way pedestrian flow is enforced on Oudezijds Achterburgwal), and don't film the street "for the vibe" — that's how the €100 fines get written. Also worth knowing: Amsterdam's "Stay Away" campaign explicitly targets male party tourists, and the Burgwallen-Oude Zijde area is a designated alcohol nuisance zone where <strong>shops cannot sell alcohol after 16:00 Thursday through Sunday.</strong> Stock up before then or pay bar prices all weekend.</p>
+
+  <h3 style="color:var(--ber)">Berlin — legal and regulated, but the doors are the hardest of the trip</h3>
+  <div class="card">
+    <p><strong>The law.</strong> Sex work is legal and regulated under the Prostituiertenschutzgesetz, in force since 1 July 2017. Registration is mandatory: workers hold a certificate valid two years (one if under 21), requiring in-person appearance, ID, proof of residency, a minimum age of 18 and a health consultation within the previous three months. <strong>In Berlin registration is free.</strong> Condom use is legally mandated. All prostitution businesses require a permit and operators must pass reliability checks.</p>
+    <p><strong>Client-side liability — this is the part visitors miss.</strong> Fines run up to €50,000 for violating fee-payment obligations and up to €10,000 for general regulatory violations. <strong>Sex with an unregistered worker, or without a condom, exposes you personally to liability.</strong> Berlin is unusual in having no Sperrbezirk (restricted zone) and no curfew hours — though that last point rests on a single party-political source, so treat it as directional.</p>
+  </div>
+
+  <h4>FKK / sauna clubs — the paid-sex venue category</h4>
+  <div class="card">
+    <p>The model: you pay a door fee for facility access, and any services are negotiated directly with the worker and paid separately in cash to her. Typical German entry is <strong>€50–80</strong>, premium venues €80–100, weekends and events up to €120 — normally including sauna, pool, jacuzzi, steam room, locker, towel, robe and buffet. Alcohol is charged separately to a wristband tab. Sessions run roughly <strong>€50–60 for 30 minutes, €100–120 for an hour.</strong> Robes in social areas, nude in saunas, showering before entering is mandatory.</p>
+    <div class="venue"><div class="vh"><span class="vn">Artemis</span><span class="vloc">Halenseestr. 32–36, S-Bahn Halensee</span><span class="vpr">€90 entry · services €70 / 30 min</span></div>
+      <div class="vd">Berlin's main venue and <strong>it is open.</strong> It reopened the day after the major 2016 raid; criminal charges were rejected by the Berlin Regional Court in 2018, the Court of Appeal found in December 2022 that prosecutors had breached official duties, and the city paid the operators €250,000 in compensation in 2023. Four floors, a pool, three saunas, two cinemas, around 70 workers. Entry includes 24-hour facility access, food and soft drinks; services are paid directly to the worker. Worker shifts start 11:00 and 19:00.</div>
+      <div class="vsix"><span class="tagn t-mid">go in pairs, not as six</span> One source quotes €80 entry rather than €90 — verify at the door. <b>No published policy on male groups exists, but six men arriving together at any FKK is conspicuous.</b> I could not verify current prices or status for any second Berlin FKK — don't trust listing-site figures.</div></div>
+  </div>
+
+  <h4>Sex-positive and fetish clubs — a different category entirely</h4>
+  <div class="callout c-warn">
+    <b>These are not brothels, and that distinction matters</b>
+    Nothing is for sale. Entry is conditional on dress code, consent literacy and crowd balance — and <strong>groups of men are the hardest category to admit anywhere in this scene.</strong> If the group's interest is "let's go look at something", don't go: you'll be refused, and if you get in you'll be the people everyone else is annoyed by. If the interest is real, it's a genuinely well-run scene with clear rules.
+  </div>
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">KitKatClub</span><span class="vloc">Köpenicker Str. 76, Mitte</span><span class="vpr">€15–25, cash only</span></div>
+      <div class="vd">Your available nights: <strong>Sunday Nachspiel afterhour from 08:00</strong> (relaxed standards) and <strong>Electric Monday, doors 22:00</strong> — running every Monday since 2009 and described as the most tolerant entry policy of the week. Saturday's Carneball Bizarre is the strictest; don't attempt it. ATM outside. 18+.</div>
+      <div class="vd"><strong>The dress code is the door, and it's where groups fail.</strong> Required: a signature material — latex, leather, vinyl or mesh — or a strong fetish accessory such as a harness, collar or mask, plus boots (combat, platform, Dr. Martens or vinyl). <strong>Since late 2025, plain total-black without a fetish element no longer passes.</strong> Refused: jeans of any kind, sneakers, plain t-shirts, hoodies, dress shirts, standard eveningwear, religious symbols, national flags.</div>
+      <div class="vsix"><span class="tagn t-no">male groups explicitly harder</span> Mixed-gender couples and groups have it statistically easier, and the club manages crowd balance — <b>once the male quota is full, further men are refused regardless of outfit.</b> Arriving early materially improves your odds. <b>Phones are prohibited inside and go in the cloakroom</b>; camera lenses are sealed; violation means immediate expulsion. Consent rules: ask before engaging with anyone, "no" ends it instantly, watching is fine and touching without asking is not.</div>
+      <div class="vsix"><b>Honest read:</b> Electric Monday, in pairs, properly dressed — and you will not improvise latex, a harness and boots on the night, so buy or rent before you fly. Otherwise skip it without regret.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Insomnia</span><span class="vloc">Alt-Tempelhof 17–19, Tempelhof</span><span class="vpr">not published</span></div>
+      <div class="vd">Swinger, sex-positive and fetish club running Tuesday to Sunday in three formats: Weekend Dance &amp; Play (sex-positive, Fri/Sat, 200-plus guests, the recommended entry point for first-timers), Kink Play (BDSM, smaller, hosted, weekdays and Sunday), and Swinger nights for <strong>couples and "select singles"</strong> — i.e. single-man admission is curated, not open. Membership application required for some events.</div>
+      <div class="vsix"><span class="tagn t-no">a block of six will very likely be refused or capped</span> Prices are published per event only, and the club states there are special rates for women and students — meaning men pay the top rate. <b>I could not obtain any figures; email them first.</b> Their "mein erstes Mal" page is the right starting point. If this genuinely interests one or two of you, enquire in advance for a sex-positive night. <b>Do not turn up as six.</b></div></div>
+  </div>
+
+  <h3 style="color:var(--bud)">Budapest — the single biggest threat on this trip</h3>
+  <div class="callout c-bad">
+    <b>The konzumlány / "consume girl" scam: organised, violent, and over €2.5 million taken</b>
+    This is Budapest's signature crime against groups of foreign men, and the mechanism is specifically designed so that a group is a liability rather than a protection. Hungarian police broke up one ring in 2025 that had taken <strong>over 1 billion HUF (~€2.5 million) from hundreds of victims</strong>, with arrests in February and June — a bar owner, a hostess and a bartender among them. Another ran for eighteen months with at least 19 foreign victims before being designated a criminal organisation. <strong>The rings get dismantled and re-form under new names, which is why no blacklist protects you and the pattern is the only defence.</strong>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0">How it actually works, stage by stage</h4>
+    <p><strong>1. The approach.</strong> One or two attractive, well-dressed, fluent-English-speaking women approach you — on Váci utca and around Vörösmarty tér, on Liszt Ferenc tér and Andrássy út, on the walking routes between the ruin bars, especially Kazinczy utca and the Danube quays at night. Increasingly it starts on dating apps and Instagram DMs <em>before you even arrive.</em> The opener is mundane: directions, a lighter, friendly conversation. After a few minutes she suggests a really cool bar she knows. Sometimes it's two women working two or three of you so it feels organic. Sometimes the friendly local is a man posing as a fellow tourist.</p>
+    <p><strong>2. The venue.</strong> The bar, the bartender, the waiting staff, the security and the owner are all the same organisation — police describe a hierarchical structure controlled by bar owners. Complaining to the manager <em>is</em> complaining to the perpetrator. The signature is consistent: <strong>basement or lift-access only with no street frontage, no displayed menu or price list, nearly empty of other customers, an ATM inside the premises, and handwritten bills with no register receipt.</strong></p>
+    <p><strong>3. The consumption.</strong> She drinks freely and stays sober while you don't. Police noted victims were plied with alcohol while the women remained sober, causing them to lose judgment. Champagne appears. "Complimentary" shots appear. Drink spiking in Budapest bars is separately flagged by the UK FCDO.</p>
+    <p><strong>4. The bill.</strong> Documented real cases below.</p>
+    <p><strong>5. Enforcement — the part people underestimate.</strong> Large men appear the moment you dispute it; victims report being held in back rooms and physically intimidated. The FCDO states it plainly: <em>"Tourists have been taken to cashpoints with demands for the money to pay the bill."</em> Where there's more than one of you, <strong>one or two are walked to the ATM while the rest are held at the venue as collateral.</strong> Passport and card confiscation is documented. And your card is often run for a <strong>pre-authorisation hold before you ever see the bill</strong>, so the funds are ringfenced before you can object. Some taxi drivers take commission to deliver you — the FCDO says so explicitly.</p>
+  </div>
+
+  <h4>Documented bills — these are real reported cases, not warnings</h4>
+  <div class="tw"><table>
+    <thead><tr><th class="num">Amount</th><th>For what</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td class="num"><strong>250,000 HUF<br>(~€630)</strong></td><td><strong>One beer</strong>, presented as "complimentary"</td><td>Bar on Rákóczi út</td></tr>
+      <tr><td class="num"><strong>€1,680</strong></td><td>"A few drinks" — Korean victim</td><td>Pub on Váci utca</td></tr>
+      <tr><td class="num">€676</td><td>Two goulash soups, one bottle of wine, two beers</td><td>Same Váci utca pub</td></tr>
+      <tr><td class="num">€460</td><td>Two shorts and two glasses of champagne — Japanese victim</td><td>Nightclub, District V</td></tr>
+      <tr><td class="num"><strong>&gt;1,000,000 HUF<br>(~€2,500)</strong></td><td>"A couple of drinks"</td><td>Party-district bars</td></tr>
+      <tr class="tot"><td class="num">€135–1,230 typical<br>up to €5,000</td><td>Reported range across cases</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout c-warn">
+    <b>Two honest caveats about your protection</b>
+    <strong>There is no official blacklist.</strong> The US Embassy Budapest historically published a tourist advisory naming specific venues, but that URL is dead and I could not confirm a named-venue list still exists. No Budapest municipal or Hungarian consumer-protection blacklist was found, and Hungarian reporting states plainly that no formal public resource tracks problem establishments. <strong>Action: have one of you open hu.usembassy.gov → U.S. Citizen Services → Local Resources in a browser before you fly.</strong> Two minutes, and it's the single highest-value check on this page.<br><br>
+    <strong>And the police may not help.</strong> Multiple reports note Hungarian police have at times told victims that overcharging "is not a crime" — treated as a civil dispute unless organised-crime thresholds are met. Do not assume you will get the money back.
+  </div>
+
+  <div class="callout c-bad">
+    <b>Legitimate strip clubs in Budapest: the honest answer is that there are none worth the risk</b>
+    Strip clubs and hostess bars are <strong>not a separately licensed or inspected category</strong> in Hungary — the same absence of regulatory grip that enables the scam applies to them. Every documented four-figure case involves exactly this venue type: no visible prices, hostesses on commission, champagne upsell, security-enforced payment, ATM on site. I found no Budapest venue with a verifiable reputation for posted, transparent pricing and no history of coerced payment, and venues rebrand constantly. <strong>The realistic downside is €500–5,000 plus intimidation plus the risk of one of you being separated from the group. There is no upside that compensates.</strong> Cross it off.
+  </div>
+
+  <h4>Your six rules — print these and put them in the group chat</h4>
+  <div class="card">
+    <div class="rank"><div class="n">1</div><div><strong>Never, under any circumstances, go to a bar suggested by someone who approached you.</strong> Not a woman, not a "fellow tourist", not a taxi driver, not a street promoter. Pick your own venue from this itinerary. <em>This single rule defeats the entire scam.</em></div></div>
+    <div class="rank"><div class="n">2</div><div><strong>See a printed price list before ordering, and photograph it.</strong> No list means walk out immediately — before you sit down, not after.</div></div>
+    <div class="rank"><div class="n">3</div><div><strong>Refuse anything you did not order.</strong> "Free" pálinka shots reappear on the bill at 1,500–2,500 HUF each. Same trick as the Becherovka trays at U Fleků in Prague.</div></div>
+    <div class="rank"><div class="n">4</div><div><strong>Never hand over a passport or card to be "held", and never let a card leave your sight.</strong> Pay at the table, watch the terminal, and check it says HUF — not EUR, not INR.</div></div>
+    <div class="rank"><div class="n">5</div><div><strong>If a bill is wrong: don't pay, don't fight.</strong> Say clearly and repeatedly "I will pay only in the presence of the police" and call <strong>112</strong> yourself. Never let anyone walk you to an ATM. <strong>Never let the group split</strong> — if one of you is being taken somewhere, all six go or nobody goes.</div></div>
+    <div class="rank"><div class="n">6</div><div><strong>Buy your own drinks and keep sight of them.</strong> Agree a rally point and a "we leave now, no debate" codeword before you go out. The person who calls it doesn't have to justify it.</div></div>
+  </div>
+  <div class="callout c-warn">
+    <b>One more Budapest-specific warning that applies to your group directly</b>
+    The US State Department notes that <em>"violent crimes have been reported in high-tourist areas like Budapest's Ruin Bar District"</em>, including <strong>assaults motivated by race, ethnicity or religion.</strong> Six visibly South Asian men should stay together, avoid engaging with aggressive drunks, and leave rather than argue. It is not the likely outcome of your Thursday night, but it is the reason to walk away from a confrontation rather than win it.
+  </div>
+
+  <h3 style="color:var(--prg)">Prague — a legal grey zone, which is exactly the problem</h3>
+  <div class="card">
+    <p><strong>The law.</strong> Selling sex as an individual is not criminalised, but <strong>brothels, organising prostitution and pimping are all illegal.</strong> The Czech Interior Ministry counts 860-plus brothels nationally, around 200 in Prague — all technically unlawful, all operating openly, with enforcement not prioritised. A licensing bill was approved by government in 2005 and <strong>parliament never passed it</strong>; the sector remains unregulated and I found no 2026 change.</p>
+    <p><strong>Why that matters practically:</strong> because the business itself is unlawful, <strong>you have no consumer-protection footing at all</strong> if a bill is disputed. No licensing body, no price regulation, no complaints authority. That is the structural reason the rip-off pattern persists rather than being competed away.</p>
+    <p style="margin-bottom:0"><strong>"Big Sister"</strong> — the online brothel that fills old guidebooks — operated 2005–2010 and is closed. Not an option.</p>
+  </div>
+
+  <h4>The venues, factually</h4>
+  <div class="tw"><table>
+    <thead><tr><th>Venue</th><th>Where</th><th>Hours</th><th class="num">Entry</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Darling Cabaret</strong></td><td>Ve Smečkách 597/32, Prague 1</td><td>Mon–Tue 12:00–05:00, Wed 20:00–05:00, Thu–Sun 12:00–05:00</td><td class="num">not published</td></tr>
+      <tr><td><strong>Goldfingers</strong></td><td>Václavské nám. 5, under Hotel Ambassador</td><td>Daily 21:00–04:00</td><td class="num">~200–600 CZK<br>(€8.25–24.70)</td></tr>
+      <tr><td>Hot Pepper's</td><td>Wenceslas Square</td><td>24 hours</td><td class="num">free entry</td></tr>
+      <tr><td>Show Park</td><td>Holešovice</td><td>—</td><td class="num">100 CZK</td></tr>
+      <tr><td><strong>K5 Relax</strong></td><td>Korunní 5</td><td colspan="2"><span class="tagn t-dead">closed</span> Confirmed by two sources as of May 2026.</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13px;color:var(--tx3)">Darling is the largest cabaret in Czechia, founded 2000, six rooms and three bars. Hours come from a single secondary source and its official site was unreachable; entry prices could not be found anywhere. For context, K5 Relax's historic pricing before closure was a 500 CZK cover, 100 CZK beer, 150 CZK cocktails and services from 1,400–2,400 CZK per 30 minutes — all accrued on an <strong>electronic wristband tab</strong>, which is the mechanism to be most wary of.</p>
+
+  <div class="callout c-bad">
+    <b>The documented rip-off pattern — consistent across sources</b>
+    <strong>1.</strong> Recruitment: women or male promoters approach groups of men near Old Town Square, Dlouhá Street and the south end of Wenceslas Square, offering free entry or "just one drink". Venues are frequently reachable only through an unmarked door, not from the street. <strong>2.</strong> No visible prices, or a menu without numbers. <strong>3.</strong> A hostess sits down and orders for you — documented arbitrary pricing includes roughly <strong>$300 for one bottle of cheap champagne and $100 per glass of whisky.</strong> <strong>4.</strong> Everything accrues on an electronic wristband or paper consumption card, out of sight — <strong>the UK FCDO warns specifically about these.</strong> <strong>5.</strong> Drink spiking is reported as part of the pattern, to increase intoxication and compliance. <strong>6.</strong> Local reporting is blunt: walking away from the table with a hostess commits you to buying a service. <strong>7.</strong> Four-figure bills, then guards preventing exit until payment, with victims threatened and pressured. <strong>8.</strong> Card details go to a venue with a documented fraud history, and repeat charges after departure are a known outcome — even the pro-cabaret local guide advises cash, not cards.
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0">The official warnings, quoted</h4>
+    <p><strong>UK FCDO, Czechia:</strong> <em>"Be aware of consumption charges in night clubs as they are often high"</em> and <em>"be careful with consumption cards, which carry high financial penalties if you lose them before you pay your bill."</em> Also: <em>"There is a risk of drink spiking in bars and clubs."</em></p>
+    <p><strong>Government of Canada, Czechia:</strong> <em>"Some bars, restaurants and nightclubs may try to charge exorbitant prices or overcharge you."</em> Plus a credit-card and ATM fraud warning.</p>
+    <p style="margin-bottom:0"><strong>Honest gap:</strong> I found no Prague City Tourism page and no Czech Police advisory naming strip clubs or cabarets specifically. The two above are the real, citable warnings — and both describe your exact risk without naming venues.</p>
+  </div>
+
+  <div class="callout c-bad">
+    <b>Verdict: avoid entirely — and here's the arithmetic, not a lecture</b>
+    <strong>No recourse.</strong> The business model is itself unlawful, so there's no licence to complain to and no price rule. A disputed bill is your word against a venue with security staff. <strong>The loss isn't small.</strong> The documented failure mode is not €50 of overpriced beer — it's a four-figure charge plus a physically blocked exit, then further charges on the card after you leave. <strong>Card exposure is the killer.</strong> Chargebacks across a jurisdiction, on a signed terminal receipt, from a business you voluntarily entered, mostly fail. <strong>Spiking is flagged by a national government</strong>, not just travel bloggers. <strong>And there's a passport-specific downside:</strong> as Indian passport holders on a Schengen visa, a police report or detention over a disputed bill is a wildly disproportionate outcome for a two-night stop. The asymmetry is the whole argument.
+  </div>
+
+  <h4>If someone in the group insists anyway — the harm-reduction floor</h4>
+  <div class="card">
+    <div class="rank"><div class="n">1</div><div>A venue <strong>you</strong> found on Google Maps with a long credible review history and <strong>street-level frontage.</strong> Never anywhere reached only via an unmarked door or an upstairs buzzer.</div></div>
+    <div class="rank"><div class="n">2</div><div><strong>Photograph a printed price list before ordering anything.</strong> Pay entry only, nothing else.</div></div>
+    <div class="rank"><div class="n">3</div><div><strong>Cash only, a capped amount, cards left at the hotel.</strong> This is the single most effective control on the whole page — you cannot be charged what you don't have.</div></div>
+    <div class="rank"><div class="n">4</div><div><strong>Refuse any consumption card or wristband.</strong> Refuse any drink you did not personally order. Never accept a hostess's company or leave the table with one.</div></div>
+    <div class="rank"><div class="n">5</div><div><strong>Agree a hard departure time and leave together.</strong> All six in, all six out.</div></div>
+    <div class="rank"><div class="n">6</div><div>If a bill is disputed, <strong>don't fight in the room.</strong> Pay nothing further, exit as a group, call <strong>158</strong>.</div></div>
+  </div>
+
+  <h4>Legal, lower-risk alternatives in Prague</h4>
+  <div class="card">
+    <div class="venue"><div class="vh"><span class="vn">Czech Cabaret Show, Theatre Hybernia</span><span class="vloc">Hybernia</span><span class="vpr">~1,500 CZK / €62</span></div>
+      <div class="vd">A full-length professional cabaret, burlesque and modern-circus production with around 40 performers — 19:30 start, 2.5 hours, <strong>creative black-tie dress code</strong> (jeans and sportswear refused). Priced upfront, zero scam surface.</div>
+      <div class="vsix"><span class="tagn t-mid">confirm your dates</span> I could not confirm it runs on 11 or 12 Oct. Prague Burlesque at Divadlo Royal is <b>Fridays only</b>, so unavailable to you.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Sex Machines Museum</span><span class="vloc">Melantrichova 18, Old Town</span><span class="vpr">350 CZK / €14.40 (300 for groups of 10+)</span></div>
+      <div class="vd">Three hundred-plus mechanical devices, some 16th-century. <strong>Daily 10:00–23:00.</strong> About 30 minutes, non-explicit, mildly ridiculous, entirely safe.</div>
+      <div class="vsix"><span class="tagn t-ok">safe and funny</span> One source lists under-18s free, contradicting the 18+ positioning — verify at the door.</div></div>
+    <div class="venue"><div class="vh"><span class="vn">Your Beerland booking is the better spend</span><span class="vloc">check which branch</span><span class="vpr">from €47 / ~1,140 CZK pp</span></div>
+      <div class="vd">Suite 2 takes exactly six people across three thousand-litre handmade oak tubs, with unlimited self-poured light and dark tank beer during the soak, a straw rest area by a fireplace and homemade beer bread. Daily 10:00–22:00.</div>
+      <div class="vsix"><span class="tagn t-ok">already booked</span> <b>Check your branch:</b> the three locations are Revoluční 22 (New Town), Nový Svět 3 (Hradčany) and Týnská 19 (Old Town) — <b>none of them is in Holešovice</b>, so don't plan the walk from your accommodation.</div></div>
+  </div>
+
+  <div class="callout c-warn">
+    <b>Numbers to have in your phones before you go out</b>
+    <strong>Europe-wide emergency: 112</strong> (works in all four countries, English-speaking). <strong>Hungary police: 107.</strong> Budapest tourist assistance: <strong>+36 1 438 8080</strong> — cited as 24/7 English-speaking by two sources, but the operator and hours could not be verified, so treat 112 as primary. <strong>Czech police: 158.</strong> Netherlands and Germany: 112. Also look up the <strong>Embassy of India</strong> emergency number for each of the four countries before departure and put them in the group chat — I have not verified any of them, and that's a five-minute job worth doing properly.
+  </div>
+
+  <div class="srcs">
+    Sources for this tab: UK FCDO travel advice for Hungary and Czechia · US State Department Hungary country information · Government of Canada Czechia advice · Government.nl and Business.gov.nl on Dutch prostitution law · Amsterdam municipal fine schedules via SkipTheFine and city reporting · NL Times and DutchNews on De Wallen hours, the tour ban, the alcohol nuisance zone and the scrapped erotic centre · Casa Rosso, Moulin Rouge, Red Light Secrets official sites · German Prostituiertenschutzgesetz via BMFSFJ and service.berlin.de · Artemis court history · KitKatClub, Electric Monday and Insomnia official sites · Daily News Hungary and BudAPPest on the 2025 konzumlány prosecutions and documented bills · Hungary Unlocked, World Nomads and Trip to Budapest on scam mechanics · Czech Interior Ministry brothel figures via published reporting · Beerland, Sex Machines Museum and Theatre Hybernia listings. Researched 8 Aug 2026. Where a figure could not be verified it is labelled as such rather than smoothed over.
+  </div>
+</section>
+
 <section role="tabpanel" id="p3">
   <h2>Getting between cities</h2>
 
